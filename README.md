@@ -1,105 +1,146 @@
-WEEK-1
-Electrician Contractor Management System
+## WEEK-1
+# Electrician Contractor Management System
 
 This project is a web-based application designed to manage electricians, jobs, tasks, materials, and reports. It provides a structured and user-friendly interface for contractor management operations.
 
-Features
-Electrician Management
-Job Management
-Task Tracking
-Materials Management
-Reports
-Login and Registration
-Admin Profile
-Technologies Used
-HTML
-CSS
-JavaScript
-Bootstrap
-Project Structure
+---
+
+## Features
+
+- Electrician Management  
+- Job Management  
+- Task Tracking  
+- Materials Management  
+- Reports  
+- Login and Registration  
+- Admin Profile  
+
+---
+
+## Technologies Used
+
+- HTML  
+- CSS  
+- JavaScript  
+- Bootstrap  
+
+---
+
+## Project Structure
 
 electrician-system/
 
-│
-├── index.html
-├── login.html
-├── register.html
-├── dashboard.html
-├── electricians.html
-├── jobs.html
-├── tasks.html
-├── materials.html
-├── reports.html
-├── profile.html
+├── index.html  
+├── login.html  
+├── register.html  
+├── dashboard.html  
+├── electricians.html  
+├── jobs.html  
+├── tasks.html  
+├── materials.html  
+├── reports.html  
+├── profile.html  
 
-│
-├── js/
-│ └── app.js
+├── js/  
+│   └── app.js  
 
-│
-├── images/
-│ └── electrician.jpeg
+├── images/  
+│   └── electrician.jpeg  
 
-Contributors and Work Distribution
-Reethi (Team Lead)
+---
 
-Led the frontend development and UI enhancement. Redesigned the interface using Bootstrap, implemented responsive design, added JavaScript validation, and integrated all UI modules.
+## Contributors and Work Distribution
 
-Pavan
+### Reethi (Team Lead)
 
-Developed the initial UI using HTML and CSS. Created page layouts and structured the overall design of the system.
+Led frontend development and UI enhancement. Redesigned the interface using Bootstrap, implemented responsive design, added JavaScript validation, and integrated all UI modules.
 
-Shravana
+---
 
-Assisted in UI design and page structuring. Helped maintain layout consistency across all pages.
+### Pavan
 
-WEEK-2
-Backend Integration & CRUD Functionality
+Developed the initial UI using HTML and CSS. Created layouts and structured the system design.
+
+---
+
+### Shravana
+
+Assisted in UI design and layout structuring. Helped maintain consistency across pages.
+
+---
+
+---
+
+## WEEK-2
+
+# Backend Integration & CRUD Functionality
 
 In Week 2, the project was converted into a fully functional Django application with backend logic, database integration, and CRUD operations.
 
-Features Implemented
-Django Backend Setup
-Database Integration (SQLite)
-User Authentication (Login, Register, Logout, Forgot Password)
-Electricians CRUD (Add, Update, Delete)
-Jobs CRUD with deadline handling
-Tasks CRUD with status tracking
-Materials CRUD with quantity management
-Dashboard with dynamic data
-Reports with chart visualization
-Technologies Used
-Python (Django)
-SQLite
-HTML, CSS, Bootstrap
-JavaScript
-Key Improvements
-Converted static HTML into Django templates
-Connected frontend with backend using views and models
-Implemented full CRUD operations
-Fixed update issues (correct form structure)
-Added session-based authentication
-Used base template for consistent UI
-Project Structure (Updated)
+---
+
+## Features Implemented
+
+- Django Backend Setup  
+- Database Integration (SQLite)  
+- User Authentication (Login, Register, Logout, Forgot Password)  
+- Electricians CRUD (Add, Update, Delete)  
+- Jobs CRUD with deadline handling  
+- Tasks CRUD with status tracking  
+- Materials CRUD with quantity management  
+- Dashboard with dynamic data  
+- Reports with chart visualization  
+
+---
+
+## Technologies Used
+
+- Python (Django)  
+- SQLite  
+- HTML, CSS, Bootstrap  
+- JavaScript  
+
+---
+
+## Key Improvements
+
+- Converted static HTML into Django templates  
+- Connected frontend with backend using views and models  
+- Implemented full CRUD operations  
+- Fixed update issues by correcting form structure  
+- Added session-based authentication  
+- Used base template for consistent UI  
+
+---
+
+## Project Structure (Updated)
 
 ElectricianContractorManagementSystem/
 
-│
-├── core/
-├── config/
-├── templates/
-├── static/
-├── manage.py
+├── core/  
+├── config/  
+├── templates/  
+├── static/  
+├── manage.py  
 
-Contributors and Work Distribution
-Reethi (Team Lead)
+---
 
-Handled complete backend integration. Connected all frontend pages with Django, implemented CRUD operations, fixed update issues, and developed authentication (login, register, forgot password).
+## Contributors and Work Distribution
 
-Pavan
+### Reethi (Team Lead)
 
-Worked on database design. Created tables (Users, Electricians, Jobs, Tasks) and implemented insert and fetch operations.
+Handled complete backend integration of all files. Connected frontend pages with Django backend, implemented CRUD operations, fixed update issues, and developed authentication system (login, register, forgot password).
 
-Shravana
+---
 
-Handled authentication and dashboard features. Worked on login, registration, validation, and displaying dynamic data.
+### Pavan
+
+Worked on database creation including tables (Users, Electricians, Jobs, Tasks). Implemented insert and fetch operations and supported backend connectivity.
+
+---
+
+### Shravana
+
+Handled authentication and dashboard functionality. Worked on login, registration, validation, and displaying dynamic data.
+
+---
