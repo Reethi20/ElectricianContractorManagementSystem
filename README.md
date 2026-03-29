@@ -1,34 +1,25 @@
-# Electrician Contractor Management System
+WEEK-1
+Electrician Contractor Management System
 
 This project is a web-based application designed to manage electricians, jobs, tasks, materials, and reports. It provides a structured and user-friendly interface for contractor management operations.
 
----
+Features
+Electrician Management
+Job Management
+Task Tracking
+Materials Management
+Reports
+Login and Registration
+Admin Profile
+Technologies Used
+HTML
+CSS
+JavaScript
+Bootstrap
+Project Structure
 
-## Features
-
-* Electrician Management
-* Job Management
-* Task Tracking
-* Materials Management
-* Reports
-* Login and Registration
-* Admin Profile
-
----
-
-## Technologies Used
-
-* HTML
-* CSS
-* JavaScript
-* Bootstrap
-
----
-
-## Project Structure
-
-```
 electrician-system/
+
 │
 ├── index.html
 ├── login.html
@@ -40,41 +31,75 @@ electrician-system/
 ├── materials.html
 ├── reports.html
 ├── profile.html
+
 │
 ├── js/
-│   └── app.js
+│ └── app.js
+
 │
 ├── images/
-│   └── electrician.jpeg
-```
+│ └── electrician.jpeg
 
----
+Contributors and Work Distribution
+Reethi (Team Lead)
 
-## Contributors and Work Distribution
+Led the frontend development and UI enhancement. Redesigned the interface using Bootstrap, implemented responsive design, added JavaScript validation, and integrated all UI modules.
 
-### Reethi (Team Lead)
+Pavan
 
-Led the overall frontend development of the project. Redesigned and improved the complete user interface using Bootstrap for a modern and consistent layout. Implemented responsive design across all pages and ensured proper alignment and usability. Added JavaScript validations for login and registration forms and structured the project for better maintainability. Integrated all modules and finalized the complete UI system.
+Developed the initial UI using HTML and CSS. Created page layouts and structured the overall design of the system.
 
----
+Shravana
 
-### Pavan
+Assisted in UI design and page structuring. Helped maintain layout consistency across all pages.
 
-Developed the initial version of the user interface using HTML and CSS. Designed the basic structure of multiple pages including layout sections such as headers, content areas, and navigation elements. Worked on organizing page flow and ensuring all required modules were included in the system. Contributed to creating the foundational design that helped in further UI enhancement. Assisted in structuring the project files and maintaining consistency in the initial implementation.
+WEEK-2
+Backend Integration & CRUD Functionality
 
----
+In Week 2, the project was converted into a fully functional Django application with backend logic, database integration, and CRUD operations.
 
-### Shravana
+Features Implemented
+Django Backend Setup
+Database Integration (SQLite)
+User Authentication (Login, Register, Logout, Forgot Password)
+Electricians CRUD (Add, Update, Delete)
+Jobs CRUD with deadline handling
+Tasks CRUD with status tracking
+Materials CRUD with quantity management
+Dashboard with dynamic data
+Reports with chart visualization
+Technologies Used
+Python (Django)
+SQLite
+HTML, CSS, Bootstrap
+JavaScript
+Key Improvements
+Converted static HTML into Django templates
+Connected frontend with backend using views and models
+Implemented full CRUD operations
+Fixed update issues (correct form structure)
+Added session-based authentication
+Used base template for consistent UI
+Project Structure (Updated)
 
-Worked on the initial UI along with page layout and styling using HTML and CSS. Assisted in designing the basic structure and organization of the pages.
+ElectricianContractorManagementSystem/
 
----
+│
+├── core/
+├── config/
+├── templates/
+├── static/
+├── manage.py
 
-## How to Run
+Contributors and Work Distribution
+Reethi (Team Lead)
 
-1. Clone the repository
-   git clone https://github.com/svpavan761-oss/electrician-system.git
+Handled complete backend integration. Connected all frontend pages with Django, implemented CRUD operations, fixed update issues, and developed authentication (login, register, forgot password).
 
-2. Open the project folder
+Pavan
 
-3. Open index.html in a browser
+Worked on database design. Created tables (Users, Electricians, Jobs, Tasks) and implemented insert and fetch operations.
+
+Shravana
+
+Handled authentication and dashboard features. Worked on login, registration, validation, and displaying dynamic data.
