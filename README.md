@@ -141,6 +141,6 @@ Worked on database creation including tables (Users, Electricians, Jobs, Tasks).
 
 ### Shravana
 
-Handled authentication and dashboard functionality. Worked on login, registration, validation, and displaying dynamic data.
+Handled authentication and dashboard functionality. Worked on login, registration.
 
 ---
