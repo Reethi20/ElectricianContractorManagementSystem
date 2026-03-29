@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Jobs Management</h3>
+
+<!-- VIEW MODE -->
+{% if request.session.role != "Admin" %}
+<div class="alert alert-info">View Only Mode</div>
+{% endif %}
+
+<!-- ADD FORM -->
+{% if request.session.role == "Admin" %}
+<form method="POST" class="row g-2 mb-4">
+{% csrf_token %}
+<input type="hidden" name="action" value="add">
+
+<div class="col-md-2">
+<input name="title" class="form-control" placeholder="Title" required>
+</div>
+
+<div class="col-md-2">
+<input name="location" class="form-control" placeholder="Location" required>
+</div>
+
+<div class="col-md-2">
+<select name="electrician" class="form-control">
+{% for e in electricians %}
+<option value="{{ e.id }}">{{ e.name }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-2">
+<input type="date" name="deadline" class="form-control" required>
+</div>
+
+<div class="col-md-2">
+<select name="status" class="form-control">
+<option>Pending</option>
+<option>Completed</option>
+</select>
+</div>
+
+<div class="col-md-2">
+<button type="submit" class="btn btn-primary w-100">Add</button>
+</div>
+
+</form>
+{% endif %}
+
+<!-- TABLE -->
+<div class="card p-3 shadow">
+<table class="table table-bordered align-middle">
+
+<tr class="table-light">
+<th>Title</th>
+<th>Location</th>
+<th>Electrician</th>
+<th>Deadline</th>
+<th>Status</th>
+{% if request.session.role == "Admin" %}
+<th>Actions</th>
+{% endif %}
+</tr>
+
+{% for j in jobs %}
+
+<!-- ✅ CORRECT FORM -->
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="update">
+<input type="hidden" name="id" value="{{ j.id }}">
+
+<tr>
+
+<td>
+<input name="title" value="{{ j.title }}" class="form-control">
+</td>
+
+<td>
+<input name="location" value="{{ j.location }}" class="form-control">
+</td>
+
+<td>
+<select name="electrician" class="form-control">
+{% for e in electricians %}
+<option value="{{ e.id }}"
+{% if e.id == j.electrician.id %}selected{% endif %}>
+{{ e.name }}
+</option>
+{% endfor %}
+</select>
+</td>
+
+<!-- ✅ DATE FIX -->
+<td>
+<input type="date"
+       name="deadline"
+       value="{{ j.deadline|date:'Y-m-d' }}"
+       class="form-control">
+</td>
+
+<td>
+<select name="status" class="form-control">
+<option {% if j.status == "Pending" %}selected{% endif %}>Pending</option>
+<option {% if j.status == "Completed" %}selected{% endif %}>Completed</option>
+</select>
+</td>
+
+{% if request.session.role == "Admin" %}
+<td class="d-flex gap-2">
+
+<button type="submit" class="btn btn-success btn-sm">
+Update
+</button>
+
+<a href="/delete-job/{{ j.id }}/"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Delete this job?')">
+Delete
+</a>
+
+</td>
+{% endif %}
+
+</tr>
+
+</form>
+
+{% endfor %}
+
+</table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Dashboard Overview</h3>
+
+<div class="row g-4">
+
+<div class="col-md-3">
+<div class="card p-3 text-center shadow">
+<h6>Total Electricians</h6>
+<h3>{{ electricians }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 text-center shadow">
+<h6>Active Jobs</h6>
+<h3>{{ jobs }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 text-center shadow">
+<h6>Pending Tasks</h6>
+<h3>{{ tasks }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card p-3 text-center shadow">
+<h6>Completed Work</h6>
+<h3>{{ completed }}</h3>
+</div>
+</div>
+
+</div>
+
+{% endblock %}

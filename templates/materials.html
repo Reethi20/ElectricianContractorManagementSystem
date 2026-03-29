@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Materials Management</h3>
+
+<!-- VIEW MODE -->
+{% if request.session.role != "Admin" %}
+<div class="alert alert-info">View Only Mode</div>
+{% endif %}
+
+<!-- ADD FORM -->
+{% if request.session.role == "Admin" %}
+<form method="POST" class="row g-2 mb-4">
+{% csrf_token %}
+<input type="hidden" name="action" value="add">
+
+<div class="col-md-4">
+<input name="name" class="form-control" placeholder="Material Name" required>
+</div>
+
+<div class="col-md-4">
+<input type="number" name="quantity" class="form-control" placeholder="Quantity" required>
+</div>
+
+<div class="col-md-2">
+<button type="submit" class="btn btn-primary w-100">Add</button>
+</div>
+
+</form>
+{% endif %}
+
+<!-- TABLE -->
+<div class="card p-3 shadow">
+<table class="table table-bordered align-middle">
+
+<tr class="table-light">
+<th>Material</th>
+<th>Quantity</th>
+{% if request.session.role == "Admin" %}
+<th>Actions</th>
+{% endif %}
+</tr>
+
+{% for m in materials %}
+
+<!-- ✅ CORRECT FORM -->
+<form method="POST">
+{% csrf_token %}
+<input type="hidden" name="action" value="update">
+<input type="hidden" name="id" value="{{ m.id }}">
+
+<tr>
+
+<td>
+<input name="name" value="{{ m.name }}" class="form-control">
+</td>
+
+<td>
+<input type="number" name="quantity" value="{{ m.quantity }}" class="form-control">
+</td>
+
+{% if request.session.role == "Admin" %}
+<td class="d-flex gap-2">
+
+<button type="submit" class="btn btn-success btn-sm">
+Update
+</button>
+
+<a href="/delete-material/{{ m.id }}/"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Delete this material?')">
+Delete
+</a>
+
+</td>
+{% endif %}
+
+</tr>
+
+</form>
+
+{% endfor %}
+
+</table>
+</div>
+
+{% endblock %}
