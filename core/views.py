@@ -164,41 +164,51 @@ def delete_job(request, id):
 def tasks(request):
     if check_login(request): return check_login(request)
 
+    # ✅ FILTER BY STATUS
+    status_filter = request.GET.get('status')
+
+    if status_filter:
+        task_list = Task.objects.filter(status=status_filter)
+    else:
+        task_list = Task.objects.all()
+
     if request.method == 'POST':
         if request.session.get('role') != "Admin":
             return redirect('/dashboard/')
 
         action = request.POST.get('action')
 
+        # ✅ ADD TASK
         if action == "add":
             Task.objects.create(
                 name=request.POST['name'],
                 electrician_id=request.POST['electrician'],
+                job_id=request.POST['job'],   # ✅ ADDED
                 status=request.POST['status']
             )
 
+        # ✅ UPDATE TASK
         elif action == "update":
             t = Task.objects.get(id=request.POST['id'])
             t.name = request.POST['name']
             t.electrician_id = request.POST['electrician']
+            t.job_id = request.POST['job']   # ✅ ADDED
             t.status = request.POST['status']
             t.save()
 
         return redirect('/tasks/')
 
     return render(request, 'tasks.html', {
-        'tasks': Task.objects.all(),
-        'electricians': Electrician.objects.all()
+        'tasks': task_list,
+        'electricians': Electrician.objects.all(),
+        'jobs': Job.objects.all()
     })
-
-
 def delete_task(request, id):
     if request.session.get('role') != "Admin":
         return redirect('/dashboard/')
+
     Task.objects.get(id=id).delete()
     return redirect('/tasks/')
-
-
 # ================= MATERIALS =================
 def materials(request):
     if check_login(request): return check_login(request)

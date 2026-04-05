@@ -39,6 +39,7 @@ class Job(models.Model):
 class Task(models.Model):
     name = models.CharField(max_length=100)
     electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)   # ✅ ADDED
     status = models.CharField(max_length=50)
 
     def __str__(self):

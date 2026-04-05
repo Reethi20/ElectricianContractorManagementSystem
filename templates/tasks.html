@@ -1,25 +1,34 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
 <h3 class="mb-4">Tasks Management</h3>
+
+<!-- FILTER -->
+<form method="GET" class="mb-3">
+<select name="status" class="form-control w-25 d-inline">
+<option value="">All</option>
+<option value="Pending">Pending</option>
+<option value="Completed">Completed</option>
+</select>
+<button class="btn btn-primary">Filter</button>
+</form>
 
 <!-- VIEW MODE -->
 {% if request.session.role != "Admin" %}
 <div class="alert alert-info">View Only Mode</div>
 {% endif %}
 
-<!-- ADD FORM -->
+<!-- ADD -->
 {% if request.session.role == "Admin" %}
 <form method="POST" class="row g-2 mb-4">
 {% csrf_token %}
 <input type="hidden" name="action" value="add">
 
-<div class="col-md-3">
+<div class="col-md-2">
 <input name="name" class="form-control" placeholder="Task Name" required>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-2">
 <select name="electrician" class="form-control">
 {% for e in electricians %}
 <option value="{{ e.id }}">{{ e.name }}</option>
@@ -27,7 +36,15 @@
 </select>
 </div>
 
-<div class="col-md-3">
+<div class="col-md-2">
+<select name="job" class="form-control">
+{% for j in jobs %}
+<option value="{{ j.id }}">{{ j.title }}</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col-md-2">
 <select name="status" class="form-control">
 <option>Pending</option>
 <option>Completed</option>
@@ -35,7 +52,7 @@
 </div>
 
 <div class="col-md-2">
-<button type="submit" class="btn btn-primary w-100">Add</button>
+<button class="btn btn-primary w-100">Add</button>
 </div>
 
 </form>
@@ -43,11 +60,12 @@
 
 <!-- TABLE -->
 <div class="card p-3 shadow">
-<table class="table table-bordered align-middle">
+<table class="table table-bordered">
 
-<tr class="table-light">
+<tr>
 <th>Task</th>
 <th>Electrician</th>
+<th>Job</th>
 <th>Status</th>
 {% if request.session.role == "Admin" %}
 <th>Actions</th>
@@ -55,57 +73,57 @@
 </tr>
 
 {% for t in tasks %}
+<tr>
+<td colspan="5">
 
-<!-- ✅ CORRECT FORM -->
-<form method="POST">
+<form method="POST" class="row g-2">
 {% csrf_token %}
+
 <input type="hidden" name="action" value="update">
 <input type="hidden" name="id" value="{{ t.id }}">
 
-<tr>
-
-<td>
+<div class="col">
 <input name="name" value="{{ t.name }}" class="form-control">
-</td>
+</div>
 
-<td>
+<div class="col">
 <select name="electrician" class="form-control">
 {% for e in electricians %}
-<option value="{{ e.id }}"
-{% if e.id == t.electrician.id %}selected{% endif %}>
+<option value="{{ e.id }}" {% if e.id == t.electrician.id %}selected{% endif %}>
 {{ e.name }}
 </option>
 {% endfor %}
 </select>
-</td>
+</div>
 
-<td>
+<div class="col">
+<select name="job" class="form-control">
+{% for j in jobs %}
+<option value="{{ j.id }}" {% if j.id == t.job.id %}selected{% endif %}>
+{{ j.title }}
+</option>
+{% endfor %}
+</select>
+</div>
+
+<div class="col">
 <select name="status" class="form-control">
 <option {% if t.status == "Pending" %}selected{% endif %}>Pending</option>
 <option {% if t.status == "Completed" %}selected{% endif %}>Completed</option>
 </select>
-</td>
+</div>
 
 {% if request.session.role == "Admin" %}
-<td class="d-flex gap-2">
-
-<button type="submit" class="btn btn-success btn-sm">
-Update
-</button>
-
-<a href="/delete-task/{{ t.id }}/"
-   class="btn btn-danger btn-sm"
-   onclick="return confirm('Delete this task?')">
-Delete
-</a>
-
-</td>
+<div class="col d-flex gap-2">
+<button class="btn btn-success btn-sm">Update</button>
+<a href="/delete-task/{{ t.id }}/" class="btn btn-danger btn-sm">Delete</a>
+</div>
 {% endif %}
-
-</tr>
 
 </form>
 
+</td>
+</tr>
 {% endfor %}
 
 </table>
