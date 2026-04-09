@@ -51,7 +51,7 @@ electrician-system/
 
 ## Contributors and Work Distribution
 
-### Reethi (Team Lead)
+### Reethi K B
 
 Led frontend development and UI enhancement. Redesigned the interface using Bootstrap, implemented responsive design, added JavaScript validation, and integrated all UI modules.
 
@@ -127,7 +127,7 @@ ElectricianContractorManagementSystem/
 
 ## Contributors and Work Distribution
 
-### Reethi (Team Lead)
+### Reethi K B
 
 Handled complete backend integration of all files. Connected frontend pages with Django backend, implemented CRUD operations, fixed update issues, and developed authentication system (login, register, forgot password).
 
