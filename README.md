@@ -144,3 +144,61 @@ Worked on database creation including tables (Users, Electricians, Jobs, Tasks).
 Handled authentication and dashboard functionality. Worked on login, registration.
 
 ---
+## WEEK-3
+
+# Module Development & System Integration
+
+In Week 3, the project focused on developing core modules of the system and integrating all components into a fully functional application. The system was enhanced to handle real-time operations with proper data flow between modules.
+
+---
+
+## Features Implemented
+
+- Job Management Module (Add job, assign electrician, set location & deadline, view jobs)  
+- Electrician Management (Add, update, delete, view list)  
+- Task Management (Assign task to electrician, link task with job)  
+- Task Tracking (View tasks, filter by status, update status – Pending → Completed)  
+- Materials Management (Add materials, track quantity, update usage)  
+- Module Integration (Job ↔ Task ↔ Electrician ↔ Materials)  
+- Fully Dynamic System (All modules connected with backend, no static data)  
+
+---
+
+## Technologies Used
+
+- Python (Django)  
+- SQLite  
+- HTML, CSS, Bootstrap  
+- JavaScript  
+
+---
+
+## Key Improvements
+
+- Developed complete modules for job, task, electrician, and materials management  
+- Integrated all modules to ensure smooth workflow across the system  
+- Implemented task tracking with status updates  
+- Ensured dynamic interaction between frontend and backend  
+- Improved system structure and real-time data handling  
+- Achieved full module connectivity and synchronization  
+
+
+## Contributors and Work Distribution
+
+### Reethi K B
+
+Handled Task Management (Core Logic). Implemented task assignment, linked tasks with jobs, developed task tracking system, added status filtering, and enabled status updates (Pending → Completed).
+
+---
+
+### Pavan Kumar SV
+
+Worked on Job and Electrician Management. Implemented job creation, electrician assignment, deadline handling, and managed CRUD operations for electricians.
+
+---
+
+### Shravana Nayak
+
+Handled Materials Management, module integration, and UI synchronization. Managed material tracking, updated usage, and ensured smooth connection between modules.
+
+---
