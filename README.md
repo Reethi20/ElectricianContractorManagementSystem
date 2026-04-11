@@ -63,14 +63,6 @@ Developed the initial UI using HTML and CSS. Created layouts and structured the 
 
 ---
 
-### Shravana
-
-Assisted in UI design and layout structuring. Helped maintain consistency across pages.
-
----
-
----
-
 ## WEEK-2
 
 # Backend Integration & CRUD Functionality
@@ -129,13 +121,13 @@ ElectricianContractorManagementSystem/
 
 ### Reethi K B
 
-Handled complete backend integration of all files. Connected frontend pages with Django backend, implemented CRUD operations, fixed update issues, and developed authentication system (login, register, forgot password).
+Handled complete backend creation and integration of all files. Connected frontend pages with Django backend, implemented CRUD operations, fixed update issues, and developed authentication system (login, register, forgot password).
 
 ---
 
 ### Pavan
 
-Worked on database creation including tables (Users, Electricians, Jobs, Tasks). Implemented insert and fetch operations and supported backend connectivity.
+Worked on database creation including tables (Users, Electricians, Jobs, Tasks). 
 
 ---
 
