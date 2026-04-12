@@ -4,6 +4,12 @@
 
 <h3 class="mb-4">Jobs Management</h3>
 
+<!-- 🔍 SEARCH -->
+<form method="GET" class="mb-3">
+<input name="search" class="form-control w-25 d-inline" placeholder="Search Jobs">
+<button class="btn btn-primary">Search</button>
+</form>
+
 <!-- VIEW MODE -->
 {% if request.session.role != "Admin" %}
 <div class="alert alert-info">View Only Mode</div>
@@ -16,7 +22,7 @@
 <input type="hidden" name="action" value="add">
 
 <div class="col-md-2">
-<input name="title" class="form-control" placeholder="Title" required>
+<input name="title" class="form-control" placeholder="Job Title" required>
 </div>
 
 <div class="col-md-2">
@@ -43,7 +49,7 @@
 </div>
 
 <div class="col-md-2">
-<button type="submit" class="btn btn-primary w-100">Add</button>
+<button class="btn btn-primary w-100">Add</button>
 </div>
 
 </form>
@@ -66,7 +72,6 @@
 
 {% for j in jobs %}
 
-<!-- ✅ CORRECT FORM -->
 <form method="POST">
 {% csrf_token %}
 <input type="hidden" name="action" value="update">
@@ -85,20 +90,15 @@
 <td>
 <select name="electrician" class="form-control">
 {% for e in electricians %}
-<option value="{{ e.id }}"
-{% if e.id == j.electrician.id %}selected{% endif %}>
+<option value="{{ e.id }}" {% if e.id == j.electrician.id %}selected{% endif %}>
 {{ e.name }}
 </option>
 {% endfor %}
 </select>
 </td>
 
-<!-- ✅ DATE FIX -->
 <td>
-<input type="date"
-       name="deadline"
-       value="{{ j.deadline|date:'Y-m-d' }}"
-       class="form-control">
+<input type="date" name="deadline" value="{{ j.deadline|date:'Y-m-d' }}" class="form-control">
 </td>
 
 <td>
@@ -110,17 +110,13 @@
 
 {% if request.session.role == "Admin" %}
 <td class="d-flex gap-2">
-
-<button type="submit" class="btn btn-success btn-sm">
-Update
-</button>
+<button class="btn btn-success btn-sm">Update</button>
 
 <a href="/delete-job/{{ j.id }}/"
    class="btn btn-danger btn-sm"
    onclick="return confirm('Delete this job?')">
 Delete
 </a>
-
 </td>
 {% endif %}
 

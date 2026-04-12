@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import *
 from django.contrib.auth.hashers import make_password, check_password
-from datetime import datetime
-
+from datetime import datetime, date, timedelta
 
 # ================= AUTH CHECK =================
 def check_login(request):
@@ -73,17 +72,33 @@ def forgot_password(request):
 def dashboard(request):
     if check_login(request): return check_login(request)
 
+    due_jobs = Job.objects.filter(deadline__lt=date.today(), status="Pending")
+
+    completed_tasks = Task.objects.filter(status="Completed")
+
+    new_tasks = Task.objects.filter(status="Pending").order_by('-id')[:3]
+
     return render(request, 'dashboard.html', {
         'electricians': Electrician.objects.count(),
         'jobs': Job.objects.count(),
         'tasks': Task.objects.filter(status="Pending").count(),
-        'completed': Task.objects.filter(status="Completed").count()
-    })
+        'completed': Task.objects.filter(status="Completed").count(),
 
+        'due_jobs': due_jobs,
+        'completed_tasks': completed_tasks,
+        'new_tasks': new_tasks
+    })
 
 # ================= ELECTRICIANS =================
 def electricians(request):
     if check_login(request): return check_login(request)
+
+    # 🔍 SEARCH
+    search = request.GET.get('search')
+    if search:
+        electricians_list = Electrician.objects.filter(name__icontains=search)
+    else:
+        electricians_list = Electrician.objects.all()
 
     if request.method == 'POST':
         if request.session.get('role') != "Admin":
@@ -106,7 +121,7 @@ def electricians(request):
         return redirect('/electricians/')
 
     return render(request, 'electricians.html', {
-        'electricians': Electrician.objects.all()
+        'electricians': electricians_list
     })
 
 
@@ -120,6 +135,13 @@ def delete_electrician(request, id):
 # ================= JOBS =================
 def jobs(request):
     if check_login(request): return check_login(request)
+
+    # 🔍 SEARCH JOBS
+    search = request.GET.get('search')
+    if search:
+        jobs_list = Job.objects.filter(title__icontains=search)
+    else:
+        jobs_list = Job.objects.all()
 
     if request.method == 'POST':
         if request.session.get('role') != "Admin":
@@ -148,7 +170,7 @@ def jobs(request):
         return redirect('/jobs/')
 
     return render(request, 'jobs.html', {
-        'jobs': Job.objects.all(),
+        'jobs': jobs_list,
         'electricians': Electrician.objects.all()
     })
 
@@ -164,7 +186,7 @@ def delete_job(request, id):
 def tasks(request):
     if check_login(request): return check_login(request)
 
-    # ✅ FILTER BY STATUS
+    # 🔍 FILTER TASKS
     status_filter = request.GET.get('status')
 
     if status_filter:
@@ -178,21 +200,19 @@ def tasks(request):
 
         action = request.POST.get('action')
 
-        # ✅ ADD TASK
         if action == "add":
             Task.objects.create(
                 name=request.POST['name'],
                 electrician_id=request.POST['electrician'],
-                job_id=request.POST['job'],   # ✅ ADDED
+                job_id=request.POST['job'],
                 status=request.POST['status']
             )
 
-        # ✅ UPDATE TASK
         elif action == "update":
             t = Task.objects.get(id=request.POST['id'])
             t.name = request.POST['name']
             t.electrician_id = request.POST['electrician']
-            t.job_id = request.POST['job']   # ✅ ADDED
+            t.job_id = request.POST['job']
             t.status = request.POST['status']
             t.save()
 
@@ -203,12 +223,15 @@ def tasks(request):
         'electricians': Electrician.objects.all(),
         'jobs': Job.objects.all()
     })
+
+
 def delete_task(request, id):
     if request.session.get('role') != "Admin":
         return redirect('/dashboard/')
-
     Task.objects.get(id=id).delete()
     return redirect('/tasks/')
+
+
 # ================= MATERIALS =================
 def materials(request):
     if check_login(request): return check_login(request)
@@ -249,10 +272,18 @@ def delete_material(request, id):
 def reports(request):
     if check_login(request): return check_login(request)
 
+    today_jobs = Job.objects.filter(status="Completed").count()
+
+    completed_tasks = Task.objects.filter(status="Completed").count()
+    pending_tasks = Task.objects.filter(status="Pending").count()
+
+    electricians = Electrician.objects.all()
+
     return render(request, 'reports.html', {
-        'jobs': Job.objects.count(),
-        'tasks': Task.objects.count(),
-        'electricians': Electrician.objects.count()
+        'today_jobs': today_jobs,
+        'completed_tasks': completed_tasks,
+        'pending_tasks': pending_tasks,
+        'electricians': electricians
     })
 
 
