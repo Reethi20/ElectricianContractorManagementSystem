@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>📊 Dashboard Overview</h3>
+        <span class="badge bg-dark">System Summary</span>
+    </div>
+
+    <!-- CARDS -->
+    <div class="row g-4">
+
+        <!-- ELECTRICIANS -->
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center p-4">
+                <h6 class="text-muted">⚡ Electricians</h6>
+                <h2 class="text-primary fw-bold">{{ electricians }}</h2>
+            </div>
+        </div>
+
+        <!-- JOBS -->
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center p-4">
+                <h6 class="text-muted">🛠 Jobs</h6>
+                <h2 class="text-success fw-bold">{{ jobs }}</h2>
+            </div>
+        </div>
+
+        <!-- PENDING -->
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center p-4">
+                <h6 class="text-muted">⏳ Pending Tasks</h6>
+                <h2 class="text-warning fw-bold">{{ tasks }}</h2>
+            </div>
+        </div>
+
+        <!-- COMPLETED -->
+        <div class="col-md-3">
+            <div class="card shadow border-0 text-center p-4">
+                <h6 class="text-muted">✅ Completed</h6>
+                <h2 class="text-success fw-bold">{{ completed }}</h2>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="mt-5">
+
+        <h5 class="mb-3">🚀 Quick Actions</h5>
+
+        <div class="d-flex flex-wrap gap-3">
+
+            <a href="/electricians/" class="btn btn-outline-primary px-4">
+                ⚡ Electricians
+            </a>
+
+            <a href="/jobs/" class="btn btn-outline-success px-4">
+                🛠 Jobs
+            </a>
+
+            <a href="/tasks/" class="btn btn-outline-warning px-4">
+                📋 Tasks
+            </a>
+
+            <a href="/materials/" class="btn btn-outline-dark px-4">
+                📦 Materials
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

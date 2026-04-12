@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>📋 Tasks Management</h3>
+
+        {% if request.session.role == "Admin" %}
+        <span class="badge bg-success">Admin Mode</span>
+        {% else %}
+        <span class="badge bg-info">View Only</span>
+        {% endif %}
+    </div>
+
+    <!-- VIEW MODE -->
+    {% if request.session.role != "Admin" %}
+    <div class="alert alert-info shadow-sm">
+        You are in <b>View Only Mode</b>
+    </div>
+    {% endif %}
+
+    <!-- FILTER -->
+    <form method="GET" class="mb-3">
+        <select name="status" class="form-control w-25 d-inline">
+            <option value="">All</option>
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+        </select>
+        <button class="btn btn-primary">Filter</button>
+    </form>
+
+    <!-- ADD (ADMIN ONLY) -->
+    {% if request.session.role == "Admin" %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <form method="POST" class="row g-3">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add">
+
+                <div class="col-md-3">
+                    <input name="name" class="form-control" placeholder="Task Name" required>
+                </div>
+
+                <div class="col-md-3">
+                    <select name="electrician" class="form-select">
+                        {% for e in electricians %}
+                        <option value="{{ e.id }}">{{ e.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <select name="job" class="form-select">
+                        {% for j in jobs %}
+                        <option value="{{ j.id }}">{{ j.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <select name="status" class="form-select">
+                        <option>Pending</option>
+                        <option>Completed</option>
+                    </select>
+                </div>
+
+                <div class="col-md-12">
+                    <button class="btn btn-primary w-100">Add Task</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- TABLE -->
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-hover align-middle text-center">
+
+                <!-- HEADER -->
+                <thead class="table-dark">
+                    <tr>
+                        <th>📝 Task</th>
+                        <th>👷 Electrician</th>
+                        <th>🛠 Job</th>
+                        <th>📊 Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for t in tasks %}
+                <tr>
+
+                    <td>
+                        <input value="{{ t.name }}" class="form-control text-center" readonly>
+                    </td>
+
+                    <td>
+                        <input value="{{ t.electrician.name }}" class="form-control text-center" readonly>
+                    </td>
+
+                    <td>
+                        <input value="{{ t.job.title }}" class="form-control text-center" readonly>
+                    </td>
+
+                    <td>
+                        <span class="badge 
+                            {% if t.status == 'Pending' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                            {{ t.status }}
+                        </span>
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

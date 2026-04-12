@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>📦 Materials Management</h3>
+
+        {% if request.session.role == "Admin" %}
+        <span class="badge bg-success">Admin Mode</span>
+        {% else %}
+        <span class="badge bg-info">View Only</span>
+        {% endif %}
+    </div>
+
+    <!-- VIEW MODE -->
+    {% if request.session.role != "Admin" %}
+    <div class="alert alert-info shadow-sm">
+        You are in <b>View Only Mode</b>
+    </div>
+    {% endif %}
+
+    <!-- ADD (ADMIN ONLY) -->
+    {% if request.session.role == "Admin" %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+            <form method="POST" class="row g-3">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add">
+
+                <div class="col-md-6">
+                    <input name="name" class="form-control" placeholder="Material Name" required>
+                </div>
+
+                <div class="col-md-6">
+                    <input name="quantity" type="number" class="form-control" placeholder="Quantity" required>
+                </div>
+
+                <div class="col-md-12">
+                    <button class="btn btn-primary w-100">Add Material</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- TABLE -->
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-hover align-middle text-center">
+
+                <!-- HEADER -->
+                <thead class="table-dark">
+                    <tr>
+                        <th>🧱 Material</th>
+                        <th>📦 Quantity</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for m in materials %}
+                <tr>
+
+                    <td>
+                        <input value="{{ m.name }}" class="form-control text-center" readonly>
+                    </td>
+
+                    <td>
+                        <input value="{{ m.quantity }}" class="form-control text-center" readonly>
+                    </td>
+
+                </tr>
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

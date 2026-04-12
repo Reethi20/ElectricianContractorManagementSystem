@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4">Reports</h3>
+
+<div class="row text-center mb-4">
+
+<div class="col-md-4">
+<div class="card p-3 shadow">
+<h5>Jobs</h5>
+<h3>{{ jobs }}</h3>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card p-3 shadow">
+<h5>Tasks</h5>
+<h3>{{ tasks }}</h3>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card p-3 shadow">
+<h5>Electricians</h5>
+<h3>{{ electricians }}</h3>
+</div>
+</div>
+
+</div>
+
+<canvas id="chart"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+new Chart(document.getElementById('chart'), {
+    type: 'bar',
+    data: {
+        labels: ['Jobs', 'Tasks', 'Electricians'],
+        datasets: [{
+            label: 'System Data',
+            data: [{{ jobs }}, {{ tasks }}, {{ electricians }}]
+        }]
+    }
+});
+</script>
+
+{% endblock %}

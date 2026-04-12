@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>⚡ Electricians Management</h3>
+        {% if request.session.role == "Admin" %}
+        <span class="badge bg-success">Admin Mode</span>
+        {% else %}
+        <span class="badge bg-info">View Only</span>
+        {% endif %}
+    </div>
+
+    <!-- VIEW MODE ALERT -->
+    {% if request.session.role != "Admin" %}
+    <div class="alert alert-info shadow-sm">
+        You are in <b>View Only Mode</b>
+    </div>
+    {% endif %}
+
+    <!-- ADD FORM -->
+    {% if request.session.role == "Admin" %}
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="mb-3">➕ Add Electrician</h5>
+
+            <form method="POST" class="row g-3">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="add">
+
+                <div class="col-md-5">
+                    <input name="name" class="form-control" placeholder="Enter Name" required>
+                </div>
+
+                <div class="col-md-5">
+                    <input name="phone" class="form-control" placeholder="Enter Phone" required>
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-primary w-100">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- TABLE -->
+    <div class="card shadow">
+        <div class="card-body">
+
+            <table class="table table-hover align-middle text-center">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th>👤 Name</th>
+                        <th>📞 Phone</th>
+                        {% if request.session.role == "Admin" %}
+                        <th>⚙ Actions</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for e in electricians %}
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update">
+                        <input type="hidden" name="id" value="{{ e.id }}">
+
+                        <tr>
+
+                            <td>
+                                <input name="name" value="{{ e.name }}" class="form-control text-center"
+                                {% if request.session.role != "Admin" %}readonly{% endif %}>
+                            </td>
+
+                            <td>
+                                <input name="phone" value="{{ e.phone }}" class="form-control text-center"
+                                {% if request.session.role != "Admin" %}readonly{% endif %}>
+                            </td>
+
+                            {% if request.session.role == "Admin" %}
+                            <td>
+                                <div class="d-flex justify-content-center gap-2">
+
+                                    <button class="btn btn-success btn-sm">
+                                        ✔ Update
+                                    </button>
+
+                                    <a href="/delete-electrician/{{ e.id }}/"
+                                       class="btn btn-danger btn-sm"
+                                       onclick="return confirm('Delete this electrician?')">
+                                        ✖ Delete
+                                    </a>
+
+                                </div>
+                            </td>
+                            {% endif %}
+
+                        </tr>
+
+                    </form>
+
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}
