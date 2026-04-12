@@ -182,15 +182,50 @@ In Week 3, the project focused on developing core modules of the system and inte
 Handled Task Management (Core Logic). Implemented task assignment, linked tasks with jobs, developed task tracking system, added status filtering, and enabled status updates (Pending → Completed).
 
 ---
+## WEEK-4
 
-### Pavan Kumar SV
+# Backend & Core Functionality Enhancement
 
-Worked on Job and Electrician Management. Implemented job creation, electrician assignment, deadline handling, and managed CRUD operations for electricians.
+In Week 4, the project focused on enhancing backend capabilities by implementing advanced system features such as reports, search and filtering, notifications, and testing. The system was improved to provide better data tracking, real-time alerts, and overall performance.
+
+---
+
+## Features Implemented
+
+- Reports Module (Daily Work Report, Task Completion Report, Electrician Activity Report)
+- Search Jobs (search based on job title)
+- Filter Tasks (Pending / Completed)
+- Filter Electricians (search by name)
+- Notification System (deadline alerts, task completion alerts, new task alerts)
+- Dashboard Enhancement with dynamic alerts and data
+- Backend Testing (form validation, CRUD verification, error fixing)
 
 ---
 
-### Shravana Nayak
+## Technologies Used
 
-Handled Materials Management, module integration, and UI synchronization. Managed material tracking, updated usage, and ensured smooth connection between modules.
+- Python (Django)
+- SQLite
+- HTML, CSS, Bootstrap
+- JavaScript
 
 ---
+
+## Key Improvements
+
+- Implemented report generation using backend queries
+- Added search and filter features for efficient data handling
+- Developed alert system for task and job updates
+- Improved dashboard with real-time notifications and summary data
+- Fixed issues related to task updates and migrations
+- Ensured smooth backend and frontend integration
+- Completed testing of all modules and verified system functionality
+
+---
+
+## Contributors and Work Distribution
+
+### Reethi K B
+
+Handled Backend & Core Functionality. Implemented reports module, developed search and filter features, created notification system, enhanced dashboard with alerts, performed backend testing, and fixed system errors.
+

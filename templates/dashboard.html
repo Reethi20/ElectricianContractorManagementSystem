@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4 fw-bold">Dashboard Overview</h3>
+
+<!-- 🔔 NOTIFICATIONS -->
+<div class="mb-3">
+
+{% if due_jobs %}
+<div class="alert alert-danger d-flex justify-content-between align-items-center">
+<span>⚠ Jobs past deadline</span>
+<span class="badge bg-danger">{{ due_jobs|length }}</span>
+</div>
+{% endif %}
+
+{% if new_tasks %}
+<div class="alert alert-warning d-flex justify-content-between align-items-center">
+<span>🆕 New tasks assigned</span>
+<span class="badge bg-warning text-dark">{{ new_tasks|length }}</span>
+</div>
+{% endif %}
+
+{% if completed_tasks %}
+<div class="alert alert-success d-flex justify-content-between align-items-center">
+<span>✔ Tasks completed</span>
+<span class="badge bg-success">{{ completed_tasks|length }}</span>
+</div>
+{% endif %}
+
+</div>
+
+<!-- 📊 CARDS -->
+<div class="row g-4">
+
+<div class="col-md-3">
+<div class="card shadow p-3 text-center">
+<h6 class="text-muted">Total Electricians</h6>
+<h3>{{ electricians }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 text-center">
+<h6 class="text-muted">Total Jobs</h6>
+<h3>{{ jobs }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 text-center">
+<h6 class="text-muted">Pending Tasks</h6>
+<h3>{{ tasks }}</h3>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="card shadow p-3 text-center">
+<h6 class="text-muted">Completed Tasks</h6>
+<h3>{{ completed }}</h3>
+</div>
+</div>
+
+</div>
+
+<!-- 📌 RECENT ALERTS -->
+<div class="mt-5">
+
+<h5 class="fw-bold mb-3">Recent Alerts</h5>
+
+<ul class="list-group shadow-sm">
+
+{% for job in due_jobs %}
+<li class="list-group-item d-flex justify-content-between align-items-center text-danger">
+<span>⚠ {{ job.title }} deadline passed</span>
+<span class="badge bg-danger">Alert</span>
+</li>
+{% endfor %}
+
+{% for task in completed_tasks %}
+<li class="list-group-item d-flex justify-content-between align-items-center text-success">
+<span>✔ {{ task.name }} completed</span>
+<span class="badge bg-success">Done</span>
+</li>
+{% endfor %}
+
+{% for task in new_tasks %}
+<li class="list-group-item d-flex justify-content-between align-items-center text-warning">
+<span>🆕 {{ task.name }} assigned</span>
+<span class="badge bg-warning text-dark">New</span>
+</li>
+{% endfor %}
+
+{% if not due_jobs and not completed_tasks and not new_tasks %}
+<li class="list-group-item text-center text-muted">
+No alerts available
+</li>
+{% endif %}
+
+</ul>
+
+</div>
+
+{% endblock %}
