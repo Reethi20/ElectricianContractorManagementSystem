@@ -13,11 +13,6 @@
 <button class="btn btn-primary">Filter</button>
 </form>
 
-<!-- VIEW MODE -->
-{% if request.session.role != "Admin" %}
-<div class="alert alert-info">View Only Mode</div>
-{% endif %}
-
 <!-- ADD -->
 {% if request.session.role == "Admin" %}
 <form method="POST" class="row g-2 mb-4">

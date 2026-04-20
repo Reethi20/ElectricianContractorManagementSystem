@@ -5,17 +5,17 @@ from core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # AUTH
+    # ================= AUTH =================
     path('', views.home),
     path('login/', views.login_view),
     path('register/', views.register),
     path('logout/', views.logout),
     path('forgot-password/', views.forgot_password),
 
-    # DASHBOARD
+    # ================= DASHBOARD =================
     path('dashboard/', views.dashboard),
 
-    # CRUD
+    # ================= CRUD =================
     path('electricians/', views.electricians),
     path('delete-electrician/<int:id>/', views.delete_electrician),
 
@@ -28,7 +28,13 @@ urlpatterns = [
     path('materials/', views.materials),
     path('delete-material/<int:id>/', views.delete_material),
 
-    # OTHER
+    # ================= OTHER =================
     path('reports/', views.reports),
     path('profile/', views.profile),
+
+    # ================= API (IMPORTANT 🔥) =================
+    path('api/tasks/', views.api_tasks),
+    path('api/tasks/add/', views.api_add_task),
+    path('api/tasks/update/<int:id>/', views.api_update_task),
+    path('api/tasks/delete/<int:id>/', views.api_delete_task),
 ]

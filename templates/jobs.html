@@ -10,11 +10,6 @@
 <button class="btn btn-primary">Search</button>
 </form>
 
-<!-- VIEW MODE -->
-{% if request.session.role != "Admin" %}
-<div class="alert alert-info">View Only Mode</div>
-{% endif %}
-
 <!-- ADD FORM -->
 {% if request.session.role == "Admin" %}
 <form method="POST" class="row g-2 mb-4">

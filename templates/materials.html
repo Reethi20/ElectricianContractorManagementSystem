@@ -4,10 +4,6 @@
 
 <h3 class="mb-4">Materials Management</h3>
 
-<!-- VIEW MODE -->
-{% if request.session.role != "Admin" %}
-<div class="alert alert-info">View Only Mode</div>
-{% endif %}
 
 <!-- ADD FORM -->
 {% if request.session.role == "Admin" %}

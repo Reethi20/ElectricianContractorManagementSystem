@@ -1,7 +1,16 @@
 from django.shortcuts import render, redirect
+from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.contrib.auth.hashers import make_password, check_password
-from datetime import datetime, date, timedelta
+from datetime import datetime, date
+
+# ================= ROLE CHECK =================
+def is_admin(request):
+    return request.session.get('role') == "Admin"
+
+def is_electrician(request):
+    return request.session.get('role') == "Electrician"
+
 
 # ================= AUTH CHECK =================
 def check_login(request):
@@ -17,6 +26,9 @@ def home(request):
 # ================= REGISTER =================
 def register(request):
     if request.method == 'POST':
+        if not request.POST.get('name') or not request.POST.get('password'):
+            return HttpResponse("All fields required")
+
         User.objects.create(
             name=request.POST['name'],
             phone=request.POST['phone'],
@@ -36,11 +48,10 @@ def login_view(request):
         if user and check_password(request.POST['password'], user.password):
             request.session['user_id'] = user.id
             request.session['role'] = user.role
+            request.session['name'] = user.name
             return redirect('/dashboard/')
         else:
-            return render(request, 'login.html', {
-                'error': 'Invalid email or password'
-            })
+            return render(request, 'login.html', {'error': 'Invalid credentials'})
 
     return render(request, 'login.html')
 
@@ -50,8 +61,6 @@ def logout(request):
     request.session.flush()
     return redirect('/login/')
 
-
-# ================= FORGOT PASSWORD =================
 def forgot_password(request):
     if request.method == "POST":
         user = User.objects.filter(email=request.POST['email']).first()
@@ -66,16 +75,12 @@ def forgot_password(request):
             })
 
     return render(request, 'forgot_password.html')
-
-
 # ================= DASHBOARD =================
 def dashboard(request):
     if check_login(request): return check_login(request)
 
     due_jobs = Job.objects.filter(deadline__lt=date.today(), status="Pending")
-
     completed_tasks = Task.objects.filter(status="Completed")
-
     new_tasks = Task.objects.filter(status="Pending").order_by('-id')[:3]
 
     return render(request, 'dashboard.html', {
@@ -89,46 +94,34 @@ def dashboard(request):
         'new_tasks': new_tasks
     })
 
+
 # ================= ELECTRICIANS =================
 def electricians(request):
     if check_login(request): return check_login(request)
 
-    # 🔍 SEARCH
+    if not is_admin(request):
+        return redirect('/dashboard/')
+
     search = request.GET.get('search')
-    if search:
-        electricians_list = Electrician.objects.filter(name__icontains=search)
-    else:
-        electricians_list = Electrician.objects.all()
+    electricians_list = Electrician.objects.filter(name__icontains=search) if search else Electrician.objects.all()
 
     if request.method == 'POST':
-        if request.session.get('role') != "Admin":
-            return redirect('/dashboard/')
-
-        action = request.POST.get('action')
-
-        if action == "add":
-            Electrician.objects.create(
-                name=request.POST['name'],
-                phone=request.POST['phone']
-            )
-
-        elif action == "update":
-            e = Electrician.objects.get(id=request.POST['id'])
-            e.name = request.POST['name']
-            e.phone = request.POST['phone']
-            e.save()
-
+        Electrician.objects.create(
+            name=request.POST['name'],
+            phone=request.POST['phone']
+        )
         return redirect('/electricians/')
 
-    return render(request, 'electricians.html', {
-        'electricians': electricians_list
-    })
+    return render(request, 'electricians.html', {'electricians': electricians_list})
 
 
 def delete_electrician(request, id):
-    if request.session.get('role') != "Admin":
+    if not is_admin(request):
         return redirect('/dashboard/')
-    Electrician.objects.get(id=id).delete()
+    try:
+        Electrician.objects.get(id=id).delete()
+    except Electrician.DoesNotExist:
+        pass
     return redirect('/electricians/')
 
 
@@ -136,37 +129,23 @@ def delete_electrician(request, id):
 def jobs(request):
     if check_login(request): return check_login(request)
 
-    # 🔍 SEARCH JOBS
     search = request.GET.get('search')
-    if search:
-        jobs_list = Job.objects.filter(title__icontains=search)
-    else:
-        jobs_list = Job.objects.all()
+    jobs_list = Job.objects.filter(title__icontains=search) if search else Job.objects.all()
 
     if request.method == 'POST':
-        if request.session.get('role') != "Admin":
+        if not is_admin(request):
             return redirect('/dashboard/')
 
-        action = request.POST.get('action')
+        if not request.POST.get('title'):
+            return HttpResponse("Title required")
 
-        if action == "add":
-            Job.objects.create(
-                title=request.POST['title'],
-                location=request.POST['location'],
-                electrician_id=request.POST['electrician'],
-                deadline=request.POST['deadline'],
-                status=request.POST['status']
-            )
-
-        elif action == "update":
-            j = Job.objects.get(id=request.POST['id'])
-            j.title = request.POST['title']
-            j.location = request.POST['location']
-            j.electrician_id = request.POST['electrician']
-            j.deadline = datetime.strptime(request.POST['deadline'], "%Y-%m-%d")
-            j.status = request.POST['status']
-            j.save()
-
+        Job.objects.create(
+            title=request.POST['title'],
+            location=request.POST['location'],
+            electrician_id=request.POST['electrician'],
+            deadline=request.POST['deadline'],
+            status=request.POST['status']
+        )
         return redirect('/jobs/')
 
     return render(request, 'jobs.html', {
@@ -176,9 +155,12 @@ def jobs(request):
 
 
 def delete_job(request, id):
-    if request.session.get('role') != "Admin":
+    if not is_admin(request):
         return redirect('/dashboard/')
-    Job.objects.get(id=id).delete()
+    try:
+        Job.objects.get(id=id).delete()
+    except Job.DoesNotExist:
+        pass
     return redirect('/jobs/')
 
 
@@ -186,36 +168,31 @@ def delete_job(request, id):
 def tasks(request):
     if check_login(request): return check_login(request)
 
-    # 🔍 FILTER TASKS
     status_filter = request.GET.get('status')
 
-    if status_filter:
-        task_list = Task.objects.filter(status=status_filter)
-    else:
+    if is_admin(request):
         task_list = Task.objects.all()
+    else:
+        task_list = Task.objects.filter(electrician__name=request.session.get('name'))
+
+    if status_filter:
+        task_list = task_list.filter(status=status_filter)
 
     if request.method == 'POST':
-        if request.session.get('role') != "Admin":
-            return redirect('/dashboard/')
+        task = Task.objects.get(id=request.POST['id'])
 
-        action = request.POST.get('action')
+        if is_admin(request):
+            task.name = request.POST['name']
+            task.electrician_id = request.POST['electrician']
+            task.job_id = request.POST['job']
+            task.status = request.POST['status']
+        else:
+            # electrician can update only their task
+            if task.electrician.name != request.session.get('name'):
+                return redirect('/tasks/')
+            task.status = request.POST['status']
 
-        if action == "add":
-            Task.objects.create(
-                name=request.POST['name'],
-                electrician_id=request.POST['electrician'],
-                job_id=request.POST['job'],
-                status=request.POST['status']
-            )
-
-        elif action == "update":
-            t = Task.objects.get(id=request.POST['id'])
-            t.name = request.POST['name']
-            t.electrician_id = request.POST['electrician']
-            t.job_id = request.POST['job']
-            t.status = request.POST['status']
-            t.save()
-
+        task.save()
         return redirect('/tasks/')
 
     return render(request, 'tasks.html', {
@@ -226,9 +203,12 @@ def tasks(request):
 
 
 def delete_task(request, id):
-    if request.session.get('role') != "Admin":
+    if not is_admin(request):
         return redirect('/dashboard/')
-    Task.objects.get(id=id).delete()
+    try:
+        Task.objects.get(id=id).delete()
+    except Task.DoesNotExist:
+        pass
     return redirect('/tasks/')
 
 
@@ -237,23 +217,13 @@ def materials(request):
     if check_login(request): return check_login(request)
 
     if request.method == 'POST':
-        if request.session.get('role') != "Admin":
+        if not is_admin(request):
             return redirect('/dashboard/')
 
-        action = request.POST.get('action')
-
-        if action == "add":
-            Material.objects.create(
-                name=request.POST['name'],
-                quantity=request.POST['quantity']
-            )
-
-        elif action == "update":
-            m = Material.objects.get(id=request.POST['id'])
-            m.name = request.POST['name']
-            m.quantity = request.POST['quantity']
-            m.save()
-
+        Material.objects.create(
+            name=request.POST['name'],
+            quantity=request.POST['quantity']
+        )
         return redirect('/materials/')
 
     return render(request, 'materials.html', {
@@ -262,9 +232,12 @@ def materials(request):
 
 
 def delete_material(request, id):
-    if request.session.get('role') != "Admin":
+    if not is_admin(request):
         return redirect('/dashboard/')
-    Material.objects.get(id=id).delete()
+    try:
+        Material.objects.get(id=id).delete()
+    except Material.DoesNotExist:
+        pass
     return redirect('/materials/')
 
 
@@ -272,20 +245,12 @@ def delete_material(request, id):
 def reports(request):
     if check_login(request): return check_login(request)
 
-    today_jobs = Job.objects.filter(status="Completed").count()
-
-    completed_tasks = Task.objects.filter(status="Completed").count()
-    pending_tasks = Task.objects.filter(status="Pending").count()
-
-    electricians = Electrician.objects.all()
-
     return render(request, 'reports.html', {
-        'today_jobs': today_jobs,
-        'completed_tasks': completed_tasks,
-        'pending_tasks': pending_tasks,
-        'electricians': electricians
+        'today_jobs': Job.objects.filter(status="Completed").count(),
+        'completed_tasks': Task.objects.filter(status="Completed").count(),
+        'pending_tasks': Task.objects.filter(status="Pending").count(),
+        'electricians': Electrician.objects.all()
     })
-
 
 # ================= PROFILE =================
 def profile(request):
@@ -293,3 +258,72 @@ def profile(request):
 
     user = User.objects.get(id=request.session['user_id'])
     return render(request, 'profile.html', {'user': user})
+
+# ================= API =================
+def api_tasks(request):
+    if not request.session.get('user_id'):
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+
+    tasks = Task.objects.all()
+    data = []
+
+    for t in tasks:
+        data.append({
+            'id': t.id,
+            'name': t.name,
+            'electrician': t.electrician.name,
+            'job': t.job.title,
+            'status': t.status
+        })
+
+    return JsonResponse({'tasks': data}, status=200)
+
+
+def api_add_task(request):
+    if request.method == "POST":
+        if not is_admin(request):
+            return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+        task = Task.objects.create(
+            name=request.POST['name'],
+            electrician_id=request.POST['electrician'],
+            job_id=request.POST['job'],
+            status=request.POST['status']
+        )
+
+        return JsonResponse({'message': 'Task added', 'id': task.id}, status=201)
+
+
+def api_update_task(request, id):
+    try:
+        task = Task.objects.get(id=id)
+    except Task.DoesNotExist:
+        return JsonResponse({'error': 'Task not found'}, status=404)
+
+    if request.method == "POST":
+
+        if is_admin(request):
+            task.name = request.POST.get('name', task.name)
+            task.status = request.POST.get('status', task.status)
+
+        elif is_electrician(request):
+            if task.electrician.name != request.session.get('name'):
+                return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+            task.status = request.POST.get('status', task.status)
+
+        task.save()
+        return JsonResponse({'message': 'Task updated'}, status=200)
+
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+def api_delete_task(request, id):
+    if not is_admin(request):
+        return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+    try:
+        Task.objects.get(id=id).delete()
+        return JsonResponse({'message': 'Deleted successfully'}, status=200)
+    except Task.DoesNotExist:
+        return JsonResponse({'error': 'Task not found'}, status=404)

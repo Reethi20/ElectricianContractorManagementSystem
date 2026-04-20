@@ -69,14 +69,25 @@ body {
 
 <!-- SIDEBAR -->
 <div class="col-md-2 sidebar p-3">
-    <h4> EMS</h4>
+    <h4>EMS</h4>
 
+    <!-- Common -->
     <a href="/dashboard/">Dashboard</a>
-    <a href="/electricians/">Electricians</a>
-    <a href="/jobs/">Jobs</a>
-    <a href="/tasks/">Tasks</a>
-    <a href="/materials/">Materials</a>
-    <a href="/reports/">Reports</a>
+
+    {% if request.session.role == "Admin" %}
+        <!-- ADMIN ONLY -->
+        <a href="/electricians/">Electricians</a>
+        <a href="/jobs/">Jobs</a>
+        <a href="/tasks/">Tasks</a>
+        <a href="/materials/">Materials</a>
+        <a href="/reports/">Reports</a>
+
+    {% elif request.session.role == "Electrician" %}
+        <!-- ELECTRICIAN ONLY -->
+        <a href="/tasks/">My Tasks</a>
+    {% endif %}
+
+    <!-- Common -->
     <a href="/profile/">Profile</a>
 
     <a href="/logout/" class="logout">Logout</a>
