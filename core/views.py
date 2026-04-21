@@ -3,7 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from datetime import datetime, date
-
+import re
 # ================= ROLE CHECK =================
 def is_admin(request):
     return request.session.get('role') == "Admin"
@@ -26,20 +26,42 @@ def home(request):
 # ================= REGISTER =================
 def register(request):
     if request.method == 'POST':
-        if not request.POST.get('name') or not request.POST.get('password'):
-            return HttpResponse("All fields required")
 
+        name = request.POST.get('name')
+        password = request.POST.get('password')
+
+        # ✅ VALIDATION
+        if not name or not password:
+            return render(request, 'register.html', {
+                'error': 'All fields are required'
+            })
+
+        # Minimum 8 characters
+        if len(password) < 8:
+            return render(request, 'register.html', {
+                'error': 'Password must be at least 8 characters'
+            })
+
+        # Uppercase, lowercase, number, special char
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$'
+
+        if not re.match(pattern, password):
+            return render(request, 'register.html', {
+                'error': 'Password must include uppercase, lowercase, number and special character'
+            })
+
+        # ✅ SAVE USER
         User.objects.create(
-            name=request.POST['name'],
+            name=name,
             phone=request.POST['phone'],
             email=request.POST['email'],
             role=request.POST['role'],
-            password=make_password(request.POST['password'])
+            password=make_password(password)
         )
+
         return redirect('/login/')
+
     return render(request, 'register.html')
-
-
 # ================= LOGIN =================
 def login_view(request):
     if request.method == 'POST':
@@ -63,10 +85,25 @@ def logout(request):
 
 def forgot_password(request):
     if request.method == "POST":
+
+        password = request.POST.get('password')
+
+        if len(password) < 8:
+            return render(request, 'forgot_password.html', {
+                'error': 'Password must be at least 8 characters'
+            })
+
+        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$'
+
+        if not re.match(pattern, password):
+            return render(request, 'forgot_password.html', {
+                'error': 'Password must include uppercase, lowercase, number and special character'
+            })
+
         user = User.objects.filter(email=request.POST['email']).first()
 
         if user:
-            user.password = make_password(request.POST['password'])
+            user.password = make_password(password)
             user.save()
             return redirect('/login/')
         else:
@@ -106,14 +143,26 @@ def electricians(request):
     electricians_list = Electrician.objects.filter(name__icontains=search) if search else Electrician.objects.all()
 
     if request.method == 'POST':
-        Electrician.objects.create(
-            name=request.POST['name'],
-            phone=request.POST['phone']
-        )
+
+        action = request.POST.get('action')
+
+        # ADD
+        if action == "add":
+            Electrician.objects.create(
+                name=request.POST['name'],
+                phone=request.POST['phone']
+            )
+
+        # UPDATE
+        elif action == "update":
+            e = Electrician.objects.get(id=request.POST['id'])
+            e.name = request.POST['name']
+            e.phone = request.POST['phone']
+            e.save()
+
         return redirect('/electricians/')
 
     return render(request, 'electricians.html', {'electricians': electricians_list})
-
 
 def delete_electrician(request, id):
     if not is_admin(request):
@@ -129,23 +178,34 @@ def delete_electrician(request, id):
 def jobs(request):
     if check_login(request): return check_login(request)
 
-    search = request.GET.get('search')
-    jobs_list = Job.objects.filter(title__icontains=search) if search else Job.objects.all()
+    jobs_list = Job.objects.all()
 
     if request.method == 'POST':
         if not is_admin(request):
             return redirect('/dashboard/')
 
-        if not request.POST.get('title'):
-            return HttpResponse("Title required")
+        action = request.POST.get('action')
 
-        Job.objects.create(
-            title=request.POST['title'],
-            location=request.POST['location'],
-            electrician_id=request.POST['electrician'],
-            deadline=request.POST['deadline'],
-            status=request.POST['status']
-        )
+        # ADD
+        if action == "add":
+            Job.objects.create(
+                title=request.POST['title'],
+                location=request.POST['location'],
+                electrician_id=request.POST['electrician'],
+                deadline=request.POST['deadline'],
+                status=request.POST['status']
+            )
+
+        # UPDATE
+        elif action == "update":
+            j = Job.objects.get(id=request.POST['id'])
+            j.title = request.POST['title']
+            j.location = request.POST['location']
+            j.electrician_id = request.POST['electrician']
+            j.deadline = request.POST['deadline']
+            j.status = request.POST['status']
+            j.save()
+
         return redirect('/jobs/')
 
     return render(request, 'jobs.html', {
@@ -170,6 +230,7 @@ def tasks(request):
 
     status_filter = request.GET.get('status')
 
+    # Role-based task list
     if is_admin(request):
         task_list = Task.objects.all()
     else:
@@ -178,21 +239,42 @@ def tasks(request):
     if status_filter:
         task_list = task_list.filter(status=status_filter)
 
+    # POST (ADD + UPDATE)
     if request.method == 'POST':
-        task = Task.objects.get(id=request.POST['id'])
 
-        if is_admin(request):
-            task.name = request.POST['name']
-            task.electrician_id = request.POST['electrician']
-            task.job_id = request.POST['job']
-            task.status = request.POST['status']
-        else:
-            # electrician can update only their task
-            if task.electrician.name != request.session.get('name'):
+        action = request.POST.get('action')
+
+        # ✅ ADD TASK (ADMIN ONLY)
+        if action == "add" and is_admin(request):
+            Task.objects.create(
+                name=request.POST['name'],
+                electrician_id=request.POST['electrician'],
+                job_id=request.POST['job'],
+                status=request.POST['status']
+            )
+
+        # ✅ UPDATE TASK
+        elif action == "update":
+            try:
+                task = Task.objects.get(id=request.POST['id'])
+            except Task.DoesNotExist:
                 return redirect('/tasks/')
-            task.status = request.POST['status']
 
-        task.save()
+            if is_admin(request):
+                # Admin can edit everything
+                task.name = request.POST['name']
+                task.electrician_id = request.POST['electrician']
+                task.job_id = request.POST['job']
+                task.status = request.POST['status']
+
+            else:
+                # Electrician can update only their task
+                if task.electrician.name != request.session.get('name'):
+                    return redirect('/tasks/')
+                task.status = request.POST['status']
+
+            task.save()
+
         return redirect('/tasks/')
 
     return render(request, 'tasks.html', {
@@ -220,10 +302,22 @@ def materials(request):
         if not is_admin(request):
             return redirect('/dashboard/')
 
-        Material.objects.create(
-            name=request.POST['name'],
-            quantity=request.POST['quantity']
-        )
+        action = request.POST.get('action')
+
+        # ADD
+        if action == "add":
+            Material.objects.create(
+                name=request.POST['name'],
+                quantity=request.POST['quantity']
+            )
+
+        # UPDATE
+        elif action == "update":
+            m = Material.objects.get(id=request.POST['id'])
+            m.name = request.POST['name']
+            m.quantity = request.POST['quantity']
+            m.save()
+
         return redirect('/materials/')
 
     return render(request, 'materials.html', {

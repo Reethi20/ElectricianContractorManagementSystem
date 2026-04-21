@@ -5,119 +5,149 @@
 
 <!-- FILTER -->
 <form method="GET" class="mb-3">
-<select name="status" class="form-control w-25 d-inline">
-<option value="">All</option>
-<option value="Pending">Pending</option>
-<option value="Completed">Completed</option>
-</select>
-<button class="btn btn-primary">Filter</button>
+    <select name="status" class="form-control w-25 d-inline">
+        <option value="">All</option>
+        <option value="Pending" {% if request.GET.status == "Pending" %}selected{% endif %}>Pending</option>
+        <option value="Completed" {% if request.GET.status == "Completed" %}selected{% endif %}>Completed</option>
+    </select>
+    <button class="btn btn-primary">Filter</button>
 </form>
 
-<!-- ADD -->
+<!-- ADD (ADMIN ONLY) -->
 {% if request.session.role == "Admin" %}
 <form method="POST" class="row g-2 mb-4">
-{% csrf_token %}
-<input type="hidden" name="action" value="add">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add">
 
-<div class="col-md-2">
-<input name="name" class="form-control" placeholder="Task Name" required>
-</div>
+    <div class="col-md-2">
+        <input name="name" class="form-control" placeholder="Task Name" required>
+    </div>
 
-<div class="col-md-2">
-<select name="electrician" class="form-control">
-{% for e in electricians %}
-<option value="{{ e.id }}">{{ e.name }}</option>
-{% endfor %}
-</select>
-</div>
+    <div class="col-md-2">
+        <select name="electrician" class="form-control">
+            {% for e in electricians %}
+            <option value="{{ e.id }}">{{ e.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-<div class="col-md-2">
-<select name="job" class="form-control">
-{% for j in jobs %}
-<option value="{{ j.id }}">{{ j.title }}</option>
-{% endfor %}
-</select>
-</div>
+    <div class="col-md-2">
+        <select name="job" class="form-control">
+            {% for j in jobs %}
+            <option value="{{ j.id }}">{{ j.title }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-<div class="col-md-2">
-<select name="status" class="form-control">
-<option>Pending</option>
-<option>Completed</option>
-</select>
-</div>
+    <div class="col-md-2">
+        <select name="status" class="form-control">
+            <option>Pending</option>
+            <option>Completed</option>
+        </select>
+    </div>
 
-<div class="col-md-2">
-<button class="btn btn-primary w-100">Add</button>
-</div>
-
+    <div class="col-md-2">
+        <button class="btn btn-primary w-100">Add</button>
+    </div>
 </form>
 {% endif %}
 
 <!-- TABLE -->
 <div class="card p-3 shadow">
-<table class="table table-bordered">
+<table class="table table-bordered align-middle">
 
 <tr>
-<th>Task</th>
-<th>Electrician</th>
-<th>Job</th>
-<th>Status</th>
-{% if request.session.role == "Admin" %}
-<th>Actions</th>
-{% endif %}
+    <th>Task</th>
+    <th>Electrician</th>
+    <th>Job</th>
+    <th>Status</th>
+    <th>Actions</th>
 </tr>
 
 {% for t in tasks %}
 <tr>
 <td colspan="5">
 
-<form method="POST" class="row g-2">
-{% csrf_token %}
+<form method="POST" class="row g-2 align-items-center">
+    {% csrf_token %}
 
-<input type="hidden" name="action" value="update">
-<input type="hidden" name="id" value="{{ t.id }}">
+    <input type="hidden" name="action" value="update">
+    <input type="hidden" name="id" value="{{ t.id }}">
 
-<div class="col">
-<input name="name" value="{{ t.name }}" class="form-control">
-</div>
+    <!-- TASK -->
+    <div class="col">
+        {% if request.session.role == "Admin" %}
+            <input name="name" value="{{ t.name }}" class="form-control">
+        {% else %}
+            <span class="form-control bg-light">{{ t.name }}</span>
+        {% endif %}
+    </div>
 
-<div class="col">
-<select name="electrician" class="form-control">
-{% for e in electricians %}
-<option value="{{ e.id }}" {% if e.id == t.electrician.id %}selected{% endif %}>
-{{ e.name }}
-</option>
-{% endfor %}
-</select>
-</div>
+    <!-- ELECTRICIAN -->
+    <div class="col">
+        {% if request.session.role == "Admin" %}
+            <select name="electrician" class="form-control">
+                {% for e in electricians %}
+                <option value="{{ e.id }}" {% if e.id == t.electrician.id %}selected{% endif %}>
+                    {{ e.name }}
+                </option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <span class="form-control bg-light">{{ t.electrician.name }}</span>
+        {% endif %}
+    </div>
 
-<div class="col">
-<select name="job" class="form-control">
-{% for j in jobs %}
-<option value="{{ j.id }}" {% if j.id == t.job.id %}selected{% endif %}>
-{{ j.title }}
-</option>
-{% endfor %}
-</select>
-</div>
+    <!-- JOB -->
+    <div class="col">
+        {% if request.session.role == "Admin" %}
+            <select name="job" class="form-control">
+                {% for j in jobs %}
+                <option value="{{ j.id }}" {% if j.id == t.job.id %}selected{% endif %}>
+                    {{ j.title }}
+                </option>
+                {% endfor %}
+            </select>
+        {% else %}
+            <span class="form-control bg-light">{{ t.job.title }}</span>
+        {% endif %}
+    </div>
 
-<div class="col">
-<select name="status" class="form-control">
-<option {% if t.status == "Pending" %}selected{% endif %}>Pending</option>
-<option {% if t.status == "Completed" %}selected{% endif %}>Completed</option>
-</select>
-</div>
+    <!-- STATUS -->
+    <div class="col">
+        <select name="status" class="form-control">
+            <option {% if t.status == "Pending" %}selected{% endif %}>Pending</option>
+            <option {% if t.status == "Completed" %}selected{% endif %}>Completed</option>
+        </select>
+    </div>
 
-{% if request.session.role == "Admin" %}
-<div class="col d-flex gap-2">
-<button class="btn btn-success btn-sm">Update</button>
-<a href="/delete-task/{{ t.id }}/" class="btn btn-danger btn-sm">Delete</a>
-</div>
-{% endif %}
+    <!-- ACTIONS -->
+    <div class="col d-flex gap-2">
+
+        {% if request.session.role == "Admin" %}
+            <button class="btn btn-success btn-sm">Update</button>
+
+            <a href="/delete-task/{{ t.id }}/"
+               class="btn btn-danger btn-sm"
+               onclick="return confirm('Are you sure you want to delete this task?')">
+               Delete
+            </a>
+        {% else %}
+            <button class="btn btn-primary btn-sm">Update Status</button>
+        {% endif %}
+
+    </div>
 
 </form>
 
 </td>
+</tr>
+
+{% empty %}
+<tr>
+    <td colspan="5" class="text-center text-muted">
+        No tasks available
+    </td>
 </tr>
 {% endfor %}
 
