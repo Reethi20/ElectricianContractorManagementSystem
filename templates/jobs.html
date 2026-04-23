@@ -12,7 +12,7 @@
 
 <!-- ADD FORM -->
 {% if request.session.role == "Admin" %}
-<form method="POST" class="row g-2 mb-4">
+<form method="POST" enctype="multipart/form-data" class="row g-2 mb-4">
 {% csrf_token %}
 <input type="hidden" name="action" value="add">
 

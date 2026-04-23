@@ -192,9 +192,9 @@ def jobs(request):
         # ADD
         if action == "add":
             Job.objects.create(
-                title=request.POST['title'],
+                title=request.POST.get('title'),
                 location=request.POST['location'],
-                image=request.FILES.get['image'],
+                image=request.FILES.get('image'),
                 electrician_id=request.POST['electrician'],
                 deadline=request.POST['deadline'],
                 status=request.POST['status']
@@ -206,7 +206,7 @@ def jobs(request):
             j = Job.objects.get(id=request.POST['id'])
             j.title = request.POST['title']
             j.location = request.POST['location']
-            j.image = request.POST['image']
+            j.image = request.FILES.get('image') or j.image     
             j.electrician_id = request.POST['electrician']
             j.deadline = request.POST['deadline']
             j.status = request.POST['status']
