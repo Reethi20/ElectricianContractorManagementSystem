@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h3 class="mb-4 fw-bold">Dashboard Overview</h3>
+
+<!-- ALERT -->
+<div class="alert alert-light border shadow-sm">
+  🔔 You have <strong>{{ tasks }}</strong> pending tasks
+</div>
+
+<!-- CARDS -->
+<div class="row g-4">
+
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center p-3">
+      <h6 class="text-muted">Total Electricians</h6>
+      <h2 class="fw-bold">{{ electricians }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center p-3">
+      <h6 class="text-muted">Total Jobs</h6>
+      <h2 class="fw-bold">{{ jobs }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center p-3">
+      <h6 class="text-muted">Pending Tasks</h6>
+      <h2 class="fw-bold">{{ tasks }}</h2>
+    </div>
+  </div>
+
+  <div class="col-md-3">
+    <div class="card shadow-sm text-center p-3">
+      <h6 class="text-muted">Completed Tasks</h6>
+      <h2 class="fw-bold">{{ completed }}</h2>
+    </div>
+  </div>
+
+</div>
+
+<!-- CHARTS (FIXED SIZE) -->
+<div class="row mt-5 g-4">
+
+  <!-- TASK STATUS -->
+  <div class="col-md-6">
+    <div class="card p-3 shadow-sm text-center">
+      <h5 class="fw-bold mb-3">Task Status</h5>
+      <div style="height:250px;">
+        <canvas id="taskChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="col-md-6">
+    <div class="card p-3 shadow-sm text-center">
+      <h5 class="fw-bold mb-3">Overview</h5>
+      <div style="height:250px;">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- RECENT UPDATES -->
+<div class="mt-5">
+
+<h5 class="fw-bold mb-3">Recent Updates</h5>
+
+<ul class="list-group shadow-sm">
+
+{% for task in completed_tasks %}
+<li class="list-group-item d-flex justify-content-between align-items-center">
+  <span>{{ task.name }} completed</span>
+  <span class="badge bg-success">Done</span>
+</li>
+{% endfor %}
+
+{% for task in new_tasks %}
+<li class="list-group-item d-flex justify-content-between align-items-center">
+  <span>{{ task.name }} assigned</span>
+  <span class="badge bg-warning text-dark">New</span>
+</li>
+{% endfor %}
+
+{% if not completed_tasks and not new_tasks %}
+<li class="list-group-item text-center text-muted">
+  No updates available
+</li>
+{% endif %}
+
+</ul>
+
+</div>
+
+<!-- CHART SCRIPT -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// PIE CHART
+var ctx = document.getElementById('taskChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Pending', 'Completed'],
+        datasets: [{
+            data: [{{ tasks }}, {{ completed }}]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+// BAR CHART
+var barCtx = document.getElementById('barChart').getContext('2d');
+
+new Chart(barCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Electricians', 'Jobs', 'Pending', 'Completed'],
+        datasets: [{
+            label: 'Data',
+            data: [{{ electricians }}, {{ jobs }}, {{ tasks }}, {{ completed }}]
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+</script>
+
+{% endblock %}
