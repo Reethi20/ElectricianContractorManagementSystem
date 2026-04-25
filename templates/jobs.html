@@ -105,6 +105,20 @@
 <option {% if j.status == "Completed" %}selected{% endif %}>Completed</option>
 </select>
 </td>
+<td>
+    {% if j.image %}
+        <img src="{{ j.image.url }}" width="80">
+    {% else %}
+        No Image
+    {% endif %}
+</td>
+<td>
+    {% if j.image %}
+        <a href="{{ j.image.url }}" target="_blank">View File</a>
+    {% else %}
+        No File
+    {% endif %}
+</td>
 
 {% if request.session.role == "Admin" %}
 <td class="d-flex gap-2">
