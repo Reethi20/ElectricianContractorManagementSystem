@@ -62,6 +62,13 @@ Led frontend development and UI enhancement. Redesigned the interface using Boot
 Developed the initial UI using HTML and CSS. Created layouts and structured the system design.
 
 ---
+<<<<<<< HEAD
+=======
+### Shravana Naik
+Designed the complete user interface and improved user experience. Created modern and clean layouts using professional color schemes, developed wireframes and mockups, and ensured consistency across all pages for better usability.
+
+--------
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 
 ## WEEK-2
 
@@ -142,7 +149,11 @@ Handled authentication and dashboard functionality. Worked on login, registratio
 
 In Week 3, the project focused on developing core modules of the system and integrating all components into a fully functional application. The system was enhanced to handle real-time operations with proper data flow between modules.
 
+<<<<<<< HEAD
 ---
+=======
+-----
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 
 ## Features Implemented
 
@@ -182,6 +193,18 @@ In Week 3, the project focused on developing core modules of the system and inte
 Handled Task Management (Core Logic). Implemented task assignment, linked tasks with jobs, developed task tracking system, added status filtering, and enabled status updates (Pending → Completed).
 
 ---
+<<<<<<< HEAD
+=======
+### Pavan
+developing and integrating the Job and Electrician Management modules. He implemented core functionalities to manage job assignments and electrician records, ensuring smooth data flow between modules. The system was enhanced to support real-time updates, including adding jobs, assigning electricians, setting locations and deadlines, and efficiently managing electrician details such as add, update, delete, and view operations.
+
+-----
+### Shravana Naik
+Managed materials functionality and system integration. Developed material management features including adding materials, tracking quantity, and updating usage. Integrated all modules (Jobs, Tasks, Electricians, and Materials) to ensure smooth data flow, and synchronized frontend with backend to enable dynamic and fully functional UI operations.
+
+-----
+
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 ## WEEK-4
 
 # Backend & Core Functionality Enhancement
@@ -229,3 +252,103 @@ In Week 4, the project focused on enhancing backend capabilities by implementing
 
 Handled Backend & Core Functionality. Implemented reports module, developed search and filter features, created notification system, enhanced dashboard with alerts, performed backend testing, and fixed system errors.
 
+<<<<<<< HEAD
+=======
+----
+### Pavan
+Handled frontend development, UI/UX improvements, and usability testing. Enhanced layout structure, improved color schemes and alignment, ensured smooth navigation across all pages, tested responsiveness and functionality of buttons, fixed UI issues, and prepared the system for a clean and effective demo presentation.
+
+-----
+### Shravana Naik
+Handled project integration, documentation, and final deployment. Combined frontend and backend modules to ensure seamless system functionality, performed comprehensive testing, and resolved integration issues. Prepared complete project documentation including description, features, technologies, and screenshots, and managed the GitHub repository by uploading the final working project with a well-structured README.
+
+-----
+## WEEK-5
+
+# Final Enhancements, Security & Deployment
+
+In Week 5, the project focused on implementing advanced features, improving system performance, and preparing the application for real-world usage. Key enhancements included role-based access control, security improvements, API optimization, file handling, and final deployment preparation. The system was refined to ensure scalability, usability, and reliability.
+
+---
+
+## Features Implemented
+
+- Role-Based Access Control (Admin and Electrician)
+- Electrician Task View and Status Update
+- Advanced Dashboard with statistics and visual insights
+- Charts for completed and pending jobs
+- API Optimization (clean structure and proper responses)
+- Error Handling and Validation Improvements
+- Security Enhancements (password hashing, input validation, access control)
+- File Upload Feature (job images and reports)
+- Deployment Setup (local hosting / online hosting)
+- UI Improvements and Navigation Enhancements
+
+----
+
+## Technologies Used
+
+- Python (Django)
+- SQLite
+- HTML, CSS, Bootstrap
+- JavaScript
+
+-----
+
+## Key Improvements
+
+- Implemented role-based authentication for secure access control
+- Enhanced dashboard with visual data representation and insights
+- Optimized APIs for better performance and structured responses
+- Strengthened system security with validation and protected routes
+- Added file upload functionality for jobs and reports
+- Improved UI design and navigation for better user experience
+- Cleaned and organized code for maintainability
+- Conducted final testing to ensure system stability and performance
+- Prepared project for deployment and real-world usage
+
+-----
+
+## Contributors and Work Distribution
+
+### Reethi K B
+
+Handled backend development and system security. Implemented role-based access control for Admin and Electrician, designed and optimized APIs with a clean structure, ensured proper responses and error handling, and strengthened security through password hashing, input validation, and prevention of unauthorized access.
+
+----
+
+### Pavan
+
+Led frontend development with a focus on UI and user experience. Designed and implemented an advanced dashboard with task statistics and charts (completed vs pending jobs), improved navigation and overall interface, added meaningful error messages, and developed electrician UI features including viewing assigned tasks and updating task status using React/Angular or HTML-CSS.
+
+----
+
+### Shravana Naik
+
+Handled feature integration and final deployment of the system. Implemented file upload functionality for job images and reports, managed local setup and online hosting, performed code cleanup by removing unused code and adding comments, and completed final submission tasks including GitHub updates, screenshots, and demo preparation.
+
+----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db

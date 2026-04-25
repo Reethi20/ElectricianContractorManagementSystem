@@ -4,9 +4,12 @@ from .models import *
 from django.contrib.auth.hashers import make_password, check_password
 from datetime import datetime, date
 import re
+<<<<<<< HEAD
 from .forms import JobForm, ReportForm
 
 
+=======
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 # ================= ROLE CHECK =================
 def is_admin(request):
     return request.session.get('role') == "Admin"
@@ -192,6 +195,7 @@ def jobs(request):
         # ADD
         if action == "add":
             Job.objects.create(
+<<<<<<< HEAD
                 title=request.POST.get('title'),
                 location=request.POST['location'],
                 image=request.FILES.get('image'),
@@ -199,6 +203,13 @@ def jobs(request):
                 deadline=request.POST['deadline'],
                 status=request.POST['status']
                 
+=======
+                title=request.POST['title'],
+                location=request.POST['location'],
+                electrician_id=request.POST['electrician'],
+                deadline=request.POST['deadline'],
+                status=request.POST['status']
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
             )
 
         # UPDATE
@@ -206,7 +217,10 @@ def jobs(request):
             j = Job.objects.get(id=request.POST['id'])
             j.title = request.POST['title']
             j.location = request.POST['location']
+<<<<<<< HEAD
             j.image = request.FILES.get('image') or j.image     
+=======
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
             j.electrician_id = request.POST['electrician']
             j.deadline = request.POST['deadline']
             j.status = request.POST['status']
@@ -426,6 +440,7 @@ def api_delete_task(request, id):
         Task.objects.get(id=id).delete()
         return JsonResponse({'message': 'Deleted successfully'}, status=200)
     except Task.DoesNotExist:
+<<<<<<< HEAD
         return JsonResponse({'error': 'Task not found'}, status=404)
     # ================= FILE UPLOAD =================
 def upload_job(request):
@@ -448,3 +463,6 @@ def upload_report(request):
     else:
         form = ReportForm()
     return render(request, 'upload_report.html', {'form': form})
+=======
+        return JsonResponse({'error': 'Task not found'}, status=404)
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db

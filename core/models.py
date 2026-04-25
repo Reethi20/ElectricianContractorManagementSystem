@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 
+<<<<<<< HEAD
 
 class Electrician(models.Model):
     name = models.CharField(max_length=100)
@@ -38,6 +39,8 @@ class Report(models.Model):
         return f"Report for {self.job.title}"
 
 
+=======
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 class User(models.Model):
     ROLE_CHOICES = [
         ('Admin', 'Admin'),
@@ -54,10 +57,36 @@ class User(models.Model):
         return self.name
 
 
+<<<<<<< HEAD
 class Task(models.Model):
     name = models.CharField(max_length=100)
     electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
+=======
+class Electrician(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+
+class Job(models.Model):
+    title = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
+    deadline = models.DateField(default=date.today)
+    status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.title
+
+
+class Task(models.Model):
+    name = models.CharField(max_length=100)
+    electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)   # ✅ ADDED
+>>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
     status = models.CharField(max_length=50)
 
     def __str__(self):
