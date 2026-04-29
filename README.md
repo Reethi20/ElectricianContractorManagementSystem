@@ -61,14 +61,6 @@ Led frontend development and UI enhancement. Redesigned the interface using Boot
 
 Developed the initial UI using HTML and CSS. Created layouts and structured the system design.
 
----
-<<<<<<< HEAD
-=======
-### Shravana Naik
-Designed the complete user interface and improved user experience. Created modern and clean layouts using professional color schemes, developed wireframes and mockups, and ensured consistency across all pages for better usability.
-
---------
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 
 ## WEEK-2
 
@@ -149,12 +141,6 @@ Handled authentication and dashboard functionality. Worked on login, registratio
 
 In Week 3, the project focused on developing core modules of the system and integrating all components into a fully functional application. The system was enhanced to handle real-time operations with proper data flow between modules.
 
-<<<<<<< HEAD
----
-=======
------
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
-
 ## Features Implemented
 
 - Job Management Module (Add job, assign electrician, set location & deadline, view jobs)  
@@ -193,8 +179,6 @@ In Week 3, the project focused on developing core modules of the system and inte
 Handled Task Management (Core Logic). Implemented task assignment, linked tasks with jobs, developed task tracking system, added status filtering, and enabled status updates (Pending → Completed).
 
 ---
-<<<<<<< HEAD
-=======
 ### Pavan
 developing and integrating the Job and Electrician Management modules. He implemented core functionalities to manage job assignments and electrician records, ensuring smooth data flow between modules. The system was enhanced to support real-time updates, including adding jobs, assigning electricians, setting locations and deadlines, and efficiently managing electrician details such as add, update, delete, and view operations.
 
@@ -202,9 +186,6 @@ developing and integrating the Job and Electrician Management modules. He implem
 ### Shravana Naik
 Managed materials functionality and system integration. Developed material management features including adding materials, tracking quantity, and updating usage. Integrated all modules (Jobs, Tasks, Electricians, and Materials) to ensure smooth data flow, and synchronized frontend with backend to enable dynamic and fully functional UI operations.
 
------
-
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 ## WEEK-4
 
 # Backend & Core Functionality Enhancement
@@ -252,15 +233,13 @@ In Week 4, the project focused on enhancing backend capabilities by implementing
 
 Handled Backend & Core Functionality. Implemented reports module, developed search and filter features, created notification system, enhanced dashboard with alerts, performed backend testing, and fixed system errors.
 
-<<<<<<< HEAD
-=======
 ----
 ### Pavan
-Handled frontend development, UI/UX improvements, and usability testing. Enhanced layout structure, improved color schemes and alignment, ensured smooth navigation across all pages, tested responsiveness and functionality of buttons, fixed UI issues, and prepared the system for a clean and effective demo presentation.
+Handled frontend development improvements, UI/UX improvements, and usability testing. Enhanced layout structure, improved color schemes and alignment, ensured smooth navigation across all pages, tested responsiveness and functionality of buttons, fixed UI issues, and prepared the system for a clean and effective demo presentation.
 
 -----
 ### Shravana Naik
-Handled project integration, documentation, and final deployment. Combined frontend and backend modules to ensure seamless system functionality, performed comprehensive testing, and resolved integration issues. Prepared complete project documentation including description, features, technologies, and screenshots, and managed the GitHub repository by uploading the final working project with a well-structured README.
+Handled project documentation. Prepared complete project documentation including description, features, technologies, and screenshots, and managed the GitHub repository by uploading the final working project with a well-structured README.
 
 -----
 ## WEEK-5
@@ -319,13 +298,13 @@ Handled backend development and system security. Implemented role-based access c
 
 ### Pavan
 
-Led frontend development with a focus on UI and user experience. Designed and implemented an advanced dashboard with task statistics and charts (completed vs pending jobs), improved navigation and overall interface, added meaningful error messages, and developed electrician UI features including viewing assigned tasks and updating task status using React/Angular or HTML-CSS.
+Frontend development with a focus on UI and user experience. Designed and implemented an advanced dashboard with task statistics and charts (completed vs pending jobs), improved navigation and overall interface, added meaningful error messages, and developed electrician UI features including viewing assigned tasks and updating task status using React/Angular or HTML-CSS.
 
 ----
 
 ### Shravana Naik
 
-Handled feature integration and final deployment of the system. Implemented file upload functionality for job images and reports, managed local setup and online hosting, performed code cleanup by removing unused code and adding comments, and completed final submission tasks including GitHub updates, screenshots, and demo preparation.
+Handled feature integration. Implemented file upload functionality for job images and reports,performed code cleanup by removing unused code and adding comments, and completed final submission tasks including GitHub updates, screenshots, and demo preparation.
 
 ----
 
