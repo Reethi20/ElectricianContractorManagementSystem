@@ -1,6 +1,97 @@
-## WEEK-1
 # Electrician Contractor Management System
+## 🌐 Live Demo
 
+The project is deployed and accessible online:
+https://electriciancontractormanagementsystem.onrender.com
+
+
+## Introduction
+The Electrician Contractor Management System is a web-based application designed to manage electricians, jobs, tasks, materials, and reports efficiently. It helps contractors organize work, assign tasks, track progress, and generate reports through a user-friendly interface.
+
+---
+
+## Objectives
+- To simplify contractor management operations  
+- To maintain records of electricians, jobs, and tasks  
+- To provide real-time tracking and reporting  
+- To ensure secure and role-based access  
+
+---
+
+## Features
+
+- Electrician Management  
+- Job Management  
+- Task Tracking  
+- Materials Management  
+- Reports  
+- Login and Registration  
+- Admin Profile  
+- Role-Based Access Control  
+- Search and Filter  
+- Notifications  
+- File Upload  
+
+---
+
+## Variables / Models Used
+
+- User (id, name, phone, email, role, password)  
+- Electrician (id, name, phone)  
+- Job (id, title, location, electrician, deadline, status)  
+- Task (id, name, electrician, job, status)  
+- Material (id, name, quantity)  
+- Report (id, job, report_file)  
+
+---
+
+## Technologies Used
+
+- Python (Django)  
+- SQLite  
+- HTML  
+- CSS  
+- Bootstrap  
+- JavaScript  
+
+---
+
+## System Requirements
+
+### Hardware:
+- Minimum 4GB RAM  
+- Basic Computer/Laptop  
+
+### Software:
+- Python 3.x  
+- Django  
+- Web Browser (Chrome/Edge)  
+- SQLite Database  
+
+---
+
+## Procedure to Run the Project
+
+1. Install Python  
+2. Install Django  
+3. Open terminal in project folder  
+4. Run the following commands:
+
+``bash
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
+## Project Strcuture
+ElectricianContractorManagementSystem/
+├── core/
+├── config/
+├── templates/
+├── static/
+├── manage.py
+
+## WEEK-1
 This project is a web-based application designed to manage electricians, jobs, tasks, materials, and reports. It provides a structured and user-friendly interface for contractor management operations.
 
 ---
@@ -19,10 +110,13 @@ This project is a web-based application designed to manage electricians, jobs, t
 
 ## Technologies Used
 
-- HTML  
-- CSS  
-- JavaScript  
-- Bootstrap  
+- Python 3.10.11 
+- Django 5.2.6  
+- SQLite 3.40.1  
+- HTML5  
+- CSS3  
+- JavaScript (ES6)  
+- Bootstrap 5.3.0  
 
 ---
 
@@ -308,26 +402,3 @@ Handled feature integration. Implemented file upload functionality for job image
 
 ----
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
