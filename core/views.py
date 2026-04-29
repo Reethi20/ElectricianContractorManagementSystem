@@ -191,21 +191,12 @@ def jobs(request):
         # ADD
         if action == "add":
             Job.objects.create(
-
-                title=request.POST.get('title'),
+                title=request.POST['title'],
                 location=request.POST['location'],
                 image=request.FILES.get('image'),
                 electrician_id=request.POST['electrician'],
                 deadline=request.POST['deadline'],
                 status=request.POST['status']
-                
-
-                title=request.POST['title'],
-                location=request.POST['location'],
-                electrician_id=request.POST['electrician'],
-                deadline=request.POST['deadline'],
-                status=request.POST['status']
-
             )
 
         # UPDATE
@@ -458,6 +449,3 @@ def upload_report(request):
     else:
         form = ReportForm()
     return render(request, 'upload_report.html', {'form': form})
-
-    return JsonResponse({'error': 'Task not found'}, status=404)
-
