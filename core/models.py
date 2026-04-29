@@ -52,3 +52,10 @@ class Material(models.Model):
 
     def __str__(self):
         return self.name
+
+class Report(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    report_file = models.FileField(upload_to='reports/')
+
+    def __str__(self):
+        return f"Report for {self.job.title}"
