@@ -1,46 +1,6 @@
 from django.db import models
 from datetime import date
 
-<<<<<<< HEAD
-
-class Electrician(models.Model):
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=15)
-
-    def __str__(self):
-        return self.name
-
-
-class Job(models.Model):
-    title = models.CharField(max_length=200)
-    
-
-    # ✅ Image upload
-    image = models.ImageField(upload_to='job_images/', null=True, blank=True)
-
-    # ✅ Job details
-    location = models.CharField(max_length=100)
-    electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
-    deadline = models.DateField(default=date.today)
-    status = models.CharField(max_length=50)
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
-
-
-class Report(models.Model):
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-    report_file = models.FileField(upload_to='reports/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return f"Report for {self.job.title}"
-
-
-=======
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 class User(models.Model):
     ROLE_CHOICES = [
         ('Admin', 'Admin'),
@@ -57,12 +17,6 @@ class User(models.Model):
         return self.name
 
 
-<<<<<<< HEAD
-class Task(models.Model):
-    name = models.CharField(max_length=100)
-    electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
-    job = models.ForeignKey(Job, on_delete=models.CASCADE)
-=======
 class Electrician(models.Model):
     name = models.CharField(max_length=100)
     phone = models.CharField(max_length=15)
@@ -86,7 +40,6 @@ class Task(models.Model):
     name = models.CharField(max_length=100)
     electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
     job = models.ForeignKey(Job, on_delete=models.CASCADE)   # ✅ ADDED
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
     status = models.CharField(max_length=50)
 
     def __str__(self):
