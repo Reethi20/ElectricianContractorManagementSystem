@@ -12,11 +12,8 @@
 
 <!-- ADD FORM -->
 {% if request.session.role == "Admin" %}
-<<<<<<< HEAD
 <form method="POST" enctype="multipart/form-data" class="row g-2 mb-4">
-=======
 <form method="POST" class="row g-2 mb-4">
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 {% csrf_token %}
 <input type="hidden" name="action" value="add">
 
@@ -48,12 +45,9 @@
 </div>
 
 <div class="col-md-2">
-<<<<<<< HEAD
 <input type="file" name="image" class="form-control">
 </div>
 <div class="col-md-2">
-=======
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 <button class="btn btn-primary w-100">Add</button>
 </div>
 
@@ -112,7 +106,6 @@
 <option {% if j.status == "Completed" %}selected{% endif %}>Completed</option>
 </select>
 </td>
-<<<<<<< HEAD
 <td>
     {% if j.image %}
         <img src="{{ j.image.url }}" width="80">
@@ -127,8 +120,6 @@
         No File
     {% endif %}
 </td>
-=======
->>>>>>> 992dfaa38059501e9463f7f544179ad1bbf4b6db
 
 {% if request.session.role == "Admin" %}
 <td class="d-flex gap-2">
