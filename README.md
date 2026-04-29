@@ -386,7 +386,7 @@ In Week 5, the project focused on implementing advanced features, improving syst
 
 ### Reethi K B
 
-Handled backend development and system security. Implemented role-based access control for Admin and Electrician, designed and optimized APIs with a clean structure, ensured proper responses and error handling, and strengthened security through password hashing, input validation, and prevention of unauthorized access.
+Handled backend development and system security and completed deployment. Implemented role-based access control for Admin and Electrician, designed and optimized APIs with a clean structure, ensured proper responses and error handling, and strengthened security through password hashing, input validation, and prevention of unauthorized access.
 
 ----
 
@@ -398,7 +398,7 @@ Frontend development with a focus on UI and user experience. Designed and implem
 
 ### Shravana Naik
 
-Handled feature integration. Implemented file upload functionality for job images and reports,performed code cleanup by removing unused code and adding comments, and completed final submission tasks including GitHub updates, screenshots, and demo preparation.
+Handled feature integration. Implemented file upload functionality for job images and reports,performed code cleanup by removing unused code and adding comments, and completed final submission tasks including screenshots, and demo preparation.
 
 ----
 
