@@ -6,51 +6,50 @@
 
 <!-- 🔍 SEARCH -->
 <form method="GET" class="mb-3">
-<input name="search" class="form-control w-25 d-inline" placeholder="Search Jobs">
-<button class="btn btn-primary">Search</button>
+    <input name="search" class="form-control w-25 d-inline" placeholder="Search Jobs">
+    <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
 <!-- ADD FORM -->
 {% if request.session.role == "Admin" %}
 <form method="POST" enctype="multipart/form-data" class="row g-2 mb-4">
-<form method="POST" class="row g-2 mb-4">
-{% csrf_token %}
-<input type="hidden" name="action" value="add">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="add">
 
-<div class="col-md-2">
-<input name="title" class="form-control" placeholder="Job Title" required>
-</div>
+    <div class="col-md-2">
+        <input name="title" class="form-control" placeholder="Job Title" required>
+    </div>
 
-<div class="col-md-2">
-<input name="location" class="form-control" placeholder="Location" required>
-</div>
+    <div class="col-md-2">
+        <input name="location" class="form-control" placeholder="Location" required>
+    </div>
 
-<div class="col-md-2">
-<select name="electrician" class="form-control">
-{% for e in electricians %}
-<option value="{{ e.id }}">{{ e.name }}</option>
-{% endfor %}
-</select>
-</div>
+    <div class="col-md-2">
+        <select name="electrician" class="form-control">
+            {% for e in electricians %}
+            <option value="{{ e.id }}">{{ e.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
 
-<div class="col-md-2">
-<input type="date" name="deadline" class="form-control" required>
-</div>
+    <div class="col-md-2">
+        <input type="date" name="deadline" class="form-control" required>
+    </div>
 
-<div class="col-md-2">
-<select name="status" class="form-control">
-<option>Pending</option>
-<option>Completed</option>
-</select>
-</div>
+    <div class="col-md-2">
+        <select name="status" class="form-control">
+            <option value="Pending">Pending</option>
+            <option value="Completed">Completed</option>
+        </select>
+    </div>
 
-<div class="col-md-2">
-<input type="file" name="image" class="form-control">
-</div>
-<div class="col-md-2">
-<button class="btn btn-primary w-100">Add</button>
-</div>
+    <div class="col-md-2">
+        <input type="file" name="image" class="form-control">
+    </div>
 
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Add</button>
+    </div>
 </form>
 {% endif %}
 
@@ -58,86 +57,92 @@
 <div class="card p-3 shadow">
 <table class="table table-bordered align-middle">
 
-<tr class="table-light">
-<th>Title</th>
-<th>Location</th>
-<th>Electrician</th>
-<th>Deadline</th>
-<th>Status</th>
-{% if request.session.role == "Admin" %}
-<th>Actions</th>
-{% endif %}
+<thead class="table-light">
+<tr>
+    <th>Title</th>
+    <th>Location</th>
+    <th>Electrician</th>
+    <th>Deadline</th>
+    <th>Status</th>
+    <th>Image</th>
+    <th>File</th>
+    {% if request.session.role == "Admin" %}
+    <th>Actions</th>
+    {% endif %}
 </tr>
+</thead>
 
+<tbody>
 {% for j in jobs %}
-
-<form method="POST">
-{% csrf_token %}
-<input type="hidden" name="action" value="update">
-<input type="hidden" name="id" value="{{ j.id }}">
-
 <tr>
 
-<td>
-<input name="title" value="{{ j.title }}" class="form-control">
-</td>
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="update">
+    <input type="hidden" name="id" value="{{ j.id }}">
 
-<td>
-<input name="location" value="{{ j.location }}" class="form-control">
-</td>
+    <td>
+        <input name="title" value="{{ j.title }}" class="form-control">
+    </td>
 
-<td>
-<select name="electrician" class="form-control">
-{% for e in electricians %}
-<option value="{{ e.id }}" {% if e.id == j.electrician.id %}selected{% endif %}>
-{{ e.name }}
-</option>
-{% endfor %}
-</select>
-</td>
+    <td>
+        <input name="location" value="{{ j.location }}" class="form-control">
+    </td>
 
-<td>
-<input type="date" name="deadline" value="{{ j.deadline|date:'Y-m-d' }}" class="form-control">
-</td>
+    <td>
+        <select name="electrician" class="form-control">
+            {% for e in electricians %}
+            <option value="{{ e.id }}" {% if e.id == j.electrician.id %}selected{% endif %}>
+                {{ e.name }}
+            </option>
+            {% endfor %}
+        </select>
+    </td>
 
-<td>
-<select name="status" class="form-control">
-<option {% if j.status == "Pending" %}selected{% endif %}>Pending</option>
-<option {% if j.status == "Completed" %}selected{% endif %}>Completed</option>
-</select>
-</td>
-<td>
-    {% if j.image %}
-        <img src="{{ j.image.url }}" width="80">
-    {% else %}
-        No Image
+    <td>
+        <input type="date" name="deadline" value="{{ j.deadline|date:'Y-m-d' }}" class="form-control">
+    </td>
+
+    <td>
+        <select name="status" class="form-control">
+            <option value="Pending" {% if j.status == "Pending" %}selected{% endif %}>Pending</option>
+            <option value="Completed" {% if j.status == "Completed" %}selected{% endif %}>Completed</option>
+        </select>
+    </td>
+
+    <td>
+        {% if j.image %}
+            <img src="{{ j.image.url }}" width="80">
+        {% else %}
+            No Image
+        {% endif %}
+    </td>
+
+    <td>
+        {% if j.image %}
+            <a href="{{ j.image.url }}" target="_blank">View File</a>
+        {% else %}
+            No File
+        {% endif %}
+    </td>
+
+    {% if request.session.role == "Admin" %}
+    <td class="d-flex gap-2">
+        <button type="submit" class="btn btn-success btn-sm">Update</button>
+
+        <a href="/delete-job/{{ j.id }}/"
+           class="btn btn-danger btn-sm"
+           onclick="return confirm('Delete this job?')">
+           Delete
+        </a>
+    </td>
     {% endif %}
-</td>
-<td>
-    {% if j.image %}
-        <a href="{{ j.image.url }}" target="_blank">View File</a>
-    {% else %}
-        No File
-    {% endif %}
-</td>
-
-{% if request.session.role == "Admin" %}
-<td class="d-flex gap-2">
-<button class="btn btn-success btn-sm">Update</button>
-
-<a href="/delete-job/{{ j.id }}/"
-   class="btn btn-danger btn-sm"
-   onclick="return confirm('Delete this job?')">
-Delete
-</a>
-</td>
-{% endif %}
-
-</tr>
 
 </form>
 
+</tr>
 {% endfor %}
+</tbody>
 
 </table>
 </div>
