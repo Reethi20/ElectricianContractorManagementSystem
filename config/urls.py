@@ -14,6 +14,9 @@ urlpatterns = [
 
     # ================= DASHBOARD =================
     path('dashboard/', views.dashboard),
+    
+    path('client-dashboard/', views.client_dashboard, name='client_dashboard'),
+    
     path('upload-job/', views.upload_job, name='upload_job'),
     path('upload-report/', views.upload_report, name='upload_report'),
 
@@ -34,6 +37,7 @@ urlpatterns = [
     # ================= OTHER =================
     path('reports/', views.reports),
     path('profile/', views.profile),
+    path('my-requests/', views.my_requests),
 
     # ================= API (IMPORTANT 🔥) =================
     path('api/tasks/', views.api_tasks),

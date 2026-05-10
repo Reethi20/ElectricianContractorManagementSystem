@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="mb-4 fw-bold">Client Dashboard</h2>
+
+<!-- WELCOME CARD -->
+<div class="card shadow-sm p-4 mb-4">
+
+    <h3 class="fw-bold">
+        Welcome {{ request.session.name }} 👋
+    </h3>
+
+    <p class="text-muted">
+        Manage your electrician services, track requests,
+        and monitor work updates from your dashboard.
+    </p>
+
+</div>
+
+<!-- OVERVIEW -->
+<div class="row">
+
+    <!-- TOTAL REQUESTS -->
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+            <h5>Total Requests</h5>
+            <h2>{{ total_requests }}</h2>
+        </div>
+    </div>
+
+    <!-- COMPLETED -->
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+            <h5>Completed Works</h5>
+            <h2>{{ completed_requests }}</h2>
+        </div>
+    </div>
+
+    <!-- PENDING -->
+    <div class="col-md-4">
+        <div class="card shadow-sm p-4 text-center">
+            <h5>Pending Works</h5>
+            <h2>{{ pending_requests }}</h2>
+        </div>
+    </div>
+
+</div>
+
+<!-- RECENT REQUESTS -->
+<div class="card shadow-sm mt-4 p-4">
+
+    <h4 class="fw-bold mb-3">Recent Requests</h4>
+
+    <table class="table table-hover">
+
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Service</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Electrician</th>
+                <th>Payment</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            {% for request in requests_data %}
+
+            <tr>
+
+                <td>{{ request.id }}</td>
+
+                <td>{{ request.service_title }}</td>
+
+                <td>{{ request.location }}</td>
+
+                <td>
+
+                    {% if request.status == "Pending" %}
+                        <span class="badge bg-warning text-dark">
+                            Pending
+                        </span>
+                    {% else %}
+                        <span class="badge bg-success">
+                            Completed
+                        </span>
+                    {% endif %}
+
+                </td>
+
+                <td>{{ request.electrician }}</td>
+
+                <td>
+
+                    {% if request.payment_status == "Paid" %}
+                        <span class="badge bg-success">
+                            Paid
+                        </span>
+                    {% else %}
+                        <span class="badge bg-danger">
+                            Unpaid
+                        </span>
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="6" class="text-center">
+                    No Requests Found
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
+{% endblock %}

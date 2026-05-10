@@ -32,9 +32,11 @@
 
 <input name="email" type="email" class="form-control mb-2" placeholder="Email" required>
 
-<select name="role" class="form-control mb-2">
+<select name="role" class="form-control mb-2" required>
+    <option value="" disabled selected>Select Role</option>
     <option value="Admin">Admin</option>
     <option value="Electrician">Electrician</option>
+    <option value="Client">Client</option>
 </select>
 
 <!-- PASSWORD FIELD -->

@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2 class="fw-bold mb-2">My Requests</h2>
+
+<p class="text-muted mb-4">
+Track all your electrician service requests, work status, and payment details here.
+</p>
+
+<!-- CREATE SERVICE REQUEST -->
+<div class="card shadow-sm border-0 mb-4">
+
+    <div class="card-body">
+
+        <h5 class="fw-bold mb-4">Create Service Request</h5>
+
+        <form>
+
+            <div class="row">
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Service Title</label>
+                    <input type="text" class="form-control">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-control">
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Description</label>
+                    <input type="text" class="form-control">
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary">
+                Submit Request
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- STATUS ALERT -->
+<div class="alert alert-light border shadow-sm mb-4">
+    You have <strong>1 Pending</strong> request and
+    <strong>1 Completed</strong> request.
+</div>
+
+<!-- SUMMARY CARDS -->
+<div class="row mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h6 class="text-muted">Total Requests</h6>
+            <h2 class="fw-bold">2</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h6 class="text-muted">Completed</h6>
+            <h2 class="fw-bold text-success">1</h2>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 p-3 text-center">
+            <h6 class="text-muted">Pending</h6>
+            <h2 class="fw-bold text-warning">1</h2>
+        </div>
+    </div>
+
+</div>
+
+<!-- REQUEST TABLE -->
+<div class="card shadow-sm border-0">
+
+    <div class="card-body">
+
+        <h5 class="fw-bold mb-4">Request History</h5>
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>Request ID</th>
+                        <th>Service</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Electrician</th>
+                        <th>Payment</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>1</td>
+                        <td>House Wiring</td>
+                        <td>Bangalore</td>
+
+                        <td>
+                            <span class="badge bg-warning text-dark">
+                                Pending
+                            </span>
+                        </td>
+
+                        <td>Not Assigned</td>
+
+                        <td>
+                            <span class="badge bg-danger">
+                                Unpaid
+                            </span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>2</td>
+                        <td>Fan Installation</td>
+                        <td>Electronic City</td>
+
+                        <td>
+                            <span class="badge bg-success">
+                                Completed
+                            </span>
+                        </td>
+
+                        <td>Ramesh</td>
+
+                        <td>
+                            <span class="badge bg-success">
+                                Paid
+                            </span>
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
