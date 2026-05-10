@@ -1,6 +1,97 @@
-## WEEK-1
 # Electrician Contractor Management System
+## 🌐 Live Demo
 
+The project is deployed and accessible online:
+https://electriciancontractormanagementsystem.onrender.com
+
+
+## Introduction
+The Electrician Contractor Management System is a web-based application designed to manage electricians, jobs, tasks, materials, and reports efficiently. It helps contractors organize work, assign tasks, track progress, and generate reports through a user-friendly interface.
+
+---
+
+## Objectives
+- To simplify contractor management operations  
+- To maintain records of electricians, jobs, and tasks  
+- To provide real-time tracking and reporting  
+- To ensure secure and role-based access  
+
+---
+
+## Features
+
+- Electrician Management  
+- Job Management  
+- Task Tracking  
+- Materials Management  
+- Reports  
+- Login and Registration  
+- Admin Profile  
+- Role-Based Access Control  
+- Search and Filter  
+- Notifications  
+- File Upload  
+
+---
+
+## Variables / Models Used
+
+- User (id, name, phone, email, role, password)  
+- Electrician (id, name, phone)  
+- Job (id, title, location, electrician, deadline, status)  
+- Task (id, name, electrician, job, status)  
+- Material (id, name, quantity)  
+- Report (id, job, report_file)  
+
+---
+
+## Technologies Used
+
+- Python (Django)  
+- SQLite  
+- HTML  
+- CSS  
+- Bootstrap  
+- JavaScript  
+
+---
+
+## System Requirements
+
+### Hardware:
+- Minimum 4GB RAM  
+- Basic Computer/Laptop  
+
+### Software:
+- Python 3.x  
+- Django  
+- Web Browser (Chrome/Edge)  
+- SQLite Database  
+
+---
+
+## Procedure to Run the Project
+
+1. Install Python  
+2. Install Django  
+3. Open terminal in project folder  
+4. Run the following commands:
+
+``bash
+pip install -r requirements.txt
+python manage.py makemigrations
+python manage.py migrate
+python manage.py runserver
+
+## Project Strcuture
+ElectricianContractorManagementSystem/
+├── core/
+├── config/
+├── templates/
+├── static/
+├── manage.py
+
+## WEEK-1
 This project is a web-based application designed to manage electricians, jobs, tasks, materials, and reports. It provides a structured and user-friendly interface for contractor management operations.
 
 ---
@@ -19,10 +110,13 @@ This project is a web-based application designed to manage electricians, jobs, t
 
 ## Technologies Used
 
-- HTML  
-- CSS  
-- JavaScript  
-- Bootstrap  
+- Python 3.10.11 
+- Django 5.2.6  
+- SQLite 3.40.1  
+- HTML5  
+- CSS3  
+- JavaScript (ES6)  
+- Bootstrap 5.3.0  
 
 ---
 
@@ -61,7 +155,6 @@ Led frontend development and UI enhancement. Redesigned the interface using Boot
 
 Developed the initial UI using HTML and CSS. Created layouts and structured the system design.
 
----
 
 ## WEEK-2
 
@@ -142,8 +235,6 @@ Handled authentication and dashboard functionality. Worked on login, registratio
 
 In Week 3, the project focused on developing core modules of the system and integrating all components into a fully functional application. The system was enhanced to handle real-time operations with proper data flow between modules.
 
----
-
 ## Features Implemented
 
 - Job Management Module (Add job, assign electrician, set location & deadline, view jobs)  
@@ -182,6 +273,13 @@ In Week 3, the project focused on developing core modules of the system and inte
 Handled Task Management (Core Logic). Implemented task assignment, linked tasks with jobs, developed task tracking system, added status filtering, and enabled status updates (Pending → Completed).
 
 ---
+### Pavan
+developing and integrating the Job and Electrician Management modules. He implemented core functionalities to manage job assignments and electrician records, ensuring smooth data flow between modules. The system was enhanced to support real-time updates, including adding jobs, assigning electricians, setting locations and deadlines, and efficiently managing electrician details such as add, update, delete, and view operations.
+
+-----
+### Shravana Naik
+Managed materials functionality and system integration. Developed material management features including adding materials, tracking quantity, and updating usage. Integrated all modules (Jobs, Tasks, Electricians, and Materials) to ensure smooth data flow, and synchronized frontend with backend to enable dynamic and fully functional UI operations.
+
 ## WEEK-4
 
 # Backend & Core Functionality Enhancement
@@ -228,4 +326,79 @@ In Week 4, the project focused on enhancing backend capabilities by implementing
 ### Reethi K B
 
 Handled Backend & Core Functionality. Implemented reports module, developed search and filter features, created notification system, enhanced dashboard with alerts, performed backend testing, and fixed system errors.
+
+----
+### Pavan
+Handled frontend development improvements, UI/UX improvements, and usability testing. Enhanced layout structure, improved color schemes and alignment, ensured smooth navigation across all pages, tested responsiveness and functionality of buttons, fixed UI issues, and prepared the system for a clean and effective demo presentation.
+
+-----
+### Shravana Naik
+Handled project documentation. Prepared complete project documentation including description, features, technologies, and screenshots, and managed the GitHub repository by uploading the final working project with a well-structured README.
+
+-----
+## WEEK-5
+
+# Final Enhancements, Security & Deployment
+
+In Week 5, the project focused on implementing advanced features, improving system performance, and preparing the application for real-world usage. Key enhancements included role-based access control, security improvements, API optimization, file handling, and final deployment preparation. The system was refined to ensure scalability, usability, and reliability.
+
+---
+
+## Features Implemented
+
+- Role-Based Access Control (Admin and Electrician)
+- Electrician Task View and Status Update
+- Advanced Dashboard with statistics and visual insights
+- Charts for completed and pending jobs
+- API Optimization (clean structure and proper responses)
+- Error Handling and Validation Improvements
+- Security Enhancements (password hashing, input validation, access control)
+- File Upload Feature (job images and reports)
+- Deployment Setup (local hosting / online hosting)
+- UI Improvements and Navigation Enhancements
+
+----
+
+## Technologies Used
+
+- Python (Django)
+- SQLite
+- HTML, CSS, Bootstrap
+- JavaScript
+
+-----
+
+## Key Improvements
+
+- Implemented role-based authentication for secure access control
+- Enhanced dashboard with visual data representation and insights
+- Optimized APIs for better performance and structured responses
+- Strengthened system security with validation and protected routes
+- Added file upload functionality for jobs and reports
+- Improved UI design and navigation for better user experience
+- Cleaned and organized code for maintainability
+- Conducted final testing to ensure system stability and performance
+- Prepared project for deployment and real-world usage
+
+-----
+
+## Contributors and Work Distribution
+
+### Reethi K B
+
+Handled backend development and system security and completed deployment. Implemented role-based access control for Admin and Electrician, designed and optimized APIs with a clean structure, ensured proper responses and error handling, and strengthened security through password hashing, input validation, and prevention of unauthorized access.
+
+----
+
+### Pavan
+
+Frontend development with a focus on UI and user experience. Designed and implemented an advanced dashboard with task statistics and charts (completed vs pending jobs), improved navigation and overall interface, added meaningful error messages, and developed electrician UI features including viewing assigned tasks and updating task status using React/Angular or HTML-CSS.
+
+----
+
+### Shravana Naik
+
+Handled feature integration. Implemented file upload functionality for job images and reports,performed code cleanup by removing unused code and adding comments, and completed final submission tasks including screenshots, and demo preparation.
+
+----
 

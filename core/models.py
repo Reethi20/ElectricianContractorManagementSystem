@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import date
 
+<<<<<<< HEAD
 
 # ================= ELECTRICIAN =================
 class Electrician(models.Model):
@@ -60,6 +61,8 @@ class Report(models.Model):
 
 
 # ================= USER =================
+=======
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 class User(models.Model):
 
     ROLE_CHOICES = [
@@ -85,10 +88,33 @@ class User(models.Model):
         return self.name
 
 
+<<<<<<< HEAD
 # ================= TASK =================
+=======
+class Electrician(models.Model):
+    name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=15)
+
+    def __str__(self):
+        return self.name
+
+
+class Job(models.Model):
+    title = models.CharField(max_length=100)
+    location = models.CharField(max_length=100)
+    electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
+    deadline = models.DateField()
+    status = models.CharField(max_length=20)
+
+    # 🔥 THIS MUST EXIST
+    image = models.FileField(upload_to='jobs/', null=True, blank=True)
+
+
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 class Task(models.Model):
 
     name = models.CharField(max_length=100)
+<<<<<<< HEAD
 
     electrician = models.ForeignKey(
         Electrician,
@@ -100,6 +126,10 @@ class Task(models.Model):
         on_delete=models.CASCADE
     )
 
+=======
+    electrician = models.ForeignKey(Electrician, on_delete=models.CASCADE)
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)   # ✅ ADDED
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
     status = models.CharField(max_length=50)
 
     def __str__(self):
@@ -116,6 +146,7 @@ class Material(models.Model):
     def __str__(self):
         return self.name
 
+<<<<<<< HEAD
 
 # ================= CLIENT REQUEST =================
 class ClientRequest(models.Model):
@@ -151,3 +182,11 @@ class ClientRequest(models.Model):
 
     def __str__(self):
         return self.service_title
+=======
+class Report(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    report_file = models.FileField(upload_to='reports/')
+
+    def __str__(self):
+        return f"Report for {self.job.title}"
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace

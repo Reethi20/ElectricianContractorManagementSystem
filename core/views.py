@@ -6,7 +6,6 @@ from datetime import datetime, date
 import re
 from .forms import JobForm, ReportForm
 
-
 # ================= ROLE CHECK =================
 def is_admin(request):
     return request.session.get('role') == "Admin"
@@ -295,20 +294,44 @@ def delete_electrician(request, id):
 
 
 # ================= JOBS =================
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from datetime import date
+from .models import Job, Electrician
+
 def jobs(request):
+<<<<<<< HEAD
 
     if check_login(request):
         return check_login(request)
+=======
+    # 🔐 Check login
+    if not request.session.get('user_id'):
+        return redirect('/login/')
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 
     jobs_list = Job.objects.all()
+    electricians = Electrician.objects.all()
 
+    # 🔍 Optional search
+    search = request.GET.get('search')
+    if search:
+        jobs_list = jobs_list.filter(title__icontains=search)
+
+    # ================= POST =================
     if request.method == 'POST':
 
+<<<<<<< HEAD
         if not is_admin(request):
+=======
+        # Only admin allowed
+        if request.session.get('role') != "Admin":
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
             return redirect('/dashboard/')
 
         action = request.POST.get('action')
 
+<<<<<<< HEAD
         if action == "add":
 
             Job.objects.create(
@@ -331,16 +354,72 @@ def jobs(request):
             j.deadline = request.POST['deadline']
             j.status = request.POST['status']
             j.save()
+=======
+        # 🔹 Safe data extraction
+        title = request.POST.get('title')
+        location = request.POST.get('location')
+        electrician = request.POST.get('electrician')
+        deadline = request.POST.get('deadline')
+        status = request.POST.get('status')
+        image = request.FILES.get('image')
+
+        # 🔴 Validation (prevents 500 error)
+        if not title or not location or not electrician or not deadline or not status:
+            return HttpResponse("❌ All fields are required")
+
+        # ================= ADD =================
+        if action == "add":
+            try:
+                Job.objects.create(
+                    title=title,
+                    location=location,
+                    image=image,
+                    electrician_id=electrician,
+                    deadline=deadline,
+                    status=status
+                )
+            except Exception as e:
+                return HttpResponse(f"Error while adding job: {e}")
+
+        # ================= UPDATE =================
+        elif action == "update":
+            job_id = request.POST.get('id')
+
+            try:
+                j = Job.objects.get(id=job_id)
+            except Job.DoesNotExist:
+                return HttpResponse("❌ Job not found")
+
+            try:
+                j.title = title
+                j.location = location
+                j.electrician_id = electrician
+                j.deadline = deadline
+                j.status = status
+
+                # keep old image if new not uploaded
+                if image:
+                    j.image = image
+
+                j.save()
+
+            except Exception as e:
+                return HttpResponse(f"Error while updating job: {e}")
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 
         return redirect('/jobs/')
 
+    # ================= GET =================
     return render(request, 'jobs.html', {
         'jobs': jobs_list,
-        'electricians': Electrician.objects.all()
+        'electricians': electricians
     })
+<<<<<<< HEAD
 
 
 # ================= DELETE JOB =================
+=======
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 def delete_job(request, id):
 
     if not is_admin(request):
@@ -352,8 +431,6 @@ def delete_job(request, id):
         pass
 
     return redirect('/jobs/')
-
-
 # ================= TASKS =================
 def tasks(request):
 
@@ -630,15 +707,31 @@ def api_delete_task(request, id):
 
     except Task.DoesNotExist:
 
+<<<<<<< HEAD
         return JsonResponse({
             'error': 'Task not found'
         }, status=404)
 
 
 # ================= FILE UPLOAD =================
+=======
+        return JsonResponse({'error': 'Task not found'}, status=404)
+    # ================= FILE UPLOAD =================
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 def upload_job(request):
     return render(request, 'upload_job.html')
 
 
 def upload_report(request):
+<<<<<<< HEAD
     return render(request, 'upload_report.html')
+=======
+    if request.method == 'POST':
+        form = ReportForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('upload_report')
+    else:
+        form = ReportForm()
+    return render(request, 'upload_report.html', {'form': form})
+>>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
