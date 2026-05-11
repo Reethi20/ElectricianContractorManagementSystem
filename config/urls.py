@@ -19,13 +19,8 @@ urlpatterns = [
 
     # ================= DASHBOARD =================
     path('dashboard/', views.dashboard),
-<<<<<<< HEAD
     
     path('client-dashboard/', views.client_dashboard, name='client_dashboard'),
-    
-=======
-
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
     path('upload-job/', views.upload_job, name='upload_job'),
     path('upload-report/', views.upload_report, name='upload_report'),
 

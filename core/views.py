@@ -300,15 +300,12 @@ from datetime import date
 from .models import Job, Electrician
 
 def jobs(request):
-<<<<<<< HEAD
-
     if check_login(request):
         return check_login(request)
-=======
+
     # 🔐 Check login
     if not request.session.get('user_id'):
         return redirect('/login/')
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 
     jobs_list = Job.objects.all()
     electricians = Electrician.objects.all()
@@ -320,18 +317,13 @@ def jobs(request):
 
     # ================= POST =================
     if request.method == 'POST':
-
-<<<<<<< HEAD
         if not is_admin(request):
-=======
         # Only admin allowed
-        if request.session.get('role') != "Admin":
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
+        
             return redirect('/dashboard/')
 
         action = request.POST.get('action')
 
-<<<<<<< HEAD
         if action == "add":
 
             Job.objects.create(
@@ -354,7 +346,6 @@ def jobs(request):
             j.deadline = request.POST['deadline']
             j.status = request.POST['status']
             j.save()
-=======
         # 🔹 Safe data extraction
         title = request.POST.get('title')
         location = request.POST.get('location')
@@ -405,7 +396,6 @@ def jobs(request):
 
             except Exception as e:
                 return HttpResponse(f"Error while updating job: {e}")
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 
         return redirect('/jobs/')
 
@@ -414,12 +404,8 @@ def jobs(request):
         'jobs': jobs_list,
         'electricians': electricians
     })
-<<<<<<< HEAD
-
 
 # ================= DELETE JOB =================
-=======
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 def delete_job(request, id):
 
     if not is_admin(request):
@@ -706,26 +692,22 @@ def api_delete_task(request, id):
         }, status=200)
 
     except Task.DoesNotExist:
-
-<<<<<<< HEAD
         return JsonResponse({
             'error': 'Task not found'
         }, status=404)
 
 
 # ================= FILE UPLOAD =================
-=======
         return JsonResponse({'error': 'Task not found'}, status=404)
     # ================= FILE UPLOAD =================
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
 def upload_job(request):
     return render(request, 'upload_job.html')
 
 
 def upload_report(request):
-<<<<<<< HEAD
+
     return render(request, 'upload_report.html')
-=======
+
     if request.method == 'POST':
         form = ReportForm(request.POST, request.FILES)
         if form.is_valid():
@@ -734,4 +716,4 @@ def upload_report(request):
     else:
         form = ReportForm()
     return render(request, 'upload_report.html', {'form': form})
->>>>>>> 5eae7c1e612cec9c64e084d6efeb343f9d6ecace
+
