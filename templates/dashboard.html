@@ -2,203 +2,394 @@
 
 {% block content %}
 
-<style>
-.dashboard-title{
-    font-weight:700;
-    margin-bottom:25px;
-}
+<!-- ACTION BUTTONS -->
 
-.stat-card{
-    border:none;
-    border-radius:15px;
-    transition:0.3s;
-}
+<div class="d-flex flex-wrap gap-3 mb-4">
 
-.stat-card:hover{
-    transform:translateY(-5px);
-}
+    <a href="/jobs/"
+       class="btn btn-primary px-4 py-3 fw-semibold shadow-sm">
 
-.stat-icon{
-    font-size:30px;
-}
+        <i class="fa-solid fa-plus me-2"></i>
 
-.chart-card{
-    border:none;
-    border-radius:15px;
-}
+        Add Job
 
-.update-box{
-    border-radius:12px;
-}
+    </a>
 
-.badge{
-    padding:8px 12px;
-}
-</style>
+    <a href="/tasks/"
+       class="btn btn-outline-primary px-4 py-3 fw-semibold shadow-sm">
 
-<h2 class="dashboard-title">Dashboard Overview</h2>
+        <i class="fa-solid fa-list-check me-2"></i>
 
-<!-- ALERT -->
-<div class="alert alert-primary shadow-sm border-0">
-    🔔 You have <strong>{{ tasks }}</strong> pending tasks
+        Manage Tasks
+
+    </a>
+
+    <a href="/reports/"
+       class="btn btn-outline-dark px-4 py-3 fw-semibold shadow-sm">
+
+        <i class="fa-solid fa-chart-line me-2"></i>
+
+        Reports
+
+    </a>
+
 </div>
 
-<!-- STATISTICS -->
-<div class="row g-4">
+<!-- ALERT -->
+
+<div class="alert border-0 shadow-sm mb-4
+            d-flex align-items-center gap-3"
+     style="background:#dbeafe;
+            color:#1e3a8a;
+            border-radius:16px;">
+
+    <div class="bg-primary text-white
+                rounded-circle
+                d-flex align-items-center
+                justify-content-center"
+         style="width:45px; height:45px;">
+
+        <i class="fa-solid fa-bolt"></i>
+
+    </div>
+
+    <div>
+
+        <strong>
+
+            {{ pending_tasks }}
+
+        </strong>
+
+        pending task(s) require attention.
+
+    </div>
+
+</div>
+
+<!-- DASHBOARD CARDS -->
+
+<div class="row g-4 mb-4">
 
     <!-- ELECTRICIANS -->
+
     <div class="col-lg-3 col-md-6">
-        <div class="card stat-card shadow-sm p-4 text-center">
-            <div class="stat-icon mb-2"></div>
-            <h6 class="text-muted">Total Electricians</h6>
-            <h2 class="fw-bold">{{ electricians }}</h2>
+
+        <div class="card border-0 shadow-sm p-4 h-100 dashboard-card">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-2">
+
+                        Electricians
+
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+
+                        {{ total_electricians }}
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-icon bg-primary">
+
+                    <i class="fa-solid fa-user-gear"></i>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
     <!-- JOBS -->
+
     <div class="col-lg-3 col-md-6">
-        <div class="card stat-card shadow-sm p-4 text-center">
-            <div class="stat-icon mb-2"></div>
-            <h6 class="text-muted">Total Jobs</h6>
-            <h2 class="fw-bold">{{ jobs }}</h2>
+
+        <div class="card border-0 shadow-sm p-4 h-100 dashboard-card">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-2">
+
+                        Jobs
+
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+
+                        {{ total_jobs }}
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-icon bg-info">
+
+                    <i class="fa-solid fa-briefcase"></i>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
     <!-- PENDING -->
+
     <div class="col-lg-3 col-md-6">
-        <div class="card stat-card shadow-sm p-4 text-center">
-            <div class="stat-icon mb-2"></div>
-            <h6 class="text-muted">Pending Tasks</h6>
-            <h2 class="fw-bold">{{ tasks }}</h2>
+
+        <div class="card border-0 shadow-sm p-4 h-100 dashboard-card">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-2">
+
+                        Pending
+
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+
+                        {{ pending_tasks }}
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-icon bg-warning">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
 
     <!-- COMPLETED -->
+
     <div class="col-lg-3 col-md-6">
-        <div class="card stat-card shadow-sm p-4 text-center">
-            <div class="stat-icon mb-2"></div>
-            <h6 class="text-muted">Completed Tasks</h6>
-            <h2 class="fw-bold">{{ completed }}</h2>
-        </div>
-    </div>
 
-</div>
+        <div class="card border-0 shadow-sm p-4 h-100 dashboard-card">
 
-<!-- CHARTS -->
-<div class="row mt-4 g-4">
+            <div class="d-flex justify-content-between align-items-center">
 
-    <!-- PIE -->
-    <div class="col-lg-6">
-        <div class="card chart-card shadow-sm p-4">
-            <h5 class="fw-bold mb-3 text-center">Task Status</h5>
+                <div>
 
-            <div style="height:300px;">
-                <canvas id="taskChart"></canvas>
+                    <p class="text-muted mb-2">
+
+                        Completed
+
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+
+                        {{ completed_tasks }}
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-icon bg-success">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
             </div>
-        </div>
-    </div>
 
-    <!-- BAR -->
-    <div class="col-lg-6">
-        <div class="card chart-card shadow-sm p-4">
-            <h5 class="fw-bold mb-3 text-center">System Overview</h5>
-
-            <div style="height:300px;">
-                <canvas id="barChart"></canvas>
-            </div>
         </div>
+
     </div>
 
 </div>
 
-<!-- RECENT ACTIVITIES -->
-<div class="mt-5">
+<!-- RECENT TASKS -->
 
-    <h4 class="fw-bold mb-3">Recent Updates</h4>
+<div class="card border-0 shadow-sm p-4">
 
-    <div class="card shadow-sm border-0 update-box">
-        <ul class="list-group list-group-flush">
+    <div class="d-flex justify-content-between
+                align-items-center
+                mb-4 flex-wrap gap-2">
 
-            {% for task in completed_tasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>{{ task.name }} completed</span>
-                <span class="badge bg-success">Done</span>
-            </li>
-            {% endfor %}
+        <div>
 
-            {% for task in new_tasks %}
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span>{{ task.name }} assigned</span>
-                <span class="badge bg-warning text-dark">New</span>
-            </li>
-            {% endfor %}
+            <h4 class="fw-bold mb-1">
 
-            {% if not completed_tasks and not new_tasks %}
-            <li class="list-group-item text-center text-muted">
-                No updates available
-            </li>
-            {% endif %}
+                Recent Tasks
 
-        </ul>
+            </h4>
+
+            <p class="text-muted mb-0">
+
+                Monitor assigned electrical work and progress
+
+            </p>
+
+        </div>
+
+        <a href="/tasks/"
+           class="btn btn-outline-primary fw-semibold">
+
+            View All
+
+        </a>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th>Task</th>
+
+                    <th>Electrician</th>
+
+                    <th>Job</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for task in tasks %}
+
+                <tr>
+
+                    <td class="fw-semibold">
+
+                        {{ task.name }}
+
+                    </td>
+
+                    <td>
+
+                        <div class="d-flex align-items-center gap-2">
+
+                            <div class="bg-primary bg-opacity-10
+                                        rounded-circle
+                                        d-flex align-items-center
+                                        justify-content-center"
+                                 style="width:35px; height:35px;">
+
+                                <i class="fa-solid fa-user
+                                          text-primary"
+                                   style="font-size:13px;"></i>
+
+                            </div>
+
+                            {{ task.electrician.name }}
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        {{ task.job.title }}
+
+                    </td>
+
+                    <td>
+
+                        {% if task.status == "Completed" %}
+
+                        <span class="badge bg-success px-3 py-2">
+
+                            Completed
+
+                        </span>
+
+                        {% elif task.status == "In Progress" %}
+
+                        <span class="badge bg-primary px-3 py-2">
+
+                            In Progress
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-warning text-dark px-3 py-2">
+
+                            Pending
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4"
+                        class="text-center text-muted py-4">
+
+                        No task records available
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
     </div>
 
 </div>
 
-<!-- CHART JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- EXTRA STYLE -->
 
-<script>
+<style>
 
-// PIE CHART
-var ctx = document.getElementById('taskChart').getContext('2d');
+.dashboard-card{
+    transition:0.3s;
+    border-radius:18px;
+}
 
-new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-        labels: ['Pending', 'Completed'],
-        datasets: [{
-            data: [{{ tasks }}, {{ completed }}],
-            backgroundColor: [
-                '#ffc107',
-                '#198754'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
+.dashboard-card:hover{
+    transform:translateY(-5px);
+}
 
-// BAR CHART
-var barCtx = document.getElementById('barChart').getContext('2d');
+.dashboard-icon{
+    width:60px;
+    height:60px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:22px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
 
-new Chart(barCtx, {
-    type: 'bar',
-    data: {
-        labels: ['Electricians', 'Jobs', 'Pending', 'Completed'],
-        datasets: [{
-            label: 'System Data',
-            data: [
-                {{ electricians }},
-                {{ jobs }},
-                {{ tasks }},
-                {{ completed }}
-            ],
-            backgroundColor: [
-                '#0d6efd',
-                '#198754',
-                '#ffc107',
-                '#dc3545'
-            ]
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-
-</script>
+</style>
 
 {% endblock %}

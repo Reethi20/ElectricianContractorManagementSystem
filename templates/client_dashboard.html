@@ -2,126 +2,275 @@
 
 {% block content %}
 
-<h2 class="mb-4 fw-bold">Client Dashboard</h2>
+<style>
 
-<!-- WELCOME CARD -->
-<div class="card shadow-sm p-4 mb-4">
+.dashboard-title{
+    font-weight:700;
+    color:#111827;
+}
 
-    <h3 class="fw-bold">
-        Welcome {{ request.session.name }} 👋
-    </h3>
+.welcome-card{
+    border:none;
+    border-radius:15px;
+}
+
+.overview-card{
+    border:none;
+    border-radius:15px;
+    transition:0.3s;
+}
+
+.overview-card:hover{
+    transform:translateY(-3px);
+}
+
+.overview-icon{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.request-card{
+    border:none;
+    border-radius:15px;
+}
+
+.table th{
+    font-weight:600;
+}
+
+.badge{
+    padding:8px 12px;
+    border-radius:20px;
+}
+
+@media(max-width:768px){
+
+    .table-responsive{
+        overflow-x:auto;
+    }
+
+}
+
+</style>
+
+<!-- TITLE -->
+
+<div class="mb-4">
+
+    <h2 class="dashboard-title mb-1">
+        Client Dashboard
+    </h2>
 
     <p class="text-muted">
-        Manage your electrician services, track requests,
-        and monitor work updates from your dashboard.
+        Track electrician services and request updates
+    </p>
+
+</div>
+
+<!-- WELCOME -->
+
+<div class="card welcome-card shadow-sm p-4 mb-4">
+
+    <h4 class="fw-bold">
+        Welcome {{ request.session.name }} 👋
+    </h4>
+
+    <p class="text-muted mb-0">
+
+        Manage your electrician requests, monitor work
+        progress, and track payment updates from here.
+
     </p>
 
 </div>
 
 <!-- OVERVIEW -->
-<div class="row">
 
-    <!-- TOTAL REQUESTS -->
+<div class="row g-4">
+
+    <!-- TOTAL -->
+
     <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
-            <h5>Total Requests</h5>
-            <h2>{{ total_requests }}</h2>
+
+        <div class="card overview-card shadow-sm p-4 text-center">
+
+            <div class="overview-icon text-primary">
+                <i class="fa-solid fa-file-lines"></i>
+            </div>
+
+            <h6 class="text-muted">
+                Total Requests
+            </h6>
+
+            <h2 class="fw-bold">
+                {{ total_requests }}
+            </h2>
+
         </div>
+
     </div>
 
     <!-- COMPLETED -->
+
     <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
-            <h5>Completed Works</h5>
-            <h2>{{ completed_requests }}</h2>
+
+        <div class="card overview-card shadow-sm p-4 text-center">
+
+            <div class="overview-icon text-success">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+
+            <h6 class="text-muted">
+                Completed Works
+            </h6>
+
+            <h2 class="fw-bold">
+                {{ completed_requests }}
+            </h2>
+
         </div>
+
     </div>
 
     <!-- PENDING -->
+
     <div class="col-md-4">
-        <div class="card shadow-sm p-4 text-center">
-            <h5>Pending Works</h5>
-            <h2>{{ pending_requests }}</h2>
+
+        <div class="card overview-card shadow-sm p-4 text-center">
+
+            <div class="overview-icon text-warning">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <h6 class="text-muted">
+                Pending Works
+            </h6>
+
+            <h2 class="fw-bold">
+                {{ pending_requests }}
+            </h2>
+
         </div>
+
     </div>
 
 </div>
 
-<!-- RECENT REQUESTS -->
-<div class="card shadow-sm mt-4 p-4">
+<!-- REQUESTS -->
 
-    <h4 class="fw-bold mb-3">Recent Requests</h4>
+<div class="card request-card shadow-sm mt-4 p-4">
 
-    <table class="table table-hover">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
 
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Service</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Electrician</th>
-                <th>Payment</th>
-            </tr>
-        </thead>
+        <h4 class="fw-bold mb-0">
+            Recent Requests
+        </h4>
 
-        <tbody>
+        <span class="badge bg-primary">
+            {{ total_requests }} Requests
+        </span>
 
-            {% for request in requests_data %}
+    </div>
 
-            <tr>
+    <div class="table-responsive">
 
-                <td>{{ request.id }}</td>
+        <table class="table table-hover align-middle">
 
-                <td>{{ request.service_title }}</td>
+            <thead class="table-light">
 
-                <td>{{ request.location }}</td>
+                <tr>
 
-                <td>
+                    <th>ID</th>
+                    <th>Service</th>
+                    <th>Location</th>
+                    <th>Status</th>
+                    <th>Electrician</th>
+                    <th>Payment</th>
 
-                    {% if request.status == "Pending" %}
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for request in requests_data %}
+
+                <tr>
+
+                    <td>
+                        #{{ request.id }}
+                    </td>
+
+                    <td>
+                        {{ request.service_title }}
+                    </td>
+
+                    <td>
+                        {{ request.location }}
+                    </td>
+
+                    <td>
+
+                        {% if request.status == "Pending" %}
+
                         <span class="badge bg-warning text-dark">
                             Pending
                         </span>
-                    {% else %}
+
+                        {% else %}
+
                         <span class="badge bg-success">
                             Completed
                         </span>
-                    {% endif %}
 
-                </td>
+                        {% endif %}
 
-                <td>{{ request.electrician }}</td>
+                    </td>
 
-                <td>
+                    <td>
+                        {{ request.electrician }}
+                    </td>
 
-                    {% if request.payment_status == "Paid" %}
+                    <td>
+
+                        {% if request.payment_status == "Paid" %}
+
                         <span class="badge bg-success">
                             Paid
                         </span>
-                    {% else %}
+
+                        {% else %}
+
                         <span class="badge bg-danger">
                             Unpaid
                         </span>
-                    {% endif %}
 
-                </td>
+                        {% endif %}
 
-            </tr>
+                    </td>
 
-            {% empty %}
+                </tr>
 
-            <tr>
-                <td colspan="6" class="text-center">
-                    No Requests Found
-                </td>
-            </tr>
+                {% empty %}
 
-            {% endfor %}
+                <tr>
 
-        </tbody>
+                    <td colspan="6"
+                        class="text-center text-muted py-4">
 
-    </table>
+                        No Requests Found
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 </div>
 

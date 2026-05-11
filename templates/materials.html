@@ -2,82 +2,361 @@
 
 {% block content %}
 
-<h3 class="mb-4">Materials Management</h3>
+<style>
 
-<!-- ADD FORM -->
-{% if request.session.role == "Admin" %}
-<form method="POST" class="row g-2 mb-4">
-{% csrf_token %}
-<input type="hidden" name="action" value="add">
+.inventory-card{
+    border:none;
+    border-radius:16px;
+}
 
-<div class="col-md-4">
-<input name="name" class="form-control" placeholder="Material Name" required>
+.inventory-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.material-table th{
+    background:#eff6ff;
+    color:#1e293b;
+    font-size:14px;
+    font-weight:600;
+    border:none;
+}
+
+.material-table td{
+    vertical-align:middle;
+    border-color:#e5e7eb;
+}
+
+.stock-low{
+    color:#dc2626;
+    font-weight:600;
+}
+
+.stock-good{
+    color:#15803d;
+    font-weight:600;
+}
+
+.material-icon{
+    width:42px;
+    height:42px;
+    border-radius:12px;
+    background:#dbeafe;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#2563eb;
+    font-size:18px;
+}
+
+</style>
+
+<!-- ================= PAGE TITLE ================= -->
+
+<div class="mb-4">
+
+    <h3 class="fw-bold mb-1">
+
+        Materials Inventory
+
+    </h3>
+
+    <p class="text-muted mb-0">
+
+        Track electrical materials and monitor available stock quantities
+
+    </p>
+
 </div>
 
-<div class="col-md-4">
-<input type="number" name="quantity" class="form-control" placeholder="Quantity" required>
-</div>
-
-<div class="col-md-2">
-<button type="submit" class="btn btn-primary w-100">Add</button>
-</div>
-
-</form>
-{% endif %}
-
-<!-- TABLE -->
-<div class="card p-3 shadow">
-<table class="table table-bordered align-middle">
-
-<tr class="table-light">
-<th>Material</th>
-<th>Quantity</th>
-{% if request.session.role == "Admin" %}
-<th>Actions</th>
-{% endif %}
-</tr>
-
-{% for m in materials %}
-
-<!-- ✅ CORRECT FORM -->
-<form method="POST">
-{% csrf_token %}
-<input type="hidden" name="action" value="update">
-<input type="hidden" name="id" value="{{ m.id }}">
-
-<tr>
-
-<td>
-<input name="name" value="{{ m.name }}" class="form-control">
-</td>
-
-<td>
-<input type="number" name="quantity" value="{{ m.quantity }}" class="form-control">
-</td>
+<!-- ================= ADD MATERIAL ================= -->
 
 {% if request.session.role == "Admin" %}
-<td class="d-flex gap-2">
 
-<button type="submit" class="btn btn-success btn-sm">
-Update
-</button>
+<div class="card inventory-card shadow-sm p-4 mb-4">
 
-<a href="/delete-material/{{ m.id }}/"
-   class="btn btn-danger btn-sm"
-   onclick="return confirm('Delete this material?')">
-Delete
-</a>
+    <div class="inventory-header">
 
-</td>
+        <div>
+
+            <h5 class="fw-bold mb-1">
+
+                Add New Material
+
+            </h5>
+
+            <p class="text-muted mb-0">
+
+                Maintain electrical inventory records
+
+            </p>
+
+        </div>
+
+    </div>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <input type="hidden"
+               name="action"
+               value="add">
+
+        <div class="row g-3">
+
+            <!-- MATERIAL NAME -->
+
+            <div class="col-md-5">
+
+                <label class="form-label fw-semibold">
+
+                    Material Name
+
+                </label>
+
+                <input type="text"
+                       name="name"
+                       class="form-control"
+                       placeholder="Enter material name"
+                       required>
+
+            </div>
+
+            <!-- QUANTITY -->
+
+            <div class="col-md-4">
+
+                <label class="form-label fw-semibold">
+
+                    Available Quantity
+
+                </label>
+
+                <input type="number"
+                       name="quantity"
+                       class="form-control"
+                       placeholder="Enter quantity"
+                       required>
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div class="col-md-3 d-flex align-items-end">
+
+                <button type="submit"
+                        class="btn btn-primary w-100 fw-semibold">
+
+                    <i class="fa-solid fa-plus me-1"></i>
+
+                    Add Material
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
+
 {% endif %}
 
-</tr>
+<!-- ================= INVENTORY TABLE ================= -->
 
-</form>
+<div class="card inventory-card shadow-sm p-4">
 
-{% endfor %}
+    <div class="inventory-header">
 
-</table>
+        <div>
+
+            <h5 class="fw-bold mb-1">
+
+                Electrical Materials
+
+            </h5>
+
+            <p class="text-muted mb-0">
+
+                Inventory stock and availability management
+
+            </p>
+
+        </div>
+
+        <span class="badge bg-primary px-3 py-2">
+
+            {{ materials|length }} Materials
+
+        </span>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table material-table align-middle">
+
+            <thead>
+
+                <tr>
+
+                    <th>Material</th>
+
+                    <th>Available Stock</th>
+
+                    <th>Status</th>
+
+                    {% if request.session.role == "Admin" %}
+
+                    <th width="220">
+
+                        Manage
+
+                    </th>
+
+                    {% endif %}
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for m in materials %}
+
+                <tr>
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <input type="hidden"
+                               name="action"
+                               value="update">
+
+                        <input type="hidden"
+                               name="id"
+                               value="{{ m.id }}">
+
+                        <!-- MATERIAL -->
+
+                        <td>
+
+                            <div class="d-flex align-items-center gap-3">
+
+                                <div class="material-icon">
+
+                                    <i class="fa-solid fa-toolbox"></i>
+
+                                </div>
+
+                                <input type="text"
+                                       name="name"
+                                       value="{{ m.name }}"
+                                       class="form-control">
+
+                            </div>
+
+                        </td>
+
+                        <!-- QUANTITY -->
+
+                        <td>
+
+                            <input type="number"
+                                   name="quantity"
+                                   value="{{ m.quantity }}"
+                                   class="form-control"
+                                   style="max-width:140px;">
+
+                        </td>
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            {% if m.quantity <= 5 %}
+
+                            <span class="badge bg-danger">
+
+                                Low Stock
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-success">
+
+                                In Stock
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+                        <!-- ACTIONS -->
+
+                        {% if request.session.role == "Admin" %}
+
+                        <td>
+
+                            <div class="d-flex gap-2">
+
+                                <button type="submit"
+                                        class="btn btn-success btn-sm">
+
+                                    <i class="fa-solid fa-check me-1"></i>
+
+                                    Update
+
+                                </button>
+
+                                <a href="/delete-material/{{ m.id }}/"
+                                   class="btn btn-danger btn-sm"
+                                   onclick="return confirm('Delete this material?')">
+
+                                    <i class="fa-solid fa-trash me-1"></i>
+
+                                    Remove
+
+                                </a>
+
+                            </div>
+
+                        </td>
+
+                        {% endif %}
+
+                    </form>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4"
+                        class="text-center text-muted py-4">
+
+                        No materials available
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
 </div>
 
 {% endblock %}

@@ -1,25 +1,237 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>ECMS Dashboard</title>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<!-- Bootstrap -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<title>ECMS</title>
 
-<!-- Font Awesome -->
+<!-- BOOTSTRAP -->
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet">
+
+<!-- FONT AWESOME -->
+
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- GOOGLE FONT -->
 
-<!-- Custom CSS -->
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+rel="stylesheet">
+
+<!-- CUSTOM CSS -->
+
+<link rel="stylesheet"
+      href="{% static 'css/style.css' %}">
+
+<style>
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#f1f5f9;
+}
+
+.wrapper{
+    display:flex;
+    min-height:100vh;
+}
+
+/* ================= SIDEBAR ================= */
+
+.sidebar{
+    width:250px;
+    background:#0f172a;
+    color:white;
+    position:fixed;
+    top:0;
+    left:0;
+    height:100vh;
+    z-index:1000;
+    overflow-y:auto;
+    transition:0.3s;
+}
+
+.logo-area{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:24px 20px;
+    border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.logo{
+    width:46px;
+    height:46px;
+    border-radius:12px;
+    object-fit:cover;
+}
+
+.logo-text{
+    font-weight:700;
+    font-size:24px;
+    color:white;
+}
+
+.menu{
+    padding:20px 15px;
+}
+
+.menu-title{
+    color:#94a3b8;
+    font-size:12px;
+    font-weight:600;
+    letter-spacing:1px;
+    margin-bottom:18px;
+}
+
+.menu-link{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    color:#e2e8f0;
+    text-decoration:none;
+    padding:13px 16px;
+    border-radius:12px;
+    margin-bottom:10px;
+    font-size:15px;
+    font-weight:500;
+    transition:0.3s;
+}
+
+.menu-link:hover{
+    background:#2563eb;
+    color:white;
+}
+
+.menu-link i{
+    width:18px;
+    text-align:center;
+}
+
+.logout-link:hover{
+    background:#dc2626;
+}
+
+/* ================= MAIN CONTENT ================= */
+
+.main-content{
+    margin-left:250px;
+    width:calc(100% - 250px);
+    min-height:100vh;
+}
+
+/* ================= TOPBAR ================= */
+
+.topbar{
+    background:white;
+    padding:22px 30px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:1px solid #e5e7eb;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.topbar h4{
+    font-size:20px;
+    color:#0f172a;
+}
+
+.topbar p{
+    font-size:14px;
+}
+
+.profile-box{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
+
+.profile-img{
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    background:#dbeafe;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#2563eb;
+    font-size:20px;
+}
+
+.content-area{
+    padding:30px;
+}
+
+/* ================= MOBILE ================= */
+
+.mobile-toggle{
+    display:none;
+    border:none;
+    background:none;
+    font-size:22px;
+    color:#2563eb;
+}
+
+.sidebar-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.5);
+    z-index:999;
+    display:none;
+}
+
+.sidebar-overlay.active{
+    display:block;
+}
+
+@media(max-width:992px){
+
+    .sidebar{
+        left:-260px;
+    }
+
+    .sidebar.active{
+        left:0;
+    }
+
+    .main-content{
+        margin-left:0;
+        width:100%;
+    }
+
+    .mobile-toggle{
+        display:block;
+    }
+
+    .topbar{
+        padding:18px;
+    }
+
+    .content-area{
+        padding:20px;
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -27,109 +239,185 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
 
 <div class="wrapper">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+    <!-- ================= SIDEBAR ================= -->
 
-        <div class="sidebar-top">
+    <aside class="sidebar">
 
-            <div class="logo-area">
-                <img src="{% static 'images/logo.png' %}" class="logo">
-                <h4>ECMS</h4>
+        <!-- LOGO -->
+
+        <div class="logo-area">
+
+            <img src="{% static 'images/logo.png' %}"
+                 class="logo">
+
+            <div>
+
+                <h5 class="logo-text mb-0">
+
+                    ECMS
+
+                </h5>
+
+                <small class="text-light opacity-75">
+
+                    Management System
+
+                </small>
+
             </div>
-
-            <button class="toggle-btn d-md-none" onclick="toggleSidebar()">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
 
         </div>
 
-        <div class="menu-section">
+        <!-- MENU -->
 
-            <p class="menu-title">MAIN MENU</p>
+        <div class="menu">
 
-            <!-- ADMIN -->
+            <p class="menu-title">
+
+                MAIN MENU
+
+            </p>
+
+            <!-- ================= ADMIN ================= -->
+
             {% if request.session.role == "Admin" %}
 
             <a href="/dashboard/" class="menu-link">
-                <i class="fa-solid fa-gauge"></i>
-                <span>Dashboard</span>
+
+                <i class="fa-solid fa-table-columns"></i>
+
+                Dashboard
+
             </a>
 
             <a href="/electricians/" class="menu-link">
+
                 <i class="fa-solid fa-user-gear"></i>
-                <span>Electricians</span>
+
+                Electricians
+
             </a>
 
             <a href="/jobs/" class="menu-link">
+
                 <i class="fa-solid fa-briefcase"></i>
-                <span>Jobs</span>
+
+                Jobs
+
             </a>
 
             <a href="/tasks/" class="menu-link">
+
                 <i class="fa-solid fa-list-check"></i>
-                <span>Tasks</span>
+
+                Tasks
+
             </a>
 
             <a href="/materials/" class="menu-link">
-                <i class="fa-solid fa-boxes-stacked"></i>
-                <span>Materials</span>
+
+                <i class="fa-solid fa-toolbox"></i>
+
+                Materials
+
             </a>
 
             <a href="/reports/" class="menu-link">
+
                 <i class="fa-solid fa-chart-line"></i>
-                <span>Reports</span>
+
+                Reports
+
             </a>
 
-            <!-- ELECTRICIAN -->
-            {% elif request.session.role == "Electrician" %}
+            <a href="/client-requests/" class="menu-link">
 
-            <a href="/tasks/" class="menu-link">
-                <i class="fa-solid fa-list-check"></i>
-                <span>My Tasks</span>
-            </a>
-
-            <!-- CLIENT -->
-            {% elif request.session.role == "Client" %}
-
-            <a href="/client-dashboard/" class="menu-link">
-                <i class="fa-solid fa-gauge"></i>
-                <span>Dashboard</span>
-            </a>
-
-            <a href="/my-requests/" class="menu-link">
                 <i class="fa-solid fa-file-lines"></i>
-                <span>My Requests</span>
+
+                Client Requests
+
             </a>
 
             {% endif %}
 
-        </div>
+            <!-- ================= ELECTRICIAN ================= -->
 
-        <div class="sidebar-bottom">
+            {% if request.session.role == "Electrician" %}
 
-            <a href="/profile/" class="menu-link">
-                <i class="fa-solid fa-user"></i>
-                <span>Profile</span>
+            <a href="/tasks/" class="menu-link">
+
+                <i class="fa-solid fa-list-check"></i>
+
+                My Tasks
+
             </a>
 
-            <a href="/logout/" class="menu-link logout-link">
+            <a href="/jobs/" class="menu-link">
+
+                <i class="fa-solid fa-briefcase"></i>
+
+                My Jobs
+
+            </a>
+
+            {% endif %}
+
+            <!-- ================= CLIENT ================= -->
+
+            {% if request.session.role == "Client" %}
+
+            <a href="/client-dashboard/" class="menu-link">
+
+                <i class="fa-solid fa-table-columns"></i>
+
+                Dashboard
+
+            </a>
+
+            <a href="/my-requests/" class="menu-link">
+
+                <i class="fa-solid fa-file-lines"></i>
+
+                My Requests
+
+            </a>
+
+            {% endif %}
+
+            <!-- ================= COMMON ================= -->
+
+            <a href="/profile/" class="menu-link">
+
+                <i class="fa-solid fa-user"></i>
+
+                Profile
+
+            </a>
+
+            <a href="/logout/"
+               class="menu-link logout-link">
+
                 <i class="fa-solid fa-right-from-bracket"></i>
-                <span>Logout</span>
+
+                Logout
+
             </a>
 
         </div>
 
     </aside>
 
-    <!-- MAIN -->
+    <!-- ================= MAIN CONTENT ================= -->
+
     <main class="main-content">
 
         <!-- TOPBAR -->
-        <div class="topbar">
 
-            <div class="left-topbar">
+        <header class="topbar">
 
-                <button class="mobile-toggle d-md-none"
+            <div class="d-flex align-items-center gap-3">
+
+                <button class="mobile-toggle"
                         onclick="toggleSidebar()">
 
                     <i class="fa-solid fa-bars"></i>
@@ -137,65 +425,95 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
                 </button>
 
                 <div>
-                    <h4 class="page-title">
-                        Welcome back, {{ request.session.name }}
+
+                    <h4 class="mb-1 fw-bold">
+
+                        Welcome back,
+                        {{ request.session.name }}
+
                     </h4>
 
-                    <p class="page-subtitle">
-                        Manage electrician workflow efficiently
+                    <p class="mb-0 text-muted">
+
+                        Electrician Contractor Management System
+
                     </p>
-                </div>
-
-            </div>
-
-            <div class="right-topbar">
-
-                <!-- SEARCH -->
-                <div class="search-box d-none d-md-flex">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" placeholder="Search...">
-                </div>
-
-                <!-- NOTIFICATION -->
-                <div class="notification-box">
-
-                    <i class="fa-regular fa-bell"></i>
-
-                    <span class="notification-count">3</span>
-
-                </div>
-
-                <!-- PROFILE -->
-                <div class="profile-box">
-
-                    <img src="{% static 'images/profile.png' %}"
-                         class="profile-img">
-
-                    <div class="profile-info d-none d-md-block">
-                        <h6>{{ request.session.name }}</h6>
-                        <p>{{ request.session.role }}</p>
-                    </div>
 
                 </div>
 
             </div>
 
-        </div>
+            <!-- PROFILE -->
 
-        <!-- PAGE CONTENT -->
-        <div class="content-area">
+            <div class="profile-box">
+
+                <div class="profile-img">
+
+                    <i class="fa-solid fa-user"></i>
+
+                </div>
+
+                <div>
+
+                    <strong class="d-block">
+
+                        {{ request.session.name }}
+
+                    </strong>
+
+                    <small class="text-muted">
+
+                        {{ request.session.role }}
+
+                    </small>
+
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- CONTENT -->
+
+        <section class="content-area">
 
             {% block content %}
+
             {% endblock %}
 
-        </div>
+        </section>
 
     </main>
 
 </div>
 
-<!-- JS -->
-<script src="{% static 'js/sidebar.js' %}"></script>
+<!-- OVERLAY -->
+
+<div id="overlay"
+     class="sidebar-overlay"
+     onclick="toggleSidebar()">
+</div>
+
+<!-- SCRIPT -->
+
+<script>
+
+function toggleSidebar(){
+
+    document.querySelector('.sidebar')
+            .classList.toggle('active');
+
+    document.getElementById('overlay')
+            .classList.toggle('active');
+
+}
+
+</script>
+
+<!-- BOOTSTRAP -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
+</script>
 
 </body>
 </html>
