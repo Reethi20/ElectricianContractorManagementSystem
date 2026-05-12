@@ -934,12 +934,27 @@ def reports(request):
     ).count()
 
     electricians = Electrician.objects.all()
+
+    total_tasks = (
+        completed_tasks +
+        pending_tasks +
+        inprogress_tasks
+    )
+
     return render(request, 'reports.html', {
+
         'today_jobs': today_jobs,
+
         'completed_tasks': completed_tasks,
+
         'pending_tasks': pending_tasks,
+
         'inprogress_tasks': inprogress_tasks,
-        'electricians': electricians
+
+        'electricians': electricians,
+
+        'total_tasks': total_tasks
+
     })
 
 # ================= PROFILE =================

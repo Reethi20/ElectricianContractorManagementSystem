@@ -2,63 +2,97 @@
 
 {% block content %}
 
+<style>
+
+.analytics-card{
+    border:none;
+    border-radius:22px;
+    transition:0.3s;
+}
+
+.analytics-card:hover{
+    transform:translateY(-4px);
+}
+
+.analytics-icon{
+    width:65px;
+    height:65px;
+    border-radius:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+}
+
+.progress{
+    height:12px;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.activity-box{
+    border-bottom:1px solid #e5e7eb;
+    padding-bottom:15px;
+    margin-bottom:15px;
+}
+
+</style>
+
 <!-- PAGE HEADER -->
 
 <div class="mb-4">
 
-    <h2 class="fw-bold mb-1"
-        style="font-size:22px; color:#111827;">
+    <h2 class="fw-bold mb-2">
 
-        Reports Dashboard
+        <i class="fa-solid fa-chart-line text-primary me-2"></i>
+
+        Reports & Analytics
 
     </h2>
 
-    <p class="text-muted mb-0"
-       style="font-size:15px;">
+    <p class="text-muted mb-0">
 
-        Analyze electrician performance,
-        task progress, and daily work activity.
+        Monitor electrician productivity,
+        completed jobs, pending operations,
+        task workflow, and workforce performance.
 
     </p>
 
 </div>
 
-<!-- TOP REPORT CARDS -->
+<!-- TOP ANALYTICS -->
 
 <div class="row g-4 mb-4">
 
-    <!-- DAILY WORK -->
+    <!-- COMPLETED JOBS -->
 
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-3 col-md-6">
 
-        <div class="card border-0 shadow-sm p-4 h-100">
+        <div class="card analytics-card shadow-sm p-4 h-100">
 
             <div class="d-flex justify-content-between align-items-center">
 
                 <div>
 
-                    <p class="text-muted mb-1">
+                    <p class="text-muted fw-semibold mb-1">
 
-                        Daily Work
+                        Completed Jobs
 
                     </p>
 
-                    <h2 class="fw-bold text-primary mb-0">
+                    <h2 class="fw-bold text-success mb-0">
 
-                        {{ today_jobs }}
+                        {{ completed_tasks }}
 
                     </h2>
 
                 </div>
 
-                <div class="bg-primary bg-opacity-10
-                            rounded-circle
-                            d-flex align-items-center
-                            justify-content-center"
-                     style="width:60px; height:60px;">
+                <div class="analytics-icon
+                            bg-success bg-opacity-10
+                            text-success">
 
-                    <i class="bi bi-calendar-check-fill
-                              text-primary fs-3"></i>
+                    <i class="fa-solid fa-circle-check"></i>
 
                 </div>
 
@@ -66,7 +100,7 @@
 
             <small class="text-muted mt-3 d-block">
 
-                Jobs completed today
+                Successfully completed operations
 
             </small>
 
@@ -74,143 +108,133 @@
 
     </div>
 
-    <!-- TASK STATUS -->
+    <!-- INCOMPLETE JOBS -->
 
-    <div class="col-lg-4 col-md-6">
+    <div class="col-lg-3 col-md-6">
 
-        <div class="card border-0 shadow-sm p-4 h-100">
+        <div class="card analytics-card shadow-sm p-4 h-100">
 
-            <h5 class="fw-bold mb-4">
+            <div class="d-flex justify-content-between align-items-center">
 
-                <i class="bi bi-list-task text-primary"></i>
+                <div>
 
-                Task Status
+                    <p class="text-muted fw-semibold mb-1">
 
-            </h5>
+                        Incomplete Jobs
 
-            <div class="d-flex justify-content-between
-                        align-items-center mb-3">
+                    </p>
 
-                <span class="fw-semibold text-success">
+                    <h2 class="fw-bold text-warning mb-0">
 
-                    Completed
+                        {{ pending_tasks }}
 
-                </span>
+                    </h2>
 
-                <span class="badge bg-success rounded-pill px-3 py-2">
+                </div>
 
-                    {{ completed_tasks }}
+                <div class="analytics-icon
+                            bg-warning bg-opacity-10
+                            text-warning">
 
-                </span>
+                    <i class="fa-solid fa-clock"></i>
 
-            </div>
-
-            <div class="d-flex justify-content-between
-                        align-items-center mb-3">
-
-                <span class="fw-semibold text-primary">
-
-                    In Progress
-
-                </span>
-
-                <span class="badge bg-primary rounded-pill px-3 py-2">
-
-                    {{ inprogress_tasks }}
-
-                </span>
+                </div>
 
             </div>
 
-            <div class="d-flex justify-content-between
-                        align-items-center">
+            <small class="text-muted mt-3 d-block">
 
-                <span class="fw-semibold text-warning">
+                Pending or delayed job operations
 
-                    Pending
-
-                </span>
-
-                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
-
-                    {{ pending_tasks }}
-
-                </span>
-
-            </div>
+            </small>
 
         </div>
 
     </div>
 
-    <!-- ELECTRICIAN ACTIVITY -->
+    <!-- IN PROGRESS -->
 
-    <div class="col-lg-4">
+    <div class="col-lg-3 col-md-6">
 
-        <div class="card border-0 shadow-sm p-4 h-100">
+        <div class="card analytics-card shadow-sm p-4 h-100">
 
-            <h5 class="fw-bold mb-4">
+            <div class="d-flex justify-content-between align-items-center">
 
-                <i class="bi bi-person-workspace text-primary"></i>
+                <div>
 
-                Electrician Activity
+                    <p class="text-muted fw-semibold mb-1">
 
-            </h5>
+                        Active Tasks
 
-            {% for e in electricians %}
+                    </p>
 
-            <div class="d-flex justify-content-between
-                        align-items-center
-                        border-bottom pb-3 mb-3">
+                    <h2 class="fw-bold text-primary mb-0">
 
-                <div class="d-flex align-items-center gap-3">
+                        {{ inprogress_tasks }}
 
-                    <div class="bg-primary bg-opacity-10
-                                rounded-circle
-                                d-flex align-items-center
-                                justify-content-center"
-                         style="width:42px; height:42px;">
-
-                        <i class="bi bi-person-fill
-                                  text-primary"></i>
-
-                    </div>
-
-                    <div>
-
-                        <div class="fw-semibold">
-
-                            {{ e.name }}
-
-                        </div>
-
-                        <small class="text-muted">
-
-                            Assigned Tasks
-
-                        </small>
-
-                    </div>
+                    </h2>
 
                 </div>
 
-                <span class="badge bg-primary rounded-pill px-3 py-2">
+                <div class="analytics-icon
+                            bg-primary bg-opacity-10
+                            text-primary">
 
-                    {{ e.task_set.count }}
+                    <i class="fa-solid fa-rotate"></i>
 
-                </span>
-
-            </div>
-
-            {% empty %}
-
-            <div class="text-center text-muted py-4">
-
-                No electrician records found
+                </div>
 
             </div>
 
-            {% endfor %}
+            <small class="text-muted mt-3 d-block">
+
+                Ongoing electrical activities
+
+            </small>
+
+        </div>
+
+    </div>
+
+    <!-- ELECTRICIANS -->
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card analytics-card shadow-sm p-4 h-100">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted fw-semibold mb-1">
+
+                        Electricians
+
+                    </p>
+
+                    <h2 class="fw-bold text-info mb-0">
+
+                        {{ electricians.count }}
+
+                    </h2>
+
+                </div>
+
+                <div class="analytics-icon
+                            bg-info bg-opacity-10
+                            text-info">
+
+                    <i class="fa-solid fa-user-gear"></i>
+
+                </div>
+
+            </div>
+
+            <small class="text-muted mt-3 d-block">
+
+                Registered workforce members
+
+            </small>
 
         </div>
 
@@ -218,48 +242,116 @@
 
 </div>
 
-<!-- SUMMARY SECTION -->
+<!-- PERFORMANCE ANALYTICS -->
 
-<div class="card border-0 shadow-sm p-4">
+<div class="row g-4 mb-4">
 
-    <h5 class="fw-bold mb-4">
+    <!-- TASK ANALYTICS -->
 
-        <i class="bi bi-bar-chart-fill text-primary"></i>
+    <div class="col-lg-8">
 
-        Reports Summary
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
 
-    </h5>
+            <h5 class="fw-bold mb-4">
 
-    <div class="row g-4">
+                <i class="fa-solid fa-chart-pie
+                          text-primary me-2"></i>
 
-        <!-- COMPLETED -->
+                Performance Analytics
 
-        <div class="col-md-4">
+            </h5>
 
-            <div class="rounded-4 p-4 h-100
-                        border border-success border-opacity-25
-                        bg-success bg-opacity-10">
+            <!-- COMPLETED -->
 
-                <div class="d-flex justify-content-between align-items-center">
+            <div class="mb-4">
 
-                    <div>
+                <div class="d-flex justify-content-between mb-2">
 
-                        <p class="text-success fw-semibold mb-1">
+                    <span class="fw-semibold text-success">
 
-                            Completed Tasks
+                        Completed Tasks
 
-                        </p>
+                    </span>
 
-                        <h2 class="fw-bold mb-0">
+                    <span class="fw-bold text-success">
 
-                            {{ completed_tasks }}
+                        {{ completed_tasks }}
 
-                        </h2>
+                    </span>
+
+                </div>
+
+                <div class="progress">
+
+                    <div class="progress-bar bg-success"
+                         style="width:
+                         {% widthratio completed_tasks total_tasks 100 %}%">
 
                     </div>
 
-                    <i class="bi bi-check-circle-fill
-                              text-success fs-1"></i>
+                </div>
+
+            </div>
+
+            <!-- IN PROGRESS -->
+
+            <div class="mb-4">
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span class="fw-semibold text-primary">
+
+                        In Progress Tasks
+
+                    </span>
+
+                    <span class="fw-bold text-primary">
+
+                        {{ inprogress_tasks }}
+
+                    </span>
+
+                </div>
+
+                <div class="progress">
+
+                    <div class="progress-bar bg-primary"
+                         style="width:
+                         {% widthratio inprogress_tasks total_tasks 100 %}%">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- PENDING -->
+
+            <div>
+
+                <div class="d-flex justify-content-between mb-2">
+
+                    <span class="fw-semibold text-warning">
+
+                        Pending Tasks
+
+                    </span>
+
+                    <span class="fw-bold text-warning">
+
+                        {{ pending_tasks }}
+
+                    </span>
+
+                </div>
+
+                <div class="progress">
+
+                    <div class="progress-bar bg-warning"
+                         style="width:
+                         {% widthratio pending_tasks total_tasks 100 %}%">
+
+                    </div>
 
                 </div>
 
@@ -267,73 +359,79 @@
 
         </div>
 
-        <!-- IN PROGRESS -->
+    </div>
 
-        <div class="col-md-4">
+    <!-- ELECTRICIAN PERFORMANCE -->
 
-            <div class="rounded-4 p-4 h-100
-                        border border-primary border-opacity-25
-                        bg-primary bg-opacity-10">
+    <div class="col-lg-4">
+
+        <div class="card border-0 shadow-sm rounded-4 p-4 h-100">
+
+            <h5 class="fw-bold mb-4">
+
+                <i class="fa-solid fa-users
+                          text-primary me-2"></i>
+
+                Electrician Performance
+
+            </h5>
+
+            {% for e in electricians %}
+
+            <div class="activity-box">
 
                 <div class="d-flex justify-content-between align-items-center">
 
-                    <div>
+                    <div class="d-flex align-items-center gap-3">
 
-                        <p class="text-primary fw-semibold mb-1">
+                        <div class="analytics-icon
+                                    bg-primary bg-opacity-10
+                                    text-primary"
+                             style="width:45px;
+                                    height:45px;
+                                    font-size:18px;">
 
-                            In Progress
+                            <i class="fa-solid fa-user"></i>
 
-                        </p>
+                        </div>
 
-                        <h2 class="fw-bold mb-0">
+                        <div>
 
-                            {{ inprogress_tasks }}
+                            <div class="fw-semibold">
 
-                        </h2>
+                                {{ e.name }}
+
+                            </div>
+
+                            <small class="text-muted">
+
+                                Assigned Tasks
+
+                            </small>
+
+                        </div>
 
                     </div>
 
-                    <i class="bi bi-arrow-repeat
-                              text-primary fs-1"></i>
+                    <span class="badge bg-primary rounded-pill px-3 py-2">
+
+                        {{ e.task_set.count }}
+
+                    </span>
 
                 </div>
 
             </div>
 
-        </div>
+            {% empty %}
 
-        <!-- PENDING -->
+            <div class="text-center text-muted py-4">
 
-        <div class="col-md-4">
-
-            <div class="rounded-4 p-4 h-100
-                        border border-warning border-opacity-25
-                        bg-warning bg-opacity-10">
-
-                <div class="d-flex justify-content-between align-items-center">
-
-                    <div>
-
-                        <p class="text-warning fw-semibold mb-1">
-
-                            Pending Tasks
-
-                        </p>
-
-                        <h2 class="fw-bold mb-0">
-
-                            {{ pending_tasks }}
-
-                        </h2>
-
-                    </div>
-
-                    <i class="bi bi-clock-history
-                              text-warning fs-1"></i>
-
-                </div>
+                No electrician data available
 
             </div>
+
+            {% endfor %}
 
         </div>
 
