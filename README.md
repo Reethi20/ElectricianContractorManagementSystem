@@ -1,86 +1,101 @@
 # Electrician Contractor Management System
-## 🌐 Live Demo
-
-The project is deployed and accessible online:
-https://electriciancontractormanagementsystem.onrender.com
 
 ## Introduction
-The Electrician Contractor Management System is a web-based application designed to manage electricians, jobs, tasks, materials, and reports efficiently. It helps contractors organize work, assign tasks, track progress, and generate reports through a user-friendly interface.
+
+The Electrician Contractor Management System is a web-based enterprise application designed to manage electricians, jobs, tasks, client requests, payments, materials, and reports efficiently. The system helps contractors organize workflows, assign jobs, track task progress, manage secure payment transactions, and generate reports through a responsive and user-friendly interface.
+
+---
+
+## Live Demo
+
+https://electriciancontractormanagementsystem.onrender.com
 
 ---
 
 ## Objectives
-- To simplify contractor management operations  
-- To maintain records of electricians, jobs, and tasks  
-- To provide real-time tracking and reporting  
-- To ensure secure and role-based access  
+
+- To simplify contractor management operations
+- To maintain records of electricians, jobs, tasks, and client requests
+- To provide real-time tracking and reporting
+- To ensure secure and role-based access
+- To integrate secure online payment workflow
+- To achieve complete frontend-backend-database integration
 
 ---
 
 ## Features
 
-- Electrician Management  
-- Job Management  
-- Task Tracking  
-- Materials Management  
-- Reports  
-- Login and Registration  
-- Admin Profile  
-- Role-Based Access Control  
-- Search and Filter  
-- Notifications  
-- File Upload  
+- User Authentication (Login/Register)
+- Role-Based Access Control
+- Electrician Management
+- Job Management
+- Task Tracking and Status Updates
+- Client Request Management
+- Razorpay Payment Gateway Integration
+- Client to Admin Payment Flow
+- Admin to Electrician Payment Flow
+- Payment Success/Failure Handling
+- Transaction History Management
+- Reports and Analytics Dashboard
+- Search and Filter Functionality
+- File Upload Feature
+- Responsive Enterprise-Level UI
+- Real-Time CRUD Operations
+- Online Deployment on Render
 
 ---
 
 ## Variables / Models Used
 
-- User (id, name, phone, email, role, password)  
-- Electrician (id, name, phone)  
-- Job (id, title, location, electrician, deadline, status)  
-- Task (id, name, electrician, job, status)  
-- Material (id, name, quantity)  
-- Report (id, job, report_file)  
+- User (id, name, phone, email, role, password)
+- Electrician (id, name, phone)
+- Job (id, title, location, electrician, deadline, status)
+- Task (id, name, electrician, job, status)
+- Material (id, name, quantity)
+- Payment (payer, receiver, amount, payment_type, payment_method, status)
+- ClientRequest (client, service_title, location, description, status, electrician)
 
 ---
 
 ## Technologies Used
 
-- Python (Django)  
-- SQLite  
-- HTML  
-- CSS  
-- Bootstrap  
-- JavaScript  
+- Python (Django)
+- SQLite
+- Razorpay API
+- HTML5
+- CSS3
+- Bootstrap 5
+- JavaScript
+- Render Hosting
 
 ---
 
 ## System Requirements
 
-### Hardware:
-- Minimum 4GB RAM  
-- Basic Computer/Laptop  
+### Hardware
 
-### Software:
-- Python 3.x  
-- Django  
-- Web Browser (Chrome/Edge)  
-- SQLite Database  
+- Minimum 4GB RAM
+- Basic Computer/Laptop
+
+### Software
+
+- Python 3.x
+- Django
+- Web Browser (Chrome/Edge)
+- SQLite Database
 
 ---
 
 ## Procedure to Run the Project
 
-1. Install Python  
-2. Install Django  
-3. Open terminal in project folder  
-4. Run the following commands:
+1. Install Python
+2. Open terminal in project folder
+3. Install required packages
 
 ``bash
 pip install -r requirements.txt
-python manage.py makemigrations
-python manage.py migrate
-python manage.py runserver
+
+pip install razorpay
 
 ## Project Strcuture
 ElectricianContractorManagementSystem/
