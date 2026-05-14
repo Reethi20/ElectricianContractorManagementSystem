@@ -4,7 +4,6 @@
 The project is deployed and accessible online:
 https://electriciancontractormanagementsystem.onrender.com
 
-
 ## Introduction
 The Electrician Contractor Management System is a web-based application designed to manage electricians, jobs, tasks, materials, and reports efficiently. It helps contractors organize work, assign tasks, track progress, and generate reports through a user-friendly interface.
 
@@ -168,7 +167,7 @@ In Week 2, the project was converted into a fully functional Django application 
 
 - Django Backend Setup  
 - Database Integration (SQLite)  
-- User Authentication (Login, Register, Logout, Forgot Password)  
+- User Authentication (Login, Register, Logout)  
 - Electricians CRUD (Add, Update, Delete)  
 - Jobs CRUD with deadline handling  
 - Tasks CRUD with status tracking  
@@ -214,7 +213,7 @@ ElectricianContractorManagementSystem/
 
 ### Reethi K B
 
-Handled complete backend creation and integration of all files. Connected frontend pages with Django backend, implemented CRUD operations, fixed update issues, and developed authentication system (login, register, forgot password).
+Handled complete backend creation and integration of all files. Connected frontend pages with Django backend, implemented CRUD operations, fixed update issues, and developed authentication system (login, register).
 
 ---
 
@@ -401,4 +400,76 @@ Frontend development with a focus on UI and user experience. Designed and implem
 Handled feature integration. Implemented file upload functionality for job images and reports,performed code cleanup by removing unused code and adding comments, and completed final submission tasks including screenshots, and demo preparation.
 
 ----
+## WEEK-6
 
+# Payment Gateway Integration, Deployment & Enterprise Enhancements
+
+In Week 6, the project focused on implementing enterprise-level functionalities including payment gateway integration, deployment, workflow integration, and advanced UI/UX improvements. The system was enhanced to support real-time payment processing, secure transactions, role-based workflows, and complete frontend-backend-database synchronization. The application was also deployed online for real-world accessibility and testing.
+
+---
+
+## Features Implemented
+
+- Razorpay Payment Gateway Integration
+- Client to Admin Payment Flow
+- Admin to Electrician Payment Flow
+- Payment Success and Failure Handling
+- Transaction History Management
+- Client Request Management System
+- Role-Based Access Control (Admin, Electrician, Client)
+- Enterprise-Level Dashboard UI
+- Responsive Client Dashboard and My Requests Module
+- Reports and Analytics Enhancements
+- Deployment on Render
+- Complete Frontend-Backend-Database Integration
+- Security and Validation Improvements
+- Real-Time CRUD Operations
+- Navigation and UI Enhancements
+
+---
+
+## Technologies Used
+
+- Python (Django)
+- SQLite
+- Razorpay API
+- HTML5
+- CSS3
+- Bootstrap 5
+- JavaScript
+- Render Hosting
+
+---
+
+## Key Improvements
+
+- Integrated Razorpay payment gateway with secure transaction workflow
+- Developed complete client request and payment management system
+- Implemented role-based workflows for Admin, Electrician, and Client
+- Enhanced dashboard with analytics and enterprise-level UI
+- Improved responsiveness and navigation consistency across modules
+- Optimized backend APIs and structured responses
+- Strengthened security through validations and protected routes
+- Achieved complete frontend-backend-database synchronization
+- Deployed the complete project online for live access and testing
+- Conducted final workflow testing, bug fixing, and validation
+
+---
+
+## Contributors and Work Distribution
+
+### Reethi K B
+
+Handled complete backend development, enterprise-level UI enhancements, payment gateway integration, deployment, and overall system integration. Implemented Razorpay payment gateway including Client to Admin and Admin to Electrician payment workflow, payment success/failure handling, and transaction history management. Developed and integrated all backend modules, optimized APIs, implemented role-based access control, strengthened security through validation and protected routes, improved dashboard analytics, enhanced frontend UI consistency and responsiveness, fixed workflow issues, and deployed the complete project online using Render. Also performed final testing, debugging, and full frontend-backend-database integration to ensure smooth real-time system functionality.
+
+---
+
+### Pavan
+
+Handled frontend development support and UI assistance. Contributed to frontend structure improvements, responsive layouts, and created the Client Dashboard and My Requests pages for better user experience and navigation consistency.
+
+---
+
+### Shravana Naik
+
+Handled documentation and project report submission.
