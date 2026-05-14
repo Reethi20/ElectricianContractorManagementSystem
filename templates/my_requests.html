@@ -23,7 +23,8 @@
     transform:translateY(-3px);
 }
 
-.form-control{
+.form-control,
+.form-select{
     border-radius:10px;
 }
 
@@ -70,7 +71,8 @@ My Requests
 
 <p class="text-muted">
 
-Track electrician service requests, work status and payment details
+Track electrician service requests
+and work progress details
 
 </p>
 
@@ -94,6 +96,8 @@ Create Service Request
 
 <div class="row g-3">
 
+<!-- SERVICE -->
+
 <div class="col-md-4">
 
 <label class="form-label">
@@ -110,6 +114,8 @@ Service Title
 
 </div>
 
+<!-- LOCATION -->
+
 <div class="col-md-4">
 
 <label class="form-label">
@@ -125,6 +131,8 @@ Location
        required>
 
 </div>
+
+<!-- DESCRIPTION -->
 
 <div class="col-md-4">
 
@@ -147,6 +155,7 @@ Description
 <button class="btn btn-primary mt-3">
 
 <i class="fa-solid fa-paper-plane"></i>
+
 Submit Request
 
 </button>
@@ -161,7 +170,8 @@ Submit Request
 
 You have
 <strong>{{ pending_requests }}</strong>
-pending request(s) and
+pending request(s)
+and
 <strong>{{ completed_requests }}</strong>
 completed request(s).
 
@@ -261,7 +271,9 @@ Pending
 
 <div class="card request-card shadow-sm p-4">
 
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+<div class="d-flex justify-content-between
+            align-items-center
+            flex-wrap gap-2 mb-4">
 
 <h5 class="fw-bold mb-0">
 
@@ -288,11 +300,14 @@ Request History
 <tr>
 
 <th>Request ID</th>
+
 <th>Service</th>
+
 <th>Location</th>
+
 <th>Status</th>
+
 <th>Electrician</th>
-<th>Payment</th>
 
 </tr>
 
@@ -304,11 +319,15 @@ Request History
 
 <tr>
 
+<!-- ID -->
+
 <td>
 
 #{{ request.id }}
 
 </td>
+
+<!-- SERVICE -->
 
 <td>
 
@@ -316,11 +335,15 @@ Request History
 
 </td>
 
+<!-- LOCATION -->
+
 <td>
 
 {{ request.location }}
 
 </td>
+
+<!-- STATUS -->
 
 <td>
 
@@ -329,6 +352,14 @@ Request History
 <span class="badge bg-warning text-dark">
 
 Pending
+
+</span>
+
+{% elif request.status == "In Progress" %}
+
+<span class="badge bg-primary">
+
+In Progress
 
 </span>
 
@@ -344,31 +375,11 @@ Completed
 
 </td>
 
+<!-- ELECTRICIAN -->
+
 <td>
 
 {{ request.electrician }}
-
-</td>
-
-<td>
-
-{% if request.payment_status == "Paid" %}
-
-<span class="badge bg-success">
-
-Paid
-
-</span>
-
-{% else %}
-
-<span class="badge bg-danger">
-
-Unpaid
-
-</span>
-
-{% endif %}
 
 </td>
 
@@ -378,7 +389,7 @@ Unpaid
 
 <tr>
 
-<td colspan="6"
+<td colspan="5"
     class="text-center text-muted py-4">
 
 No Requests Found

@@ -23,7 +23,6 @@ urlpatterns = [
 
     path('logout/', views.logout),
 
-    path('forgot-password/', views.forgot_password),
 
 
     # ================= DASHBOARD =================
@@ -95,6 +94,23 @@ urlpatterns = [
     path('my-requests/', views.my_requests),
 
 
+    # ================= CLIENT REQUESTS =================
+
+    path(
+        'client-requests/',
+        views.client_requests
+    ),
+
+
+    # ================= PAYMENTS =================
+
+    path(
+        'payments/',
+        views.payments,
+        name='payments'
+    ),
+
+
     # ================= API =================
 
     path('api/tasks/', views.api_tasks),
@@ -113,10 +129,13 @@ urlpatterns = [
         'api/tasks/delete/<int:id>/',
         views.api_delete_task
     ),
+
     path(
-        'client-requests/', 
-        views.client_requests
+    'payment-success/',
+    views.payment_success,
+    name='payment_success'
     ),
+
 ]
 
 

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-5">
+
+            <div class="card border-0 shadow-sm
+                        rounded-4 p-5 mt-4 text-center">
+
+                <!-- ICON -->
+
+                <div class="mb-4">
+
+                    <div class="mx-auto d-flex
+                                align-items-center
+                                justify-content-center"
+                         style="
+                         width:90px;
+                         height:90px;
+                         border-radius:50%;
+                         background:#dbeafe;
+                         color:#2563eb;
+                         font-size:38px;">
+
+                        <i class="fa-solid fa-credit-card"></i>
+
+                    </div>
+
+                </div>
+
+                <!-- TITLE -->
+
+                <h2 class="fw-bold mb-2">
+
+                    Razorpay Test Payment
+
+                </h2>
+
+                <p class="text-muted mb-4">
+
+                    Complete your payment securely
+                    using Razorpay Test Mode
+
+                </p>
+
+                <!-- AMOUNT -->
+
+                <div class="bg-light rounded-4
+                            p-4 mb-4">
+
+                    <h6 class="text-muted mb-2">
+
+                        Total Amount
+
+                    </h6>
+
+                    <h1 class="fw-bold
+                               text-primary mb-0">
+
+                        ₹{{ payment.amount }}
+
+                    </h1>
+
+                </div>
+
+                <!-- DETAILS -->
+
+                <div class="text-start mb-4">
+
+                    <div class="d-flex
+                                justify-content-between
+                                mb-3">
+
+                        <span class="text-muted">
+
+                            Payment Type
+
+                        </span>
+
+                        <strong>
+
+                            {{ payment.payment_type }}
+
+                        </strong>
+
+                    </div>
+
+                    <div class="d-flex
+                                justify-content-between
+                                mb-3">
+
+                        <span class="text-muted">
+
+                            Payment Method
+
+                        </span>
+
+                        <strong>
+
+                            Razorpay
+
+                        </strong>
+
+                    </div>
+
+                    <div class="d-flex
+                                justify-content-between">
+
+                        <span class="text-muted">
+
+                            Status
+
+                        </span>
+
+                        <span class="badge
+                                     bg-warning
+                                     text-dark">
+
+                            Pending
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- BUTTON -->
+
+                <button id="rzp-button"
+                        class="btn btn-primary
+                               btn-lg w-100">
+
+                    <i class="fa-solid fa-lock me-2"></i>
+
+                    Pay ₹{{ payment.amount }}
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- RAZORPAY -->
+
+<script src="https://checkout.razorpay.com/v1/checkout.js">
+</script>
+
+<script>
+
+var options = {
+
+    "key": "{{ razorpay_key }}",
+
+    "amount": "{{ amount }}",
+
+    "currency": "INR",
+
+    "name": "ECMS",
+
+    "description":
+        "Electrician Contractor Payment",
+
+    "image":
+        "https://cdn-icons-png.flaticon.com/512/891/891419.png",
+
+    "order_id":
+        "{{ razorpay_order_id }}",
+
+    "handler": function (response) {
+
+        fetch("{% url 'payment_success' %}", {
+
+            method: "POST",
+
+            headers: {
+
+                "Content-Type":
+                    "application/x-www-form-urlencoded",
+
+                "X-CSRFToken":
+                    "{{ csrf_token }}"
+
+            },
+
+            body:
+
+                "payment_id={{ payment.id }}" +
+
+                "&razorpay_payment_id=" +
+                response.razorpay_payment_id +
+
+                "&razorpay_order_id=" +
+                response.razorpay_order_id +
+
+                "&razorpay_signature=" +
+                response.razorpay_signature
+
+        })
+
+        .then(response => response.json())
+
+        .then(data => {
+
+            if (data.status == "success") {
+
+                alert("Payment Successful");
+
+                window.location.href =
+                    "/payments/";
+
+            }
+
+            else {
+
+                alert(
+                    "Payment Verification Failed"
+                );
+
+            }
+
+        });
+
+    },
+
+    "prefill": {
+
+        "name":
+            "{{ request.session.name }}",
+
+        "email":
+            "{{ request.session.email }}"
+
+    },
+
+    "theme": {
+
+        "color": "#2563eb"
+
+    }
+
+};
+
+var rzp1 = new Razorpay(options);
+
+document.getElementById(
+    'rzp-button'
+).onclick = function(e) {
+
+    rzp1.open();
+
+    e.preventDefault();
+
+};
+
+</script>
+
+{% endblock %}

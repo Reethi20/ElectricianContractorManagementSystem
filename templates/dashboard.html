@@ -215,6 +215,42 @@
 
     </div>
 
+    <!-- PAYMENTS -->
+
+    <div class="col-lg-3 col-md-6">
+
+        <div class="card border-0 shadow-sm p-4 h-100 dashboard-card">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <p class="text-muted mb-2">
+
+                        Payments
+
+                    </p>
+
+                    <h2 class="fw-bold mb-0">
+
+                        {{ total_payments }}
+
+                    </h2>
+
+                </div>
+
+                <div class="dashboard-icon bg-dark">
+
+                    <i class="fa-solid fa-money-check-dollar"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
 <!-- RECENT TASKS -->
@@ -350,6 +386,146 @@
                         class="text-center text-muted py-4">
 
                         No task records available
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- RECENT PAYMENTS -->
+
+<div class="card border-0 shadow-sm p-4 mt-4">
+
+    <div class="d-flex justify-content-between
+                align-items-center
+                mb-4 flex-wrap gap-2">
+
+        <div>
+
+            <h4 class="fw-bold mb-1">
+
+                Recent Payments
+
+            </h4>
+
+            <p class="text-muted mb-0">
+
+                Latest payment transactions and updates
+
+            </p>
+
+        </div>
+
+        <a href="/payments/"
+           class="btn btn-outline-dark fw-semibold">
+
+            View Payments
+
+        </a>
+
+    </div>
+
+    <div class="table-responsive">
+
+        <table class="table align-middle">
+
+            <thead class="table-light">
+
+                <tr>
+
+                    <th>Transaction ID</th>
+
+                    <th>Payer</th>
+
+                    <th>Receiver</th>
+
+                    <th>Amount</th>
+
+                    <th>Status</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                {% for p in payments %}
+
+                <tr>
+
+                    <td>
+
+                        {{ p.transaction_id }}
+
+                    </td>
+
+                    <td>
+
+                        {{ p.payer.name }}
+
+                    </td>
+
+                    <td>
+
+                        {{ p.receiver.name }}
+
+                    </td>
+
+                    <td>
+
+                        ₹{{ p.amount }}
+
+                    </td>
+
+                    <td>
+
+                        {% if p.status == "Success" %}
+
+                        <span class="badge bg-success px-3 py-2">
+
+                            Success
+
+                        </span>
+
+                        {% elif p.status == "Failed" %}
+
+                        <span class="badge bg-danger px-3 py-2">
+
+                            Failed
+
+                        </span>
+
+                        {% else %}
+
+                        <span class="badge bg-warning text-dark px-3 py-2">
+
+                            Pending
+
+                        </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="5"
+                        class="text-center text-muted py-4">
+
+                        No payment records available
 
                     </td>
 

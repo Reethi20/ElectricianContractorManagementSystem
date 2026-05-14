@@ -65,7 +65,9 @@
 
     <p class="text-muted mb-0">
 
-        Track electrical materials and monitor available stock quantities
+        Track electrical materials,
+        stock quantities,
+        and stock availability
 
     </p>
 
@@ -109,7 +111,7 @@
 
             <!-- MATERIAL NAME -->
 
-            <div class="col-md-5">
+            <div class="col-md-4">
 
                 <label class="form-label fw-semibold">
 
@@ -127,32 +129,50 @@
 
             <!-- QUANTITY -->
 
-            <div class="col-md-4">
+            <div class="col-md-3">
 
                 <label class="form-label fw-semibold">
 
-                    Available Quantity
+                    Quantity
 
                 </label>
 
                 <input type="number"
                        name="quantity"
                        class="form-control"
-                       placeholder="Enter quantity"
+                       placeholder="Quantity"
                        required>
+
+            </div>
+
+            <!-- COST -->
+
+            <div class="col-md-3">
+
+                <label class="form-label fw-semibold">
+
+                    Cost
+
+                </label>
+
+                <input type="number"
+                       step="0.01"
+                       name="cost"
+                       class="form-control"
+                       placeholder="Cost">
 
             </div>
 
             <!-- BUTTON -->
 
-            <div class="col-md-3 d-flex align-items-end">
+            <div class="col-md-2 d-flex align-items-end">
 
                 <button type="submit"
                         class="btn btn-primary w-100 fw-semibold">
 
                     <i class="fa-solid fa-plus me-1"></i>
 
-                    Add Material
+                    Add
 
                 </button>
 
@@ -182,7 +202,9 @@
 
             <p class="text-muted mb-0">
 
-                Inventory stock and availability management
+                Inventory stock,
+                availability,
+                and inventory management
 
             </p>
 
@@ -206,9 +228,11 @@
 
                     <th>Material</th>
 
-                    <th>Available Stock</th>
+                    <th>Quantity</th>
 
                     <th>Status</th>
+
+                    <th>Cost</th>
 
                     {% if request.session.role == "Admin" %}
 
@@ -275,7 +299,7 @@
 
                         </td>
 
-                        <!-- STATUS -->
+                        <!-- STOCK STATUS -->
 
                         <td>
 
@@ -296,6 +320,19 @@
                             </span>
 
                             {% endif %}
+
+                        </td>
+
+                        <!-- COST -->
+
+                        <td>
+
+                            <input type="number"
+                                   step="0.01"
+                                   name="cost"
+                                   value="{{ m.cost }}"
+                                   class="form-control"
+                                   style="max-width:140px;">
 
                         </td>
 
@@ -340,7 +377,7 @@
 
                 <tr>
 
-                    <td colspan="4"
+                    <td colspan="5"
                         class="text-center text-muted py-4">
 
                         No materials available
@@ -348,15 +385,9 @@
                     </td>
 
                 </tr>
-
                 {% endfor %}
-
             </tbody>
-
         </table>
-
     </div>
-
 </div>
-
 {% endblock %}

@@ -2,23 +2,92 @@
 
 {% block content %}
 
-<!-- PAGE HEADER -->
+<style>
 
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+.page-title{
+    font-weight:700;
+    color:#111827;
+}
+
+.card{
+    border:none;
+    border-radius:18px;
+}
+
+.task-card{
+    overflow:hidden;
+    transition:0.3s;
+}
+
+.task-card:hover{
+    transform:translateY(-4px);
+}
+
+.task-image{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+    to top,
+    rgba(0,0,0,0.75),
+    rgba(0,0,0,0.15)
+    );
+}
+
+.form-control,
+.form-select{
+    border-radius:10px;
+    min-height:48px;
+}
+
+.btn{
+    border-radius:10px;
+}
+
+.status-badge{
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.task-info p{
+    margin-bottom:10px;
+    color:#374151;
+}
+
+@media(max-width:768px){
+
+    .task-image{
+        height:180px;
+    }
+
+}
+
+</style>
+
+<!-- HEADER -->
+
+<div class="d-flex justify-content-between
+            align-items-center
+            flex-wrap gap-3 mb-4">
 
     <div>
 
-        <h2 class="fw-bold mb-1"
-            style="font-size:24px; color:#111827;">
+        <h2 class="page-title mb-1">
 
             Tasks Management
 
         </h2>
 
-        <p class="text-muted mb-0"
-           style="font-size:15px;">
+        <p class="text-muted mb-0">
 
-            Manage electrician tasks and monitor work progress efficiently.
+            Manage electrician tasks
+            and work progress
 
         </p>
 
@@ -34,7 +103,7 @@
 
 <!-- FILTER -->
 
-<div class="card border-0 shadow-sm p-4 mb-4">
+<div class="card shadow-sm p-4 mb-4">
 
     <div class="d-flex align-items-center gap-2 mb-3">
 
@@ -50,35 +119,50 @@
 
     <form method="GET">
 
-        <div class="row g-3 align-items-center">
+        <div class="row g-3 align-items-end">
 
             <div class="col-md-4">
 
-                <select name="status"
-                        class="form-select"
-                        style="height:48px;">
+                <label class="form-label fw-semibold">
 
-                    <option value="">All Status</option>
+                    Status
+
+                </label>
+
+                <select name="status"
+                        class="form-select">
+
+                    <option value="">
+
+                        All Status
+
+                    </option>
 
                     <option value="Pending"
                     {% if request.GET.status == "Pending" %}
                     selected
                     {% endif %}>
+
                         Pending
+
                     </option>
 
                     <option value="In Progress"
                     {% if request.GET.status == "In Progress" %}
                     selected
                     {% endif %}>
+
                         In Progress
+
                     </option>
 
                     <option value="Completed"
                     {% if request.GET.status == "Completed" %}
                     selected
                     {% endif %}>
+
                         Completed
+
                     </option>
 
                 </select>
@@ -87,8 +171,7 @@
 
             <div class="col-md-2">
 
-                <button class="btn btn-primary w-100 fw-semibold"
-                        style="height:48px;">
+                <button class="btn btn-primary w-100 fw-semibold">
 
                     <i class="fa-solid fa-magnifying-glass me-1"></i>
 
@@ -108,9 +191,9 @@
 
 {% if request.session.role == "Admin" %}
 
-<div class="card border-0 shadow-sm p-4 mb-4">
+<div class="card shadow-sm p-4 mb-4">
 
-    <div class="d-flex align-items-center gap-2 mb-3">
+    <div class="d-flex align-items-center gap-2 mb-4">
 
         <i class="fa-solid fa-plus text-primary"></i>
 
@@ -146,7 +229,6 @@
                        name="name"
                        class="form-control"
                        placeholder="Enter task name"
-                       style="height:48px;"
                        required>
 
             </div>
@@ -162,8 +244,7 @@
                 </label>
 
                 <select name="electrician"
-                        class="form-select"
-                        style="height:48px;">
+                        class="form-select">
 
                     {% for e in electricians %}
 
@@ -190,8 +271,7 @@
                 </label>
 
                 <select name="job"
-                        class="form-select"
-                        style="height:48px;">
+                        class="form-select">
 
                     {% for j in jobs %}
 
@@ -209,7 +289,7 @@
 
             <!-- STATUS -->
 
-            <div class="col-md-2">
+            <div class="col-md-3">
 
                 <label class="form-label fw-semibold">
 
@@ -218,8 +298,7 @@
                 </label>
 
                 <select name="status"
-                        class="form-select"
-                        style="height:48px;">
+                        class="form-select">
 
                     <option value="Pending">
 
@@ -245,13 +324,14 @@
 
             <!-- BUTTON -->
 
-            <div class="col-md-1 d-flex align-items-end">
+            <div class="col-12">
 
                 <button type="submit"
-                        class="btn btn-primary w-100 fw-semibold"
-                        style="height:48px;">
+                        class="btn btn-primary fw-semibold">
 
-                    Add
+                    <i class="fa-solid fa-plus me-1"></i>
+
+                    Add Task
 
                 </button>
 
@@ -265,7 +345,7 @@
 
 {% endif %}
 
-<!-- TASKS -->
+<!-- TASK LIST -->
 
 <div class="row g-4">
 
@@ -273,42 +353,29 @@
 
 <div class="col-lg-6">
 
-<div class="card border-0 shadow-sm overflow-hidden h-100">
+<div class="card task-card shadow-sm h-100">
 
     <!-- IMAGE -->
 
-    <div style="height:180px;
-                position:relative;
-                overflow:hidden;">
+    <div class="position-relative">
 
         {% if t.job.image %}
 
         <img src="{{ t.job.image.url }}"
-             style="width:100%;
-                    height:100%;
-                    object-fit:cover;">
+             class="task-image">
 
         {% endif %}
 
-        <div style="
-            position:absolute;
-            inset:0;
-            background:linear-gradient(
-            to top,
-            rgba(0,0,0,0.75),
-            rgba(0,0,0,0.15)
-            );
-        "></div>
+        <div class="overlay"></div>
 
-        <div style="
-            position:absolute;
-            bottom:18px;
-            left:20px;
-            right:20px;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-        ">
+        <div class="position-absolute
+                    bottom-0
+                    start-0
+                    end-0
+                    p-4
+                    d-flex
+                    justify-content-between
+                    align-items-center">
 
             <div>
 
@@ -328,7 +395,7 @@
 
             {% if t.status == "Pending" %}
 
-            <span class="badge bg-warning text-dark px-3 py-2">
+            <span class="badge bg-warning text-dark status-badge">
 
                 Pending
 
@@ -336,7 +403,7 @@
 
             {% elif t.status == "In Progress" %}
 
-            <span class="badge bg-primary px-3 py-2">
+            <span class="badge bg-info text-dark status-badge">
 
                 In Progress
 
@@ -344,7 +411,7 @@
 
             {% else %}
 
-            <span class="badge bg-success px-3 py-2">
+            <span class="badge bg-success status-badge">
 
                 Completed
 
@@ -364,8 +431,6 @@
 
             {% csrf_token %}
 
-            <!-- ACTION -->
-
             {% if request.session.role == "Admin" %}
 
             <input type="hidden"
@@ -380,19 +445,37 @@
 
             {% endif %}
 
-            <!-- TASK ID -->
-
             <input type="hidden"
                    name="id"
                    value="{{ t.id }}">
 
-            <!-- ADMIN VIEW -->
+            <!-- TASK INFO -->
+
+            <div class="task-info mb-4">
+
+                <p>
+
+                    <i class="fa-solid fa-user text-primary me-2"></i>
+
+                    {{ t.electrician.name }}
+
+                </p>
+
+                <p>
+
+                    <i class="fa-solid fa-briefcase text-primary me-2"></i>
+
+                    {{ t.job.title }}
+
+                </p>
+
+            </div>
+
+            <!-- ADMIN CONTROLS -->
 
             {% if request.session.role == "Admin" %}
 
             <div class="row g-3">
-
-                <!-- ELECTRICIAN -->
 
                 <div class="col-md-6">
 
@@ -403,8 +486,7 @@
                     </label>
 
                     <select name="electrician"
-                            class="form-select"
-                            style="height:48px;">
+                            class="form-select">
 
                         {% for e in electricians %}
 
@@ -423,8 +505,6 @@
 
                 </div>
 
-                <!-- JOB -->
-
                 <div class="col-md-6">
 
                     <label class="form-label fw-semibold">
@@ -434,8 +514,7 @@
                     </label>
 
                     <select name="job"
-                            class="form-select"
-                            style="height:48px;">
+                            class="form-select">
 
                         {% for j in jobs %}
 
@@ -456,44 +535,6 @@
 
             </div>
 
-            {% else %}
-
-            <!-- ELECTRICIAN VIEW -->
-
-            <div class="row g-3">
-
-                <div class="col-md-6">
-
-                    <label class="form-label fw-semibold">
-
-                        Electrician
-
-                    </label>
-
-                    <input type="text"
-                           class="form-control"
-                           value="{{ t.electrician.name }}"
-                           readonly>
-
-                </div>
-
-                <div class="col-md-6">
-
-                    <label class="form-label fw-semibold">
-
-                        Assigned Job
-
-                    </label>
-
-                    <input type="text"
-                           class="form-control"
-                           value="{{ t.job.title }}"
-                           readonly>
-
-                </div>
-
-            </div>
-
             {% endif %}
 
             <!-- STATUS -->
@@ -507,28 +548,33 @@
                 </label>
 
                 <select name="status"
-                        class="form-select"
-                        style="height:48px;">
+                        class="form-select">
 
                     <option value="Pending"
                     {% if t.status == "Pending" %}
                     selected
                     {% endif %}>
+
                         Pending
+
                     </option>
 
                     <option value="In Progress"
                     {% if t.status == "In Progress" %}
                     selected
                     {% endif %}>
+
                         In Progress
+
                     </option>
 
                     <option value="Completed"
                     {% if t.status == "Completed" %}
                     selected
                     {% endif %}>
+
                         Completed
+
                     </option>
 
                 </select>
@@ -584,7 +630,7 @@
 
 <div class="col-12">
 
-    <div class="card border-0 shadow-sm p-5 text-center">
+    <div class="card shadow-sm p-5 text-center">
 
         <i class="fa-solid fa-list-check
                   text-primary fs-1 mb-3"></i>
@@ -597,7 +643,8 @@
 
         <p class="text-muted mb-0">
 
-            Create electrician tasks to manage workflow activities.
+            Create electrician tasks
+            to manage workflow activities.
 
         </p>
 

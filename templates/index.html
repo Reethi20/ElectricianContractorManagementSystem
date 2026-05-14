@@ -370,158 +370,17 @@ a{
     margin-top:10px;
 }
 
-/* ================= TABLET ================= */
-
-@media(max-width:992px){
-
-    .hero{
-        text-align:center;
-    }
-
-    .hero-title{
-        font-size:48px;
-    }
-
-    .hero-text{
-        margin:auto auto 35px;
-    }
-
-    .hero-buttons{
-        justify-content:center;
-    }
-
-    .hero-image{
-        margin-top:50px;
-        height:420px;
-    }
-
-    .about-image{
-        height:420px;
-    }
-
-    .about-title{
-        font-size:38px;
-        text-align:center;
-    }
-
-    .about-text{
-        text-align:center;
-    }
-
-    .section-title{
-        font-size:38px;
-    }
-
-    .cta-title{
-        font-size:40px;
-    }
-
-    .nav-mobile-buttons{
-        margin-top:20px;
-        flex-direction:column;
-    }
-
-}
-
-/* ================= MOBILE ================= */
-
-@media(max-width:576px){
-
-    .hero{
-        padding:50px 0;
-    }
-
-    .hero-title{
-        font-size:38px;
-    }
-
-    .hero-text{
-        font-size:15px;
-        line-height:1.8;
-    }
-
-    .hero-buttons{
-        flex-direction:column;
-    }
-
-    .hero-btn{
-        width:100%;
-    }
-
-    .hero-image{
-        height:300px;
-    }
-
-    .section-title{
-        font-size:30px;
-    }
-
-    .section-text{
-        font-size:15px;
-    }
-
-    .feature-card{
-        padding:28px;
-    }
-
-    .feature-title{
-        font-size:22px;
-    }
-
-    .about-title{
-        font-size:30px;
-    }
-
-    .about-image{
-        height:300px;
-    }
-
-    .workflow-step{
-        width:66px;
-        height:66px;
-        font-size:26px;
-    }
-
-    .workflow-title{
-        font-size:24px;
-    }
-
-    .cta-box{
-        padding:55px 24px;
-    }
-
-    .cta-title{
-        font-size:32px;
-    }
-
-    .cta-text{
-        font-size:15px;
-    }
-
-    .logo-title{
-        font-size:26px;
-    }
-
-    .logo{
-        width:44px;
-        height:44px;
-    }
-
-}
-
 </style>
 
 </head>
 
 <body>
 
-<!-- ================= NAVBAR ================= -->
+<!-- NAVBAR -->
 
 <nav class="navbar navbar-expand-lg">
 
 <div class="container">
-
-    <!-- LOGO -->
 
     <div class="logo-box">
 
@@ -546,39 +405,21 @@ a{
 
     </div>
 
-    <!-- MOBILE TOGGLE -->
+    <div class="d-flex gap-3">
 
-    <button class="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarContent">
+        <a href="/login/"
+           class="btn btn-outline-primary nav-btn">
 
-        <span class="navbar-toggler-icon"></span>
+            Login
 
-    </button>
+        </a>
 
-    <!-- NAV CONTENT -->
+        <a href="/register/"
+           class="btn btn-primary nav-btn">
 
-    <div class="collapse navbar-collapse justify-content-end"
-         id="navbarContent">
+            Register
 
-        <div class="d-flex gap-3 nav-mobile-buttons">
-
-            <a href="/login/"
-               class="btn btn-outline-primary nav-btn">
-
-                Login
-
-            </a>
-
-            <a href="/register/"
-               class="btn btn-primary nav-btn">
-
-                Register
-
-            </a>
-
-        </div>
+        </a>
 
     </div>
 
@@ -586,15 +427,13 @@ a{
 
 </nav>
 
-<!-- ================= HERO ================= -->
+<!-- HERO -->
 
 <section class="hero">
 
 <div class="container">
 
 <div class="row align-items-center g-5">
-
-    <!-- LEFT -->
 
     <div class="col-lg-6">
 
@@ -614,8 +453,8 @@ a{
 
             Streamline electrician operations through a centralized
             contractor management platform for jobs, tasks,
-            inventory management, reports, workforce coordination,
-            and customer service requests.
+            inventory monitoring, payment management,
+            reporting systems, and customer service workflows.
 
         </p>
 
@@ -623,8 +462,6 @@ a{
 
             <a href="/login/"
                class="btn btn-primary hero-btn">
-
-                <i class="fa-solid fa-right-to-bracket me-2"></i>
 
                 Get Started
 
@@ -641,8 +478,6 @@ a{
 
     </div>
 
-    <!-- RIGHT -->
-
     <div class="col-lg-6">
 
         <img src="{% static 'images/electrician.jpeg' %}"
@@ -656,7 +491,7 @@ a{
 
 </section>
 
-<!-- ================= FEATURES ================= -->
+<!-- FEATURES -->
 
 <section class="features">
 
@@ -680,7 +515,7 @@ a{
 
         <!-- FEATURE -->
 
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
 
             <div class="feature-card">
 
@@ -710,7 +545,7 @@ a{
 
         <!-- FEATURE -->
 
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
 
             <div class="feature-card">
 
@@ -740,7 +575,7 @@ a{
 
         <!-- FEATURE -->
 
-        <div class="col-lg-4 col-md-6">
+        <div class="col-lg-3 col-md-6">
 
             <div class="feature-card">
 
@@ -759,8 +594,38 @@ a{
                 <p class="feature-text">
 
                     Generate reports, analyze workflow,
-                    and monitor operational performance
-                    efficiently.
+                    and monitor operational performance efficiently.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- FEATURE -->
+
+        <div class="col-lg-3 col-md-6">
+
+            <div class="feature-card">
+
+                <div class="feature-icon icon-blue">
+
+                    <i class="fa-solid fa-money-check-dollar"></i>
+
+                </div>
+
+                <h4 class="feature-title">
+
+                    Payment Management
+
+                </h4>
+
+                <p class="feature-text">
+
+                    Manage client payments,
+                    electrician payouts,
+                    transaction records,
+                    and payment tracking workflows.
 
                 </p>
 
@@ -774,7 +639,7 @@ a{
 
 </section>
 
-<!-- ================= ABOUT ================= -->
+<!-- ABOUT -->
 
 <section class="about">
 
@@ -782,16 +647,12 @@ a{
 
 <div class="row align-items-center g-5">
 
-    <!-- IMAGE -->
-
     <div class="col-lg-6">
 
         <img src="{% static 'images/electrician.jpeg' %}"
              class="about-image">
 
     </div>
-
-    <!-- CONTENT -->
 
     <div class="col-lg-6">
 
@@ -806,98 +667,11 @@ a{
             ECMS simplifies contractor operations
             through centralized workforce management,
             task allocation, inventory monitoring,
-            reporting systems, and customer service workflows.
+            payment management,
+            reporting systems,
+            and customer service workflows.
 
         </p>
-
-        <!-- ITEM -->
-
-        <div class="about-item">
-
-            <div class="about-icon icon-blue">
-
-                <i class="fa-solid fa-list-check"></i>
-
-            </div>
-
-            <div>
-
-                <h5 class="fw-bold mb-2">
-
-                    Real-Time Task Monitoring
-
-                </h5>
-
-                <p class="text-muted mb-0">
-
-                    Monitor task progress and workforce
-                    activities efficiently through one platform.
-
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- ITEM -->
-
-        <div class="about-item">
-
-            <div class="about-icon icon-green">
-
-                <i class="fa-solid fa-toolbox"></i>
-
-            </div>
-
-            <div>
-
-                <h5 class="fw-bold mb-2">
-
-                    Inventory Management
-
-                </h5>
-
-                <p class="text-muted mb-0">
-
-                    Track electrical materials,
-                    inventory usage,
-                    and stock availability.
-
-                </p>
-
-            </div>
-
-        </div>
-
-        <!-- ITEM -->
-
-        <div class="about-item">
-
-            <div class="about-icon icon-yellow">
-
-                <i class="fa-solid fa-users"></i>
-
-            </div>
-
-            <div>
-
-                <h5 class="fw-bold mb-2">
-
-                    Client Request Management
-
-                </h5>
-
-                <p class="text-muted mb-0">
-
-                    Handle service requests,
-                    work status updates,
-                    and customer workflow communication.
-
-                </p>
-
-            </div>
-
-        </div>
 
     </div>
 
@@ -907,7 +681,7 @@ a{
 
 </section>
 
-<!-- ================= WORKFLOW ================= -->
+<!-- WORKFLOW -->
 
 <section class="workflow">
 
@@ -928,9 +702,7 @@ a{
 
     <div class="row g-4">
 
-        <!-- STEP -->
-
-        <div class="col-lg-4">
+        <div class="col-lg-3">
 
             <div class="workflow-card">
 
@@ -942,15 +714,13 @@ a{
 
                 <h4 class="workflow-title">
 
-                    Create & Assign Jobs
+                    Create Jobs
 
                 </h4>
 
                 <p class="workflow-text">
 
-                    Admin creates jobs
-                    and assigns electricians
-                    efficiently.
+                    Admin creates and assigns electrical work.
 
                 </p>
 
@@ -958,9 +728,7 @@ a{
 
         </div>
 
-        <!-- STEP -->
-
-        <div class="col-lg-4">
+        <div class="col-lg-3">
 
             <div class="workflow-card">
 
@@ -972,15 +740,13 @@ a{
 
                 <h4 class="workflow-title">
 
-                    Track Task Progress
+                    Manage Tasks
 
                 </h4>
 
                 <p class="workflow-text">
 
-                    Electricians update
-                    task progress and
-                    work completion status.
+                    Electricians update progress and work status.
 
                 </p>
 
@@ -988,9 +754,7 @@ a{
 
         </div>
 
-        <!-- STEP -->
-
-        <div class="col-lg-4">
+        <div class="col-lg-3">
 
             <div class="workflow-card">
 
@@ -1002,15 +766,40 @@ a{
 
                 <h4 class="workflow-title">
 
+                    Process Payments
+
+                </h4>
+
+                <p class="workflow-text">
+
+                    Clients and admins manage payment workflow.
+
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-3">
+
+            <div class="workflow-card">
+
+                <div class="workflow-step">
+
+                    4
+
+                </div>
+
+                <h4 class="workflow-title">
+
                     Generate Reports
 
                 </h4>
 
                 <p class="workflow-text">
 
-                    Monitor completed jobs,
-                    reports, analytics,
-                    and workforce activities.
+                    Analyze reports, transactions,
+                    and workforce performance.
 
                 </p>
 
@@ -1024,7 +813,7 @@ a{
 
 </section>
 
-<!-- ================= CTA ================= -->
+<!-- CTA -->
 
 <section class="cta">
 
@@ -1058,7 +847,7 @@ a{
 
 </section>
 
-<!-- ================= FOOTER ================= -->
+<!-- FOOTER -->
 
 <footer class="footer">
 
@@ -1066,8 +855,6 @@ a{
     All Rights Reserved.
 
 </footer>
-
-<!-- BOOTSTRAP JS -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

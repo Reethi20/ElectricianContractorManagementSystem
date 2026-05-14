@@ -9,39 +9,50 @@
     color:#111827;
 }
 
-.job-card{
+.card{
     border:none;
-    border-radius:15px;
+    border-radius:18px;
+}
+
+.job-card{
+    overflow:hidden;
     transition:0.3s;
 }
 
 .job-card:hover{
-    transform:translateY(-3px);
+    transform:translateY(-4px);
 }
 
 .job-image{
     width:100%;
-    height:200px;
+    height:230px;
     object-fit:cover;
-    border-radius:10px;
-}
-
-.job-info p{
-    margin-bottom:8px;
-}
-
-.status-badge{
-    padding:8px 12px;
-    border-radius:20px;
 }
 
 .form-control,
 .form-select{
-    border-radius:10px;
+    border-radius:12px;
+    min-height:48px;
 }
 
 .btn{
-    border-radius:10px;
+    border-radius:12px;
+}
+
+.status-badge{
+    padding:8px 14px;
+    border-radius:20px;
+    font-size:13px;
+}
+
+.job-info p{
+    margin-bottom:10px;
+    color:#374151;
+}
+
+.section-title{
+    font-weight:700;
+    color:#111827;
 }
 
 @media(max-width:768px){
@@ -54,151 +65,256 @@
 
 </style>
 
-<!-- TITLE -->
+<!-- HEADER -->
 
-<div class="mb-4">
+<div class="d-flex justify-content-between
+            align-items-center
+            flex-wrap gap-3 mb-4">
 
-    <h2 class="page-title mb-1">
-        Jobs Management
-    </h2>
+    <div>
 
-    <p class="text-muted">
-        Manage jobs, deadlines and electrician assignments
-    </p>
+        <h2 class="page-title mb-1">
+
+            Jobs Management
+
+        </h2>
+
+        <p class="text-muted mb-0">
+
+            Manage electrical jobs and assignments
+
+        </p>
+
+    </div>
+
+    <span class="badge bg-primary px-3 py-2 fs-6">
+
+        {{ jobs|length }} Jobs
+
+    </span>
 
 </div>
 
 <!-- SEARCH -->
 
-<div class="card shadow-sm border-0 p-3 mb-4">
+<div class="card shadow-sm p-4 mb-4">
 
-<form method="GET" class="row g-3">
+    <form method="GET">
 
-    <div class="col-md-4">
+        <div class="row g-3 align-items-end">
 
-        <input name="search"
-               class="form-control"
-               placeholder="Search Jobs">
+            <div class="col-md-10">
 
-    </div>
+                <label class="form-label fw-semibold">
 
-    <div class="col-md-2">
+                    Search Jobs
 
-        <button class="btn btn-primary w-100">
+                </label>
 
-            <i class="fa-solid fa-magnifying-glass"></i>
-            Search
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Search by title">
 
-        </button>
+            </div>
 
-    </div>
+            <div class="col-md-2">
 
-</form>
+                <button class="btn btn-primary w-100 fw-semibold">
+
+                    <i class="fa-solid fa-magnifying-glass me-1"></i>
+
+                    Search
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>
 
-<!-- ADD FORM -->
+<!-- ADD JOB -->
 
 {% if request.session.role == "Admin" %}
 
-<div class="card shadow-sm border-0 p-4 mb-4">
+<div class="card shadow-sm p-4 mb-4">
 
-<h5 class="fw-bold mb-3">
+    <div class="d-flex align-items-center gap-2 mb-4">
 
-<i class="fa-solid fa-plus text-primary"></i>
-Add Job
+        <i class="fa-solid fa-plus text-primary"></i>
 
-</h5>
+        <h5 class="section-title mb-0">
 
-<form method="POST"
-      enctype="multipart/form-data"
-      class="row g-3">
+            Add New Job
 
-{% csrf_token %}
+        </h5>
 
-<input type="hidden" name="action" value="add">
+    </div>
 
-<div class="col-md-2">
+    <form method="POST"
+          enctype="multipart/form-data">
 
-<input name="title"
-       class="form-control"
-       placeholder="Job Title"
-       required>
+        {% csrf_token %}
 
-</div>
+        <input type="hidden"
+               name="action"
+               value="add">
 
-<div class="col-md-2">
+        <div class="row g-4">
 
-<input name="location"
-       class="form-control"
-       placeholder="Location"
-       required>
+            <!-- TITLE -->
 
-</div>
+            <div class="col-md-3">
 
-<div class="col-md-2">
+                <label class="form-label fw-semibold">
 
-<select name="electrician"
-        class="form-select">
+                    Job Title
 
-{% for e in electricians %}
+                </label>
 
-<option value="{{ e.id }}">
-{{ e.name }}
-</option>
+                <input type="text"
+                       name="title"
+                       class="form-control"
+                       placeholder="Enter job title"
+                       required>
 
-{% endfor %}
+            </div>
 
-</select>
+            <!-- LOCATION -->
 
-</div>
+            <div class="col-md-3">
 
-<div class="col-md-2">
+                <label class="form-label fw-semibold">
 
-<input type="date"
-       name="deadline"
-       class="form-control"
-       required>
+                    Location
 
-</div>
+                </label>
 
-<div class="col-md-2">
+                <input type="text"
+                       name="location"
+                       class="form-control"
+                       placeholder="Enter location"
+                       required>
 
-<select name="status"
-        class="form-select">
+            </div>
 
-<option value="Pending">
-Pending
-</option>
+            <!-- ELECTRICIAN -->
 
-<option value="Completed">
-Completed
-</option>
+            <div class="col-md-3">
 
-</select>
+                <label class="form-label fw-semibold">
 
-</div>
+                    Electrician
 
-<div class="col-md-2">
+                </label>
 
-<input type="file"
-       name="image"
-       class="form-control">
+                <select name="electrician"
+                        class="form-select">
 
-</div>
+                    {% for e in electricians %}
 
-<div class="col-md-2">
+                    <option value="{{ e.id }}">
 
-<button type="submit"
-        class="btn btn-primary w-100">
+                        {{ e.name }}
 
-Add
+                    </option>
 
-</button>
+                    {% endfor %}
 
-</div>
+                </select>
 
-</form>
+            </div>
+
+            <!-- DEADLINE -->
+
+            <div class="col-md-3">
+
+                <label class="form-label fw-semibold">
+
+                    Deadline
+
+                </label>
+
+                <input type="date"
+                       name="deadline"
+                       class="form-control"
+                       required>
+
+            </div>
+
+            <!-- STATUS -->
+
+            <div class="col-md-3">
+
+                <label class="form-label fw-semibold">
+
+                    Status
+
+                </label>
+
+                <select name="status"
+                        class="form-select">
+
+                    <option value="Pending">
+
+                        Pending
+
+                    </option>
+
+                    <option value="In Progress">
+
+                        In Progress
+
+                    </option>
+
+                    <option value="Completed">
+
+                        Completed
+
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- IMAGE -->
+
+            <div class="col-md-6">
+
+                <label class="form-label fw-semibold">
+
+                    Upload Image
+
+                </label>
+
+                <input type="file"
+                       name="image"
+                       class="form-control">
+
+            </div>
+
+            <!-- BUTTON -->
+
+            <div class="col-md-3 d-flex align-items-end">
+
+                <button type="submit"
+                        class="btn btn-primary
+                               w-100 fw-semibold">
+
+                    <i class="fa-solid fa-plus me-1"></i>
+
+                    Add Job
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
 
 </div>
 
@@ -212,199 +328,291 @@ Add
 
 <div class="col-lg-6">
 
-<div class="card job-card shadow-sm p-3 h-100">
+<div class="card job-card shadow-sm h-100">
 
-<form method="POST" enctype="multipart/form-data">
+    <!-- IMAGE -->
 
-{% csrf_token %}
+    {% if j.image %}
 
-<input type="hidden" name="action" value="update">
-<input type="hidden" name="id" value="{{ j.id }}">
+    <img src="{{ j.image.url }}"
+         class="job-image">
 
-<!-- IMAGE -->
+    {% endif %}
 
-{% if j.image %}
+    <!-- BODY -->
 
-<img src="{{ j.image.url }}"
-     class="job-image mb-3">
+    <div class="p-4">
 
-{% endif %}
+        <form method="POST"
+              enctype="multipart/form-data">
 
-<!-- TITLE -->
+            {% csrf_token %}
 
-<div class="d-flex justify-content-between align-items-center mb-3">
+            <input type="hidden"
+                   name="action"
+                   value="update">
 
-<h5 class="fw-bold mb-0">
-{{ j.title }}
-</h5>
+            <input type="hidden"
+                   name="id"
+                   value="{{ j.id }}">
 
-{% if j.status == "Pending" %}
+            <!-- HEADER -->
 
-<span class="badge bg-warning text-dark status-badge">
-Pending
-</span>
+            <div class="d-flex justify-content-between
+                        align-items-center mb-3">
 
-{% else %}
+                <h4 class="fw-bold mb-0">
 
-<span class="badge bg-success status-badge">
-Completed
-</span>
+                    {{ j.title }}
 
-{% endif %}
+                </h4>
 
-</div>
+                {% if j.status == "Pending" %}
 
-<!-- INFO -->
+                <span class="badge bg-warning text-dark status-badge">
 
-<div class="job-info mb-3">
+                    Pending
 
-<p>
+                </span>
 
-<i class="fa-solid fa-location-dot text-primary"></i>
+                {% elif j.status == "In Progress" %}
 
-{{ j.location }}
+                <span class="badge bg-info text-dark status-badge">
 
-</p>
+                    In Progress
 
-<p>
+                </span>
 
-<i class="fa-solid fa-user text-primary"></i>
+                {% else %}
 
-{{ j.electrician.name }}
+                <span class="badge bg-success status-badge">
 
-</p>
+                    Completed
 
-<p>
+                </span>
 
-<i class="fa-solid fa-calendar text-primary"></i>
+                {% endif %}
 
-Deadline:
-{{ j.deadline }}
+            </div>
 
-</p>
+            <!-- INFO -->
 
-</div>
+            <div class="job-info mb-4">
 
-<!-- ADMIN UPDATE -->
+                <p>
 
-{% if request.session.role == "Admin" %}
+                    <i class="fa-solid fa-location-dot text-primary me-2"></i>
 
-<div class="row g-2">
+                    {{ j.location }}
 
-<div class="col-md-6">
+                </p>
 
-<input name="title"
-       value="{{ j.title }}"
-       class="form-control">
+                <p>
 
-</div>
+                    <i class="fa-solid fa-user text-primary me-2"></i>
 
-<div class="col-md-6">
+                    {{ j.electrician.name }}
 
-<input name="location"
-       value="{{ j.location }}"
-       class="form-control">
+                </p>
 
-</div>
+                <p>
 
-<div class="col-md-6">
+                    <i class="fa-solid fa-calendar text-primary me-2"></i>
 
-<select name="electrician"
-        class="form-select">
+                    Deadline:
+                    {{ j.deadline }}
 
-{% for e in electricians %}
+                </p>
 
-<option value="{{ e.id }}"
-{% if e.id == j.electrician.id %}
-selected
-{% endif %}>
+            </div>
 
-{{ e.name }}
+            <!-- ADMIN CONTROLS -->
 
-</option>
+            {% if request.session.role == "Admin" %}
 
-{% endfor %}
+            <div class="row g-3">
 
-</select>
+                <!-- TITLE -->
 
-</div>
+                <div class="col-md-6">
 
-<div class="col-md-6">
+                    <label class="form-label fw-semibold">
 
-<input type="date"
-       name="deadline"
-       value="{{ j.deadline|date:'Y-m-d' }}"
-       class="form-control">
+                        Job Title
 
-</div>
+                    </label>
 
-<div class="col-md-6">
+                    <input type="text"
+                           name="title"
+                           value="{{ j.title }}"
+                           class="form-control">
 
-<select name="status"
-        class="form-select">
+                </div>
 
-<option value="Pending"
-{% if j.status == "Pending" %}
-selected
-{% endif %}>
-Pending
-</option>
+                <!-- LOCATION -->
 
-<option value="Completed"
-{% if j.status == "Completed" %}
-selected
-{% endif %}>
-Completed
-</option>
+                <div class="col-md-6">
 
-</select>
+                    <label class="form-label fw-semibold">
 
-</div>
+                        Location
 
-<div class="col-md-6">
+                    </label>
 
-<input type="file"
-       name="image"
-       class="form-control">
+                    <input type="text"
+                           name="location"
+                           value="{{ j.location }}"
+                           class="form-control">
 
-</div>
+                </div>
 
-</div>
+                <!-- ELECTRICIAN -->
 
-<div class="d-flex gap-2 mt-3">
+                <div class="col-md-6">
 
-{% if j.image %}
+                    <label class="form-label fw-semibold">
 
-<a href="{{ j.image.url }}"
-   target="_blank"
-   class="btn btn-secondary btn-sm">
+                        Electrician
 
-View File
+                    </label>
 
-</a>
+                    <select name="electrician"
+                            class="form-select">
 
-{% endif %}
+                        {% for e in electricians %}
 
-<button type="submit"
-        class="btn btn-success btn-sm">
+                        <option value="{{ e.id }}"
+                        {% if e.id == j.electrician.id %}
+                        selected
+                        {% endif %}>
 
-Update
+                            {{ e.name }}
 
-</button>
+                        </option>
 
-<a href="/delete-job/{{ j.id }}/"
-   class="btn btn-danger btn-sm"
-   onclick="return confirm('Delete this job?')">
+                        {% endfor %}
 
-Delete
+                    </select>
 
-</a>
+                </div>
 
-</div>
+                <!-- DEADLINE -->
 
-{% endif %}
+                <div class="col-md-6">
 
-</form>
+                    <label class="form-label fw-semibold">
+
+                        Deadline
+
+                    </label>
+
+                    <input type="date"
+                           name="deadline"
+                           value="{{ j.deadline|date:'Y-m-d' }}"
+                           class="form-control">
+
+                </div>
+
+                <!-- STATUS -->
+
+                <div class="col-md-12">
+
+                    <label class="form-label fw-semibold">
+
+                        Status
+
+                    </label>
+
+                    <select name="status"
+                            class="form-select">
+
+                        <option value="Pending"
+                        {% if j.status == "Pending" %}
+                        selected
+                        {% endif %}>
+
+                            Pending
+
+                        </option>
+
+                        <option value="In Progress"
+                        {% if j.status == "In Progress" %}
+                        selected
+                        {% endif %}>
+
+                            In Progress
+
+                        </option>
+
+                        <option value="Completed"
+                        {% if j.status == "Completed" %}
+                        selected
+                        {% endif %}>
+
+                            Completed
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- IMAGE -->
+
+                <div class="col-md-12">
+
+                    <label class="form-label fw-semibold">
+
+                        Upload Image
+
+                    </label>
+
+                    <input type="file"
+                           name="image"
+                           class="form-control">
+
+                </div>
+
+            </div>
+
+            <!-- BUTTONS -->
+
+            <div class="d-flex gap-2 mt-4">
+
+                {% if j.image %}
+
+                <a href="{{ j.image.url }}"
+                   target="_blank"
+                   class="btn btn-secondary">
+
+                    View File
+
+                </a>
+
+                {% endif %}
+
+                <button type="submit"
+                        class="btn btn-success">
+
+                    Update
+
+                </button>
+
+                <a href="/delete-job/{{ j.id }}/"
+                   class="btn btn-danger"
+                   onclick="return confirm('Delete this job?')">
+
+                    Delete
+
+                </a>
+
+            </div>
+
+            {% endif %}
+
+        </form>
+
+    </div>
 
 </div>
 
@@ -414,13 +622,17 @@ Delete
 
 <div class="col-12">
 
-<div class="card shadow-sm border-0 p-5 text-center text-muted">
+    <div class="card shadow-sm p-5 text-center text-muted">
 
-<i class="fa-solid fa-briefcase fa-3x mb-3"></i>
+        <i class="fa-solid fa-briefcase fa-3x mb-3"></i>
 
-<h5>No Jobs Available</h5>
+        <h5>
 
-</div>
+            No Jobs Available
+
+        </h5>
+
+    </div>
 
 </div>
 

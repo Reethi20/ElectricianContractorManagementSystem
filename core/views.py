@@ -3,45 +3,35 @@ from django.http import JsonResponse
 from django.contrib.auth.hashers import make_password, check_password
 from datetime import date
 import re
-
+import random
+import json
 from .models import *
 from .forms import JobForm, ReportForm
-
+import razorpay
+from django.conf import settings
 
 # ================= ROLE CHECK =================
-
 def is_admin(request):
-
     return request.session.get('role') == "Admin"
 
-
 def is_electrician(request):
-
     return request.session.get('role') == "Electrician"
 
+def is_client(request):
+    return request.session.get('role') == "Client"
 
 # ================= LOGIN CHECK =================
-
 def check_login(request):
-
     if not request.session.get('user_id'):
-
         return redirect('/login/')
 
-
 # ================= HOME =================
-
 def home(request):
-
     return render(request, 'index.html')
 
-
 # ================= REGISTER =================
-
 def register(request):
-
     if request.method == 'POST':
-
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         email = request.POST.get('email')
@@ -49,298 +39,174 @@ def register(request):
         password = request.POST.get('password')
 
         # EMPTY FIELD CHECK
-
         if not all([name, phone, email, role, password]):
-
             return render(request, 'register.html', {
-
                 'error': 'All fields are required'
-
             })
 
-        # PASSWORD LENGTH
-
+        # PASSWORD LENGTH CHECK
         if len(password) < 8:
-
             return render(request, 'register.html', {
-
                 'error': 'Password must be at least 8 characters'
-
             })
 
         # PASSWORD VALIDATION
-
         pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$'
-
         if not re.match(pattern, password):
-
             return render(request, 'register.html', {
-
                 'error': 'Password must contain uppercase, lowercase, number and special character'
-
             })
 
         # EMAIL EXISTS CHECK
-
         if User.objects.filter(email=email).exists():
-
             return render(request, 'register.html', {
-
                 'error': 'Email already exists'
-
             })
 
         # CREATE USER
-
         User.objects.create(
-
             name=name,
             phone=phone,
             email=email,
             role=role,
             password=make_password(password)
-
         )
 
         # AUTO CREATE ELECTRICIAN
 
         if role == "Electrician":
-
             if not Electrician.objects.filter(
                 phone=phone
             ).exists():
-
                 Electrician.objects.create(
-
                     name=name,
                     phone=phone
-
                 )
-
         return redirect('/login/')
-
     return render(request, 'register.html')
 
-
 # ================= LOGIN =================
-
 def login_view(request):
-
     if request.method == 'POST':
-
         email = request.POST.get('email')
-
         password = request.POST.get('password')
-
         user = User.objects.filter(
             email=email
         ).first()
-
         if user and check_password(
             password,
             user.password
         ):
-
             # SESSION
-
             request.session['user_id'] = user.id
-
             request.session['role'] = user.role
-
             request.session['name'] = user.name
-
             request.session['phone'] = user.phone
 
-            # ROLE REDIRECT
-
+            # ROLE BASED REDIRECT
             if user.role == "Admin":
-
                 return redirect('/dashboard/')
-
             elif user.role == "Electrician":
-
                 return redirect('/tasks/')
-
             elif user.role == "Client":
-
                 return redirect('/client-dashboard/')
-
         return render(request, 'login.html', {
-
             'error': 'Invalid email or password'
-
         })
-
     return render(request, 'login.html')
+
 # ================= LOGOUT =================
-
 def logout(request):
-
     request.session.flush()
-
     return redirect('/login/')
 
 
-# ================= FORGOT PASSWORD =================
-
-def forgot_password(request):
-
-    if request.method == 'POST':
-
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-
-        user = User.objects.filter(email=email).first()
-
-        if not user:
-
-            return render(request, 'forgot_password.html', {
-                'error': 'Email not found'
-            })
-
-        if len(password) < 8:
-
-            return render(request, 'forgot_password.html', {
-                'error': 'Password must be at least 8 characters'
-            })
-
-        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$'
-
-        if not re.match(pattern, password):
-
-            return render(request, 'forgot_password.html', {
-                'error': 'Password must contain uppercase, lowercase, number and special character'
-            })
-
-        user.password = make_password(password)
-        user.save()
-
-        return redirect('/login/')
-
-    return render(request, 'forgot_password.html')
-
-
 # ================= DASHBOARD =================
-
 def dashboard(request):
-
     if check_login(request):
-
         return check_login(request)
-
+    # ADMIN ONLY
+    if not is_admin(request):
+        return redirect('/tasks/')
     tasks = Task.objects.all().order_by('-id')[:5]
-
+    payments = Payment.objects.all().order_by('-id')[:5]
     return render(request, 'dashboard.html', {
-
         'total_electricians': Electrician.objects.count(),
-
         'total_jobs': Job.objects.count(),
-
         'pending_tasks': Task.objects.filter(
             status="Pending"
         ).count(),
-
         'completed_tasks': Task.objects.filter(
             status="Completed"
         ).count(),
-
         'inprogress_tasks': Task.objects.filter(
             status="In Progress"
         ).count(),
-
-        'tasks': tasks
-
+        'total_payments': Payment.objects.count(),
+        'tasks': tasks,
+        'payments': payments
     })
 
 # ================= CLIENT DASHBOARD =================
-
 def client_dashboard(request):
-
     if check_login(request):
-
         return check_login(request)
-
+    # CLIENT ONLY
+    if not is_client(request):
+        return redirect('/dashboard/')
     requests_data = ClientRequest.objects.filter(
-
         client_id=request.session['user_id']
-
     )
-
     return render(request, 'client_dashboard.html', {
-
         'requests_data': requests_data,
-
         'total_requests': requests_data.count(),
-
         'completed_requests': requests_data.filter(
             status='Completed'
         ).count(),
-
         'pending_requests': requests_data.filter(
             status='Pending'
-        ).count()
-
+        ).count(),
     })
 
-
 # ================= MY REQUESTS =================
-
 def my_requests(request):
-
     if check_login(request):
-
         return check_login(request)
-
-    # CURRENT CLIENT
-
+    # CLIENT ONLY
+    if not is_client(request):
+        return redirect('/dashboard/')
     client = User.objects.get(
-
         id=request.session['user_id']
-
     )
 
     # CREATE REQUEST
-
     if request.method == 'POST':
-
         ClientRequest.objects.create(
-
             client=client,
-
-            service_title=request.POST['service_title'],
-
-            location=request.POST['location'],
-
-            description=request.POST['description']
-
+            service_title=request.POST.get(
+                'service_title'
+            ),
+            location=request.POST.get(
+                'location'
+            ),
+            description=request.POST.get(
+                'description'
+            ),
         )
-
         return redirect('/my-requests/')
-
-    # ONLY CLIENT REQUESTS
-
     requests_data = ClientRequest.objects.filter(
-
         client=client
-
-    )
-
+    ).order_by('-id')
     return render(request, 'my_requests.html', {
-
         'requests_data': requests_data,
-
         'total_requests': requests_data.count(),
-
         'completed_requests': requests_data.filter(
             status='Completed'
         ).count(),
-
         'pending_requests': requests_data.filter(
             status='Pending'
-        ).count()
-
+        ).count(),
     })
-
 
 # ================= ELECTRICIANS =================
 
@@ -350,23 +216,27 @@ def electricians(request):
 
         return check_login(request)
 
-    electricians_list = Electrician.objects.all()
+    # ADMIN ONLY
+
+    if not is_admin(request):
+
+        return redirect('/dashboard/')
+
+    electricians_list = Electrician.objects.all().order_by('-id')
 
     search = request.GET.get('search')
 
     if search:
 
         electricians_list = electricians_list.filter(
+
             name__icontains=search
+
         )
 
     # ================= ADD / UPDATE =================
 
     if request.method == 'POST':
-
-        if not is_admin(request):
-
-            return redirect('/dashboard/')
 
         action = request.POST.get('action')
 
@@ -384,26 +254,78 @@ def electricians(request):
                 phone=phone
             ).exists():
 
+                # CREATE ELECTRICIAN
+
                 Electrician.objects.create(
 
                     name=name,
+
                     phone=phone
 
                 )
+
+                # CREATE USER ACCOUNT
+
+                if not User.objects.filter(
+                    phone=phone
+                ).exists():
+
+                    User.objects.create(
+
+                        name=name,
+
+                        phone=phone,
+
+                        email=f"{phone}@ecms.com",
+
+                        role="Electrician",
+
+                        password=make_password(
+                            "Electric@123"
+                        )
+
+                    )
 
         # ================= UPDATE =================
 
         elif action == "update":
 
             electrician = Electrician.objects.get(
+
                 id=request.POST.get('id')
+
             )
 
-            electrician.name = request.POST.get('name')
+            old_phone = electrician.phone
 
-            electrician.phone = request.POST.get('phone')
+            electrician.name = request.POST.get(
+                'name'
+            )
+
+            electrician.phone = request.POST.get(
+                'phone'
+            )
 
             electrician.save()
+
+            # UPDATE USER ACCOUNT ALSO
+
+            user = User.objects.filter(
+                phone=old_phone,
+                role="Electrician"
+            ).first()
+
+            if user:
+
+                user.name = electrician.name
+
+                user.phone = electrician.phone
+
+                user.email = (
+                    f"{electrician.phone}@ecms.com"
+                )
+
+                user.save()
 
         return redirect('/electricians/')
 
@@ -414,114 +336,36 @@ def electricians(request):
     })
 
 
-# ================= REGISTER =================
-
-def register(request):
-
-    if request.method == 'POST':
-
-        name = request.POST.get('name')
-
-        phone = request.POST.get('phone')
-
-        email = request.POST.get('email')
-
-        role = request.POST.get('role')
-
-        password = request.POST.get('password')
-
-        # EMPTY CHECK
-
-        if not all([name, phone, email, role, password]):
-
-            return render(request, 'register.html', {
-
-                'error': 'All fields are required'
-
-            })
-
-        # PASSWORD LENGTH
-
-        if len(password) < 8:
-
-            return render(request, 'register.html', {
-
-                'error': 'Password must be at least 8 characters'
-
-            })
-
-        # PASSWORD VALIDATION
-
-        pattern = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$'
-
-        if not re.match(pattern, password):
-
-            return render(request, 'register.html', {
-
-                'error': 'Password must contain uppercase, lowercase, number and special character'
-
-            })
-
-        # EMAIL EXISTS
-
-        if User.objects.filter(email=email).exists():
-
-            return render(request, 'register.html', {
-
-                'error': 'Email already exists'
-
-            })
-
-        # CREATE USER
-
-        User.objects.create(
-
-            name=name,
-            phone=phone,
-            email=email,
-            role=role,
-            password=make_password(password)
-
-        )
-
-        # AUTO LINK ELECTRICIAN
-
-        if role == "Electrician":
-
-            electrician = Electrician.objects.filter(
-                phone=phone
-            ).first()
-
-            # CREATE IF NOT EXISTS
-
-            if not electrician:
-
-                Electrician.objects.create(
-
-                    name=name,
-                    phone=phone
-
-                )
-
-        return redirect('/login/')
-
-    return render(request, 'register.html')
-
 # ================= DELETE ELECTRICIAN =================
 
 def delete_electrician(request, id):
+
+    if check_login(request):
+
+        return check_login(request)
+
+    # ADMIN ONLY
 
     if not is_admin(request):
 
         return redirect('/dashboard/')
 
-    Electrician.objects.filter(id=id).delete()
+    electrician = Electrician.objects.filter(
+        id=id
+    ).first()
+
+    if electrician:
+
+        # DELETE USER ACCOUNT ALSO
+
+        User.objects.filter(
+            phone=electrician.phone,
+            role="Electrician"
+        ).delete()
+
+        electrician.delete()
 
     return redirect('/electricians/')
-
-
-# ================= JOBS =================
-
 # ================= JOBS =================
 
 def jobs(request):
@@ -530,41 +374,41 @@ def jobs(request):
 
         return check_login(request)
 
-    # ================= ADMIN =================
+    # ================= ROLE BASED JOBS =================
 
-    if request.session['role'] == "Admin":
+    if is_admin(request):
 
-        jobs_list = Job.objects.all()
+        jobs_list = Job.objects.all().order_by('-id')
 
-    # ================= ELECTRICIAN =================
-
-    elif request.session['role'] == "Electrician":
+    elif is_electrician(request):
 
         jobs_list = Job.objects.filter(
 
             electrician__phone=request.session['phone']
 
-        )
-
-    # ================= OTHER USERS =================
+        ).order_by('-id')
 
     else:
 
         jobs_list = Job.objects.none()
 
-    # SEARCH
+    # ================= SEARCH =================
 
     search = request.GET.get('search')
 
     if search:
 
         jobs_list = jobs_list.filter(
+
             title__icontains=search
+
         )
 
-    # ================= ADMIN CRUD =================
+    # ================= ADD / UPDATE =================
 
     if request.method == 'POST':
+
+        # ADMIN ONLY
 
         if not is_admin(request):
 
@@ -572,47 +416,71 @@ def jobs(request):
 
         action = request.POST.get('action')
 
-        # ADD
+        # ================= ADD =================
 
         if action == "add":
 
             Job.objects.create(
 
-                title=request.POST['title'],
+                title=request.POST.get('title'),
 
-                location=request.POST['location'],
+                location=request.POST.get(
+                    'location'
+                ),
 
-                electrician_id=request.POST['electrician'],
+                electrician_id=request.POST.get(
+                    'electrician'
+                ),
 
-                deadline=request.POST['deadline'],
+                deadline=request.POST.get(
+                    'deadline'
+                ),
 
-                status=request.POST['status'],
+                status=request.POST.get(
+                    'status'
+                ) or "Pending",
 
-                image=request.FILES.get('image')
+                image=request.FILES.get(
+                    'image'
+                )
 
             )
 
-        # UPDATE
+        # ================= UPDATE =================
 
         elif action == "update":
 
             job = Job.objects.get(
-                id=request.POST['id']
+
+                id=request.POST.get('id')
+
             )
 
-            job.title = request.POST['title']
+            job.title = request.POST.get(
+                'title'
+            )
 
-            job.location = request.POST['location']
+            job.location = request.POST.get(
+                'location'
+            )
 
-            job.electrician_id = request.POST['electrician']
+            job.electrician_id = request.POST.get(
+                'electrician'
+            )
 
-            job.deadline = request.POST['deadline']
+            job.deadline = request.POST.get(
+                'deadline'
+            )
 
-            job.status = request.POST['status']
+            job.status = request.POST.get(
+                'status'
+            ) or "Pending"
 
             if request.FILES.get('image'):
 
-                job.image = request.FILES.get('image')
+                job.image = request.FILES.get(
+                    'image'
+                )
 
             job.save()
 
@@ -631,45 +499,45 @@ def jobs(request):
 
 def delete_job(request, id):
 
+    if check_login(request):
+
+        return check_login(request)
+
+    # ADMIN ONLY
+
     if not is_admin(request):
 
         return redirect('/dashboard/')
 
-    Job.objects.filter(id=id).delete()
+    Job.objects.filter(
+
+        id=id
+
+    ).delete()
 
     return redirect('/jobs/')
 
 # ================= TASKS =================
 
-# ================= TASKS =================
-
-# ================= TASKS =================
-
 def tasks(request):
-
-    # LOGIN CHECK
 
     if check_login(request):
 
         return check_login(request)
 
-    # ================= ADMIN =================
+    # ================= ROLE BASED TASKS =================
 
-    if request.session['role'] == "Admin":
+    if is_admin(request):
 
         tasks_list = Task.objects.all().order_by('-id')
 
-    # ================= ELECTRICIAN =================
-
-    elif request.session['role'] == "Electrician":
+    elif is_electrician(request):
 
         tasks_list = Task.objects.filter(
 
             electrician__phone=request.session['phone']
 
         ).order_by('-id')
-
-    # ================= OTHER USERS =================
 
     else:
 
@@ -699,7 +567,7 @@ def tasks(request):
 
         )
 
-    # ================= POST ACTIONS =================
+    # ================= ADD / UPDATE =================
 
     if request.method == 'POST':
 
@@ -709,6 +577,8 @@ def tasks(request):
 
         if action == "add":
 
+            # ADMIN ONLY
+
             if not is_admin(request):
 
                 return redirect('/tasks/')
@@ -717,11 +587,17 @@ def tasks(request):
 
                 name=request.POST.get('name'),
 
-                electrician_id=request.POST.get('electrician'),
+                electrician_id=request.POST.get(
+                    'electrician'
+                ),
 
-                job_id=request.POST.get('job'),
+                job_id=request.POST.get(
+                    'job'
+                ),
 
-                status=request.POST.get('status')
+                status=request.POST.get(
+                    'status'
+                ) or "Pending"
 
             )
 
@@ -739,13 +615,17 @@ def tasks(request):
 
             )
 
-            task.name = request.POST.get('name')
+            task.electrician_id = request.POST.get(
+                'electrician'
+            )
 
-            task.electrician_id = request.POST.get('electrician')
+            task.job_id = request.POST.get(
+                'job'
+            )
 
-            task.job_id = request.POST.get('job')
-
-            task.status = request.POST.get('status')
+            task.status = request.POST.get(
+                'status'
+            ) or "Pending"
 
             task.save()
 
@@ -765,13 +645,13 @@ def tasks(request):
 
                 return redirect('/tasks/')
 
-            task.status = request.POST.get('status')
+            task.status = request.POST.get(
+                'status'
+            ) or "Pending"
 
             task.save()
 
         return redirect('/tasks/')
-
-    # ================= RENDER =================
 
     return render(request, 'tasks.html', {
 
@@ -788,44 +668,49 @@ def tasks(request):
 
 def delete_task(request, id):
 
+    if check_login(request):
+
+        return check_login(request)
+
+    # ADMIN ONLY
+
     if not is_admin(request):
 
         return redirect('/dashboard/')
 
-    Task.objects.filter(id=id).delete()
+    Task.objects.filter(
+
+        id=id
+
+    ).delete()
 
     return redirect('/tasks/')
-
 
 # ================= MATERIALS =================
 
 def materials(request):
 
-    # LOGIN CHECK
-
     if check_login(request):
 
         return check_login(request)
 
-    # ================= ADMIN =================
+    # ================= ROLE BASED ACCESS =================
 
-    if request.session['role'] == "Admin":
-
-        materials_list = Material.objects.all().order_by('-id')
-
-    # ================= ELECTRICIAN =================
-
-    elif request.session['role'] == "Electrician":
-
-        # VIEW ONLY
+    if is_admin(request):
 
         materials_list = Material.objects.all().order_by('-id')
 
-    # ================= CLIENT / OTHER =================
+    elif is_electrician(request):
+
+        # ELECTRICIANS CAN VIEW ONLY
+
+        materials_list = Material.objects.all().order_by('-id')
 
     else:
 
-        materials_list = Material.objects.none()
+        # CLIENTS NO ACCESS
+
+        return redirect('/client-dashboard/')
 
     # ================= SEARCH =================
 
@@ -839,11 +724,11 @@ def materials(request):
 
         )
 
-    # ================= ADMIN CRUD =================
+    # ================= ADD / UPDATE =================
 
     if request.method == 'POST':
 
-        # ONLY ADMIN CAN MODIFY
+        # ONLY ADMIN CAN MANAGE
 
         if not is_admin(request):
 
@@ -859,7 +744,13 @@ def materials(request):
 
                 name=request.POST.get('name'),
 
-                quantity=request.POST.get('quantity')
+                quantity=request.POST.get(
+                    'quantity'
+                ),
+
+                cost=request.POST.get(
+                    'cost'
+                )
 
             )
 
@@ -873,15 +764,21 @@ def materials(request):
 
             )
 
-            material.name = request.POST.get('name')
+            material.name = request.POST.get(
+                'name'
+            )
 
-            material.quantity = request.POST.get('quantity')
+            material.quantity = request.POST.get(
+                'quantity'
+            )
+
+            material.cost = request.POST.get(
+                'cost'
+            )
 
             material.save()
 
         return redirect('/materials/')
-
-    # ================= RENDER =================
 
     return render(request, 'materials.html', {
 
@@ -894,7 +791,11 @@ def materials(request):
 
 def delete_material(request, id):
 
-    # ONLY ADMIN
+    if check_login(request):
+
+        return check_login(request)
+
+    # ADMIN ONLY
 
     if not is_admin(request):
 
@@ -917,9 +818,27 @@ def reports(request):
 
         return check_login(request)
 
-    today_jobs = Job.objects.filter(
+    # ADMIN ONLY
+
+    if not is_admin(request):
+
+        return redirect('/dashboard/')
+
+    # ================= JOB REPORTS =================
+
+    completed_jobs = Job.objects.filter(
         status="Completed"
     ).count()
+
+    pending_jobs = Job.objects.filter(
+        status="Pending"
+    ).count()
+
+    inprogress_jobs = Job.objects.filter(
+        status="In Progress"
+    ).count()
+
+    # ================= TASK REPORTS =================
 
     completed_tasks = Task.objects.filter(
         status="Completed"
@@ -933,17 +852,41 @@ def reports(request):
         status="In Progress"
     ).count()
 
+    # ================= ELECTRICIANS =================
+
     electricians = Electrician.objects.all()
 
+    # ================= TOTAL TASKS =================
+
     total_tasks = (
+
         completed_tasks +
+
         pending_tasks +
+
         inprogress_tasks
+
+    )
+
+    # ================= TOTAL JOBS =================
+
+    total_jobs = (
+
+        completed_jobs +
+
+        pending_jobs +
+
+        inprogress_jobs
+
     )
 
     return render(request, 'reports.html', {
 
-        'today_jobs': today_jobs,
+        'completed_jobs': completed_jobs,
+
+        'pending_jobs': pending_jobs,
+
+        'inprogress_jobs': inprogress_jobs,
 
         'completed_tasks': completed_tasks,
 
@@ -953,11 +896,20 @@ def reports(request):
 
         'electricians': electricians,
 
-        'total_tasks': total_tasks
+        'total_tasks': total_tasks,
+
+        'total_jobs': total_jobs,
+
+        'total_payments': Payment.objects.count(),
+
+        'successful_payments': Payment.objects.filter(
+            status='Success'
+        ).count()
 
     })
 
 # ================= PROFILE =================
+
 
 def profile(request):
 
@@ -966,112 +918,15 @@ def profile(request):
         return check_login(request)
 
     user = User.objects.get(
+
         id=request.session['user_id']
+
     )
 
     return render(request, 'profile.html', {
+
         'user': user
-    })
 
-
-# ================= API TASKS =================
-
-def api_tasks(request):
-
-    tasks = Task.objects.all()
-
-    data = []
-
-    for t in tasks:
-
-        data.append({
-            'id': t.id,
-            'name': t.name,
-            'electrician': t.electrician.name,
-            'job': t.job.title,
-            'status': t.status
-        })
-
-    return JsonResponse({
-        'tasks': data
-    })
-
-
-# ================= API ADD TASK =================
-
-def api_add_task(request):
-
-    if not is_admin(request):
-
-        return JsonResponse({
-            'error': 'Unauthorized'
-        }, status=403)
-
-    if request.method == 'POST':
-
-        task = Task.objects.create(
-            name=request.POST['name'],
-            electrician_id=request.POST['electrician'],
-            job_id=request.POST['job'],
-            status=request.POST['status']
-        )
-
-        return JsonResponse({
-            'message': 'Task added',
-            'id': task.id
-        })
-
-    return JsonResponse({
-        'error': 'Invalid request'
-    })
-
-
-# ================= API UPDATE TASK =================
-
-def api_update_task(request, id):
-
-    try:
-
-        task = Task.objects.get(id=id)
-
-    except Task.DoesNotExist:
-
-        return JsonResponse({
-            'error': 'Task not found'
-        }, status=404)
-
-    if request.method == 'POST':
-
-        task.status = request.POST.get(
-            'status',
-            task.status
-        )
-
-        task.save()
-
-        return JsonResponse({
-            'message': 'Task updated'
-        })
-
-    return JsonResponse({
-        'error': 'Invalid request'
-    })
-
-
-# ================= API DELETE TASK =================
-
-def api_delete_task(request, id):
-
-    if not is_admin(request):
-
-        return JsonResponse({
-            'error': 'Unauthorized'
-        }, status=403)
-
-    Task.objects.filter(id=id).delete()
-
-    return JsonResponse({
-        'message': 'Deleted successfully'
     })
 
 
@@ -1083,11 +938,28 @@ def upload_report(request):
 
         return check_login(request)
 
+    # ONLY ADMIN & ELECTRICIAN
+
+    if not (
+
+        is_admin(request)
+
+        or
+
+        is_electrician(request)
+
+    ):
+
+        return redirect('/dashboard/')
+
     if request.method == 'POST':
 
         form = ReportForm(
+
             request.POST,
+
             request.FILES
+
         )
 
         if form.is_valid():
@@ -1101,8 +973,227 @@ def upload_report(request):
         form = ReportForm()
 
     return render(request, 'upload_report.html', {
+
         'form': form
+
     })
+
+# ================= API TASKS =================
+
+def api_tasks(request):
+
+    # LOGIN CHECK
+
+    if check_login(request):
+
+        return JsonResponse({
+
+            'error': 'Login Required'
+
+        })
+
+    tasks = Task.objects.all().values(
+
+        'id',
+
+        'name',
+
+        'status'
+
+    )
+
+    return JsonResponse(
+
+        list(tasks),
+
+        safe=False
+
+    )
+
+
+# ================= API ADD TASK =================
+
+def api_add_task(request):
+
+    # LOGIN CHECK
+
+    if check_login(request):
+
+        return JsonResponse({
+
+            'error': 'Login Required'
+
+        })
+
+    # ADMIN ONLY
+
+    if not is_admin(request):
+
+        return JsonResponse({
+
+            'error': 'Access Denied'
+
+        })
+
+    if request.method == "POST":
+
+        data = json.loads(request.body)
+
+        task = Task.objects.create(
+
+            name=data.get('name'),
+
+            electrician_id=data.get(
+                'electrician'
+            ),
+
+            job_id=data.get('job'),
+
+            status=data.get(
+                'status',
+                'Pending'
+            )
+
+        )
+
+        return JsonResponse({
+
+            'message': 'Task Added',
+
+            'task_id': task.id
+
+        })
+
+    return JsonResponse({
+
+        'error': 'Invalid Request'
+
+    })
+
+
+# ================= API UPDATE TASK =================
+
+def api_update_task(request, id):
+
+    # LOGIN CHECK
+
+    if check_login(request):
+
+        return JsonResponse({
+
+            'error': 'Login Required'
+
+        })
+
+    # ADMIN ONLY
+
+    if not is_admin(request):
+
+        return JsonResponse({
+
+            'error': 'Access Denied'
+
+        })
+
+    try:
+
+        task = Task.objects.get(id=id)
+
+    except Task.DoesNotExist:
+
+        return JsonResponse({
+
+            'error': 'Task Not Found'
+
+        })
+
+    if request.method == "PUT":
+
+        data = json.loads(request.body)
+
+        task.name = data.get(
+
+            'name',
+
+            task.name
+
+        )
+
+        task.status = data.get(
+
+            'status',
+
+            task.status
+
+        )
+
+        task.save()
+
+        return JsonResponse({
+
+            'message': 'Task Updated'
+
+        })
+
+    return JsonResponse({
+
+        'error': 'Invalid Request'
+
+    })
+
+
+# ================= API DELETE TASK =================
+
+def api_delete_task(request, id):
+
+    # LOGIN CHECK
+
+    if check_login(request):
+
+        return JsonResponse({
+
+            'error': 'Login Required'
+
+        })
+
+    # ADMIN ONLY
+
+    if not is_admin(request):
+
+        return JsonResponse({
+
+            'error': 'Access Denied'
+
+        })
+
+    try:
+
+        task = Task.objects.get(id=id)
+
+    except Task.DoesNotExist:
+
+        return JsonResponse({
+
+            'error': 'Task Not Found'
+
+        })
+
+    if request.method == "DELETE":
+
+        task.delete()
+
+        return JsonResponse({
+
+            'message': 'Task Deleted'
+
+        })
+
+    return JsonResponse({
+
+        'error': 'Invalid Request'
+
+    })
+
 # ================= CLIENT REQUESTS ADMIN =================
 
 def client_requests(request):
@@ -1111,27 +1202,31 @@ def client_requests(request):
 
         return check_login(request)
 
-    # ONLY ADMIN
+    # ADMIN ONLY
 
-    if request.session['role'] != "Admin":
+    if not is_admin(request):
 
         return redirect('/dashboard/')
 
     requests_data = ClientRequest.objects.all().order_by('-id')
 
-    # ================= UPDATE =================
+    # ================= UPDATE REQUEST =================
 
     if request.method == 'POST':
 
         request_id = request.POST.get('id')
 
-        client_request = ClientRequest.objects.get(id=request_id)
+        client_request = ClientRequest.objects.get(
+            id=request_id
+        )
 
-        client_request.electrician = request.POST.get('electrician')
+        client_request.electrician = request.POST.get(
+            'electrician'
+        )
 
-        client_request.status = request.POST.get('status')
-
-        client_request.payment_status = request.POST.get('payment_status')
+        client_request.status = request.POST.get(
+            'status'
+        )
 
         client_request.save()
 
@@ -1142,5 +1237,251 @@ def client_requests(request):
         'requests_data': requests_data,
 
         'electricians': Electrician.objects.all()
+
+    })
+
+
+# ================= PAYMENTS =================
+
+# ================= PAYMENTS =================
+
+def payments(request):
+
+    if check_login(request):
+
+        return check_login(request)
+
+    current_user = User.objects.get(
+
+        id=request.session['user_id']
+
+    )
+
+    # ================= RAZORPAY CLIENT =================
+
+    client = razorpay.Client(auth=(
+
+        settings.RAZORPAY_KEY_ID,
+
+        settings.RAZORPAY_KEY_SECRET
+
+    ))
+
+    # ================= CREATE PAYMENT =================
+
+    if request.method == 'POST':
+
+        amount = int(request.POST.get('amount'))
+
+        payment_type = request.POST.get(
+            'payment_type'
+        )
+        # ================= RECEIVER =================
+
+        # CLIENT -> ADMIN
+
+        if is_client(request):
+
+            receiver_id = request.POST.get(
+                'receiver'
+            )
+
+            receiver = User.objects.get(
+                id=receiver_id
+            )
+
+        # ADMIN -> ELECTRICIAN
+
+        else:
+
+            receiver_phone = request.POST.get(
+                'receiver'
+            )
+
+            receiver_electrician = Electrician.objects.get(
+                phone=receiver_phone
+            )
+
+            receiver = User.objects.get(
+                phone=receiver_electrician.phone
+            )
+
+        # ================= CREATE ORDER =================
+
+        razorpay_order = client.order.create({
+
+            "amount": amount * 100,
+
+            "currency": "INR",
+
+            "payment_capture": "1"
+
+        })
+
+        # ================= SAVE PAYMENT =================
+
+        payment = Payment.objects.create(
+
+            payer=current_user,
+
+            receiver=receiver,
+
+            amount=amount,
+
+            payment_type=payment_type,
+
+            payment_method="Razorpay",
+
+            status='Pending'
+
+        )
+
+        return render(request, 'payment_checkout.html', {
+
+            'payment': payment,
+
+            'razorpay_order_id': razorpay_order['id'],
+
+            'razorpay_key': settings.RAZORPAY_KEY_ID,
+
+            'amount': amount * 100
+
+        })
+
+    # ================= ROLE BASED PAYMENTS =================
+
+    if is_admin(request):
+
+        payments = Payment.objects.all().order_by('-id')
+
+    elif is_electrician(request):
+
+        payments = Payment.objects.filter(
+
+            receiver=current_user
+
+        ).order_by('-id')
+
+    else:
+
+        payments = Payment.objects.filter(
+
+            payer=current_user
+
+        ).order_by('-id')
+
+    # ================= DROPDOWNS =================
+
+    admin = User.objects.filter(
+        role='Admin'
+    ).first()
+
+    electricians = Electrician.objects.all()
+
+    return render(request, 'payments.html', {
+
+        'admin': admin,
+
+        'electricians': electricians,
+
+        'payments': payments
+
+    })
+
+
+# ================= PAYMENT SUCCESS =================
+
+def payment_success(request):
+
+    if check_login(request):
+
+        return check_login(request)
+
+    if request.method == "POST":
+
+        payment_id = request.POST.get(
+            'payment_id'
+        )
+
+        razorpay_payment_id = request.POST.get(
+            'razorpay_payment_id'
+        )
+
+        razorpay_order_id = request.POST.get(
+            'razorpay_order_id'
+        )
+
+        razorpay_signature = request.POST.get(
+            'razorpay_signature'
+        )
+
+        try:
+
+            payment = Payment.objects.get(
+                id=payment_id
+            )
+
+            # ================= RAZORPAY CLIENT =================
+
+            client = razorpay.Client(auth=(
+
+                settings.RAZORPAY_KEY_ID,
+
+                settings.RAZORPAY_KEY_SECRET
+
+            ))
+
+            # ================= VERIFY SIGNATURE =================
+
+            params_dict = {
+
+                'razorpay_order_id':
+                    razorpay_order_id,
+
+                'razorpay_payment_id':
+                    razorpay_payment_id,
+
+                'razorpay_signature':
+                    razorpay_signature
+
+            }
+
+            client.utility.verify_payment_signature(
+                params_dict
+            )
+
+            # ================= UPDATE PAYMENT =================
+
+            payment.status = "Success"
+
+            payment.transaction_id = (
+                razorpay_payment_id
+            )
+
+            payment.save()
+
+            return JsonResponse({
+
+                'status': 'success'
+
+            })
+
+        except Exception as e:
+
+            payment.status = "Failed"
+
+            payment.save()
+
+            return JsonResponse({
+
+                'status': 'failed',
+
+                'error': str(e)
+
+            })
+
+    return JsonResponse({
+
+        'status': 'invalid request'
 
     })

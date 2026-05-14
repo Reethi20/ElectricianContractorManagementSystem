@@ -44,6 +44,7 @@ rel="stylesheet">
 body{
     font-family:'Inter',sans-serif;
     background:#f1f5f9;
+    overflow-x:hidden;
 }
 
 .wrapper{
@@ -54,7 +55,7 @@ body{
 /* ================= SIDEBAR ================= */
 
 .sidebar{
-    width:250px;
+    width:260px;
     background:#0f172a;
     color:white;
     position:fixed;
@@ -64,20 +65,22 @@ body{
     z-index:1000;
     overflow-y:auto;
     transition:0.3s;
+    display:flex;
+    flex-direction:column;
 }
 
 .logo-area{
     display:flex;
     align-items:center;
     gap:14px;
-    padding:24px 20px;
+    padding:24px 22px;
     border-bottom:1px solid rgba(255,255,255,0.08);
 }
 
 .logo{
-    width:46px;
-    height:46px;
-    border-radius:12px;
+    width:48px;
+    height:48px;
+    border-radius:14px;
     object-fit:cover;
 }
 
@@ -85,18 +88,42 @@ body{
     font-weight:700;
     font-size:24px;
     color:white;
+    margin-bottom:0;
 }
 
+.logo-subtitle{
+    font-size:12px;
+    color:#94a3b8;
+}
+
+/* ================= MENU ================= */
+
 .menu{
-    padding:20px 15px;
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    padding:22px 16px;
 }
 
 .menu-title{
     color:#94a3b8;
     font-size:12px;
-    font-weight:600;
+    font-weight:700;
     letter-spacing:1px;
     margin-bottom:18px;
+    padding-left:12px;
+}
+
+.menu-links{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+}
+
+.menu-bottom{
+    margin-top:auto;
+    padding-top:18px;
+    border-top:1px solid rgba(255,255,255,0.08);
 }
 
 .menu-link{
@@ -105,9 +132,8 @@ body{
     gap:14px;
     color:#e2e8f0;
     text-decoration:none;
-    padding:13px 16px;
-    border-radius:12px;
-    margin-bottom:10px;
+    padding:14px 16px;
+    border-radius:14px;
     font-size:15px;
     font-weight:500;
     transition:0.3s;
@@ -116,11 +142,13 @@ body{
 .menu-link:hover{
     background:#2563eb;
     color:white;
+    transform:translateX(4px);
 }
 
 .menu-link i{
     width:18px;
     text-align:center;
+    font-size:16px;
 }
 
 .logout-link:hover{
@@ -130,8 +158,8 @@ body{
 /* ================= MAIN CONTENT ================= */
 
 .main-content{
-    margin-left:250px;
-    width:calc(100% - 250px);
+    margin-left:260px;
+    width:calc(100% - 260px);
     min-height:100vh;
 }
 
@@ -150,7 +178,7 @@ body{
 }
 
 .topbar h4{
-    font-size:20px;
+    font-size:22px;
     color:#0f172a;
 }
 
@@ -202,10 +230,12 @@ body{
     display:block;
 }
 
+/* ================= RESPONSIVE ================= */
+
 @media(max-width:992px){
 
     .sidebar{
-        left:-260px;
+        left:-270px;
     }
 
     .sidebar.active{
@@ -231,6 +261,22 @@ body{
 
 }
 
+@media(max-width:576px){
+
+    .topbar h4{
+        font-size:18px;
+    }
+
+    .profile-box strong{
+        font-size:14px;
+    }
+
+    .content-area{
+        padding:16px;
+    }
+
+}
+
 </style>
 
 </head>
@@ -252,17 +298,17 @@ body{
 
             <div>
 
-                <h5 class="logo-text mb-0">
+                <h5 class="logo-text">
 
                     ECMS
 
                 </h5>
 
-                <small class="text-light opacity-75">
+                <div class="logo-subtitle">
 
-                    Management System
+                    Contractor Management
 
-                </small>
+                </div>
 
             </div>
 
@@ -272,142 +318,176 @@ body{
 
         <div class="menu">
 
-            <p class="menu-title">
+            <div>
 
-                MAIN MENU
+                <p class="menu-title">
 
-            </p>
+                    MAIN MENU
 
-            <!-- ================= ADMIN ================= -->
+                </p>
 
-            {% if request.session.role == "Admin" %}
+                <div class="menu-links">
 
-            <a href="/dashboard/" class="menu-link">
+                    <!-- ================= ADMIN ================= -->
 
-                <i class="fa-solid fa-table-columns"></i>
+                    {% if request.session.role == "Admin" %}
 
-                Dashboard
+                    <a href="/dashboard/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-table-columns"></i>
 
-            <a href="/electricians/" class="menu-link">
+                        Dashboard
 
-                <i class="fa-solid fa-user-gear"></i>
+                    </a>
 
-                Electricians
+                    <a href="/electricians/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-user-gear"></i>
 
-            <a href="/jobs/" class="menu-link">
+                        Electricians
 
-                <i class="fa-solid fa-briefcase"></i>
+                    </a>
 
-                Jobs
+                    <a href="/jobs/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-briefcase"></i>
 
-            <a href="/tasks/" class="menu-link">
+                        Jobs
 
-                <i class="fa-solid fa-list-check"></i>
+                    </a>
 
-                Tasks
+                    <a href="/tasks/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-list-check"></i>
 
-            <a href="/materials/" class="menu-link">
+                        Tasks
 
-                <i class="fa-solid fa-toolbox"></i>
+                    </a>
 
-                Materials
+                    <a href="/materials/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-toolbox"></i>
 
-            <a href="/reports/" class="menu-link">
+                        Materials
 
-                <i class="fa-solid fa-chart-line"></i>
+                    </a>
 
-                Reports
+                    <a href="/reports/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-chart-line"></i>
 
-            <a href="/client-requests/" class="menu-link">
+                        Reports
 
-                <i class="fa-solid fa-file-lines"></i>
+                    </a>
 
-                Client Requests
+                    <a href="/payments/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-money-check-dollar"></i>
 
-            {% endif %}
+                        Payments
 
-            <!-- ================= ELECTRICIAN ================= -->
+                    </a>
 
-            {% if request.session.role == "Electrician" %}
+                    <a href="/client-requests/" class="menu-link">
 
-            <a href="/tasks/" class="menu-link">
+                        <i class="fa-solid fa-file-lines"></i>
 
-                <i class="fa-solid fa-list-check"></i>
+                        Client Requests
 
-                My Tasks
+                    </a>
 
-            </a>
+                    {% endif %}
 
-            <a href="/jobs/" class="menu-link">
+                    <!-- ================= ELECTRICIAN ================= -->
 
-                <i class="fa-solid fa-briefcase"></i>
+                    {% if request.session.role == "Electrician" %}
 
-                My Jobs
+                    <a href="/tasks/" class="menu-link">
 
-            </a>
+                        <i class="fa-solid fa-list-check"></i>
 
-            {% endif %}
+                        My Tasks
 
-            <!-- ================= CLIENT ================= -->
+                    </a>
 
-            {% if request.session.role == "Client" %}
+                    <a href="/jobs/" class="menu-link">
 
-            <a href="/client-dashboard/" class="menu-link">
+                        <i class="fa-solid fa-briefcase"></i>
 
-                <i class="fa-solid fa-table-columns"></i>
+                        My Jobs
 
-                Dashboard
+                    </a>
 
-            </a>
+                    <a href="/payments/" class="menu-link">
 
-            <a href="/my-requests/" class="menu-link">
+                        <i class="fa-solid fa-money-bill-wave"></i>
 
-                <i class="fa-solid fa-file-lines"></i>
+                        Payments
 
-                My Requests
+                    </a>
+                    {% endif %}
 
-            </a>
+                    <!-- ================= CLIENT ================= -->
 
-            {% endif %}
+                    {% if request.session.role == "Client" %}
 
-            <!-- ================= COMMON ================= -->
+                    <a href="/client-dashboard/" class="menu-link">
 
-            <a href="/profile/" class="menu-link">
+                        <i class="fa-solid fa-table-columns"></i>
 
-                <i class="fa-solid fa-user"></i>
+                        Dashboard
 
-                Profile
+                    </a>
 
-            </a>
+                    <a href="/my-requests/" class="menu-link">
 
-            <a href="/logout/"
-               class="menu-link logout-link">
+                        <i class="fa-solid fa-file-lines"></i>
 
-                <i class="fa-solid fa-right-from-bracket"></i>
+                        My Requests
 
-                Logout
+                    </a>
 
-            </a>
+                    <a href="/payments/" class="menu-link">
+
+                        <i class="fa-solid fa-credit-card"></i>
+
+                        Payments
+
+                    </a>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- ================= BOTTOM MENU ================= -->
+
+            <div class="menu-bottom">
+
+                <a href="/profile/" class="menu-link">
+
+                    <i class="fa-solid fa-user"></i>
+
+                    Profile
+
+                </a>
+
+                <a href="/logout/"
+                   class="menu-link logout-link">
+
+                    <i class="fa-solid fa-right-from-bracket"></i>
+
+                    Logout
+
+                </a>
+
+            </div>
 
         </div>
 
     </aside>
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <!-- ================= MAIN ================= -->
 
     <main class="main-content">
 
@@ -495,25 +575,17 @@ body{
 </div>
 
 <!-- SCRIPT -->
-
 <script>
-
 function toggleSidebar(){
-
     document.querySelector('.sidebar')
             .classList.toggle('active');
-
     document.getElementById('overlay')
             .classList.toggle('active');
 
 }
-
 </script>
-
 <!-- BOOTSTRAP -->
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
 </script>
-
 </body>
 </html>
