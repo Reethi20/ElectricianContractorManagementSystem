@@ -53,7 +53,7 @@
     <p class="text-muted mb-0">
 
         Monitor electrician productivity,
-        job completion status,
+        completed tasks,
         pending operations,
         and payment transactions.
 
@@ -65,7 +65,7 @@
 
 <div class="row g-4 mb-4">
 
-    <!-- COMPLETED JOBS -->
+    <!-- COMPLETED TASKS -->
 
     <div class="col-lg-3 col-md-6">
 
@@ -77,13 +77,13 @@
 
                     <p class="text-muted fw-semibold mb-1">
 
-                        Completed Jobs
+                        Completed Tasks
 
                     </p>
 
                     <h2 class="fw-bold text-success mb-0">
 
-                        {{ completed_jobs }}
+                        {{ completed_tasks }}
 
                     </h2>
 
@@ -103,7 +103,7 @@
 
     </div>
 
-    <!-- PENDING JOBS -->
+    <!-- PENDING TASKS -->
 
     <div class="col-lg-3 col-md-6">
 
@@ -115,13 +115,13 @@
 
                     <p class="text-muted fw-semibold mb-1">
 
-                        Pending Jobs
+                        Pending Tasks
 
                     </p>
 
                     <h2 class="fw-bold text-warning mb-0">
 
-                        {{ pending_jobs }}
+                        {{ pending_tasks }}
 
                     </h2>
 
@@ -141,7 +141,7 @@
 
     </div>
 
-    <!-- ACTIVE JOBS -->
+    <!-- IN PROGRESS TASKS -->
 
     <div class="col-lg-3 col-md-6">
 
@@ -153,13 +153,13 @@
 
                     <p class="text-muted fw-semibold mb-1">
 
-                        Active Jobs
+                        In Progress Tasks
 
                     </p>
 
                     <h2 class="fw-bold text-primary mb-0">
 
-                        {{ inprogress_jobs }}
+                        {{ inprogress_tasks }}
 
                     </h2>
 
@@ -299,7 +299,7 @@
 
 <div class="row g-4 mb-4">
 
-    <!-- JOB ANALYTICS -->
+    <!-- TASK ANALYTICS -->
 
     <div class="col-lg-8">
 
@@ -310,7 +310,7 @@
                 <i class="fa-solid fa-chart-pie
                           text-primary me-2"></i>
 
-                Job Performance Analytics
+                Task Performance Analytics
 
             </h5>
 
@@ -322,13 +322,13 @@
 
                     <span class="fw-semibold text-success">
 
-                        Completed Jobs
+                        Completed Tasks
 
                     </span>
 
                     <span class="fw-bold text-success">
 
-                        {{ completed_jobs }}
+                        {{ completed_tasks }}
 
                     </span>
 
@@ -338,7 +338,7 @@
 
                     <div class="progress-bar bg-success"
                          style="width:
-                         {% widthratio completed_jobs total_jobs 100 %}%">
+                         {% widthratio completed_tasks total_tasks 100 %}%">
 
                     </div>
 
@@ -354,13 +354,13 @@
 
                     <span class="fw-semibold text-primary">
 
-                        Active Jobs
+                        In Progress Tasks
 
                     </span>
 
                     <span class="fw-bold text-primary">
 
-                        {{ inprogress_jobs }}
+                        {{ inprogress_tasks }}
 
                     </span>
 
@@ -370,7 +370,7 @@
 
                     <div class="progress-bar bg-primary"
                          style="width:
-                         {% widthratio inprogress_jobs total_jobs 100 %}%">
+                         {% widthratio inprogress_tasks total_tasks 100 %}%">
 
                     </div>
 
@@ -386,13 +386,13 @@
 
                     <span class="fw-semibold text-warning">
 
-                        Pending Jobs
+                        Pending Tasks
 
                     </span>
 
                     <span class="fw-bold text-warning">
 
-                        {{ pending_jobs }}
+                        {{ pending_tasks }}
 
                     </span>
 
@@ -402,7 +402,7 @@
 
                     <div class="progress-bar bg-warning"
                          style="width:
-                         {% widthratio pending_jobs total_jobs 100 %}%">
+                         {% widthratio pending_tasks total_tasks 100 %}%">
 
                     </div>
 
