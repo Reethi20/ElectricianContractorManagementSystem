@@ -487,4 +487,4 @@ Handled frontend development support and UI assistance. Contributed to frontend 
 
 ### Shravana Naik
 
-Handled documentation and project report submission.
+Handled project report submission.
