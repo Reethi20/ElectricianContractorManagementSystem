@@ -213,8 +213,14 @@ var options = {
 
                 alert("Payment Successful");
 
-                window.location.href =
-                    "/payments/";
+                rzp1.close();
+
+                setTimeout(function () {
+
+                    window.location.href =
+                        "/payments/";
+
+                }, 1000);
 
             }
 
