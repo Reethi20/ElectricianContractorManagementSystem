@@ -7,8 +7,9 @@ import random
 import json
 from .models import *
 from .forms import JobForm, ReportForm
-import razorpay
 from django.conf import settings
+from django.core.mail import send_mail
+from decimal import Decimal
 
 # ================= ROLE CHECK =================
 def is_admin(request):
@@ -25,9 +26,65 @@ def check_login(request):
     if not request.session.get('user_id'):
         return redirect('/login/')
 
+
+def pincode_from_text(text):
+    match = re.search(r'\b\d{6}\b', text or '')
+    return match.group(0) if match else ''
+
+
+def request_workflow_status(client_request):
+    if client_request.status == "Completed":
+        return "Completed"
+    if ServiceOTP.objects.filter(
+        client_request=client_request,
+        is_verified=True
+    ).exists():
+        return "Work In Progress"
+    if client_request.electrician != "Not Assigned":
+        return "Electrician Assigned"
+    if client_request.is_quote_approved:
+        return "Advance Paid"
+    if client_request.quoted_amount and client_request.quoted_amount > 0:
+        return "Quotation Sent"
+    return "Request Submitted"
+
+
+def attach_request_workflow(requests_data):
+    for item in requests_data:
+        item.workflow_status = request_workflow_status(item)
+        item.display_pincode = item.pincode or pincode_from_text(item.location)
+        item.display_address = item.address or item.location
+        latest_otp = ServiceOTP.objects.filter(
+            client_request=item
+        ).order_by('-id').first()
+        item.latest_otp = latest_otp
+        item.remaining_balance = max(
+            item.quoted_amount - item.advance_amount,
+            Decimal('0')
+        )
+    return requests_data
+
+
+def sync_job_completion(job):
+    if not job:
+        return
+    task_count = Task.objects.filter(job=job).count()
+    completed_count = Task.objects.filter(
+        job=job,
+        status="Completed"
+    ).count()
+    if task_count and task_count == completed_count:
+        job.status = "Completed"
+        job.save()
+
 # ================= HOME =================
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'index.html', {
+        'total_electricians': Electrician.objects.count(),
+        'total_jobs': Job.objects.count(),
+        'total_tasks': Task.objects.count(),
+        'total_payments': Payment.objects.count(),
+    })
 
 # ================= REGISTER =================
 def register(request):
@@ -37,11 +94,17 @@ def register(request):
         email = request.POST.get('email')
         role = request.POST.get('role')
         password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
 
         # EMPTY FIELD CHECK
-        if not all([name, phone, email, role, password]):
+        if not all([name, phone, email, role, password, confirm_password]):
             return render(request, 'register.html', {
                 'error': 'All fields are required'
+            })
+
+        if password != confirm_password:
+            return render(request, 'register.html', {
+                'error': 'Passwords do not match'
             })
 
         # PASSWORD LENGTH CHECK
@@ -119,7 +182,208 @@ def login_view(request):
 def logout(request):
     request.session.flush()
     return redirect('/login/')
+# ================= FORGOT PASSWORD =================
+def forgot_password(request):
 
+    if request.method == "POST":
+
+        # ================= SEND OTP =================
+
+        if "send_otp" in request.POST:
+
+            email = request.POST.get("email")
+
+            user = User.objects.filter(
+                email=email
+            ).first()
+
+            if not user:
+
+                return render(
+                    request,
+                    "forgot_password.html",
+                    {
+                        "error": "Email not found"
+                    }
+                )
+
+            otp = str(
+                random.randint(
+                    100000,
+                    999999
+                )
+            )
+
+            OTP.objects.create(
+                email=email,
+                otp=otp
+            )
+
+            try:
+
+                message = f"""
+
+    Dear User,
+
+    We received a request to reset the password for your Electrical Contractor Management System (ECMS) account.
+
+    Your One-Time Password (OTP) is:
+
+    {otp}
+
+    This OTP is valid for 10 minutes and can be used only once.
+
+    If you did not request a password reset, please ignore this email.
+
+    Regards,
+    ECMS Support Team
+    Electrical Contractor Management System
+    """
+                send_mail(
+                    "ECMS Password Reset Request",
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    [email],
+                    fail_silently=False
+                )
+
+            except Exception as e:
+
+                return render(
+                    request,
+                    "forgot_password.html",
+                    {
+                        "error": f"Email Error : {e}"
+                    }
+                )
+
+            return render(
+                request,
+                "forgot_password.html",
+                {
+                    "success": "OTP sent successfully",
+                    "email": email
+                }
+            )
+
+        # ================= VERIFY OTP =================
+
+        elif "verify_otp" in request.POST:
+
+            email = request.POST.get("email")
+
+            otp = request.POST.get("otp")
+
+            otp_record = OTP.objects.filter(
+
+                email=email,
+
+                otp=otp,
+
+                is_used=False
+
+            ).first()
+
+            if otp_record:
+
+                return render(
+
+                    request,
+
+                    "forgot_password.html",
+
+                    {
+
+                        "email": email,
+
+                        "otp_verified": True,
+
+                        "success":
+                        "OTP verified successfully"
+
+                    }
+
+                )
+
+            return render(
+
+                request,
+
+                "forgot_password.html",
+
+                {
+
+                    "email": email,
+
+                    "error":
+                    "Invalid OTP"
+
+                }
+
+            )
+
+        # ================= RESET PASSWORD =================
+
+        elif "reset_password" in request.POST:
+
+            email = request.POST.get("email")
+
+            otp = request.POST.get("otp")
+
+            password = request.POST.get("password")
+
+            confirm_password = request.POST.get(
+                "confirm_password"
+            )
+
+            if password != confirm_password:
+
+                return render(
+                    request,
+                    "forgot_password.html",
+                    {
+                        "error": "Passwords do not match",
+                        "email": email
+                    }
+                )
+
+            otp_record = OTP.objects.filter(
+                email=email,
+                otp=otp,
+                is_used=False
+            ).first()
+
+            if not otp_record:
+
+                return render(
+                    request,
+                    "forgot_password.html",
+                    {
+                        "error": "Invalid OTP",
+                        "email": email
+                    }
+                )
+
+            user = User.objects.get(
+                email=email
+            )
+
+            user.password = make_password(
+                password
+            )
+
+            user.save()
+
+            otp_record.is_used = True
+
+            otp_record.save()
+
+            return redirect("/login/")
+
+    return render(
+        request,
+        "forgot_password.html"
+    )
 
 # ================= DASHBOARD =================
 def dashboard(request):
@@ -127,9 +391,13 @@ def dashboard(request):
         return check_login(request)
     # ADMIN ONLY
     if not is_admin(request):
+        if is_client(request):
+            return redirect('/client-dashboard/')
         return redirect('/tasks/')
     tasks = Task.objects.all().order_by('-id')[:5]
     payments = Payment.objects.all().order_by('-id')[:5]
+    requests_data = ClientRequest.objects.all().order_by('-id')[:5]
+    attach_request_workflow(requests_data)
     return render(request, 'dashboard.html', {
         'total_electricians': Electrician.objects.count(),
         'total_jobs': Job.objects.count(),
@@ -144,7 +412,8 @@ def dashboard(request):
         ).count(),
         'total_payments': Payment.objects.count(),
         'tasks': tasks,
-        'payments': payments
+        'payments': payments,
+        'requests_data': requests_data
     })
 
 # ================= CLIENT DASHBOARD =================
@@ -157,6 +426,7 @@ def client_dashboard(request):
     requests_data = ClientRequest.objects.filter(
         client_id=request.session['user_id']
     )
+    attach_request_workflow(requests_data)
     return render(request, 'client_dashboard.html', {
         'requests_data': requests_data,
         'total_requests': requests_data.count(),
@@ -179,16 +449,23 @@ def my_requests(request):
         id=request.session['user_id']
     )
 
-    # CREATE REQUEST
     if request.method == 'POST':
+        if request.POST.get('action') == 'approve_quote':
+            ClientRequest.objects.filter(
+                id=request.POST.get('id'),
+                client=client
+            ).update(is_quote_approved=True)
+            return redirect('/my-requests/')
+
         ClientRequest.objects.create(
             client=client,
             service_title=request.POST.get(
                 'service_title'
             ),
-            location=request.POST.get(
-                'location'
-            ),
+            # Location matching can be extended using Google Maps API in future versions.
+            location=request.POST.get('address'),
+            address=request.POST.get('address'),
+            pincode=request.POST.get('pincode'),
             description=request.POST.get(
                 'description'
             ),
@@ -197,6 +474,7 @@ def my_requests(request):
     requests_data = ClientRequest.objects.filter(
         client=client
     ).order_by('-id')
+    attach_request_workflow(requests_data)
     return render(request, 'my_requests.html', {
         'requests_data': requests_data,
         'total_requests': requests_data.count(),
@@ -255,12 +533,21 @@ def electricians(request):
             ).exists():
 
                 # CREATE ELECTRICIAN
+                image = request.FILES.get(
+                    'image'
+                )
 
                 Electrician.objects.create(
 
                     name=name,
 
-                    phone=phone
+                    phone=phone,
+
+                    image=image,
+
+                    service_area_pincode=request.POST.get(
+                        'service_area_pincode'
+                    ) or ''
 
                 )
 
@@ -305,6 +592,15 @@ def electricians(request):
             electrician.phone = request.POST.get(
                 'phone'
             )
+            if request.FILES.get('image'):
+                electrician.image = request.FILES.get('image')
+
+            if request.POST.get('availability'):
+                electrician.availability = request.POST.get('availability')
+
+            electrician.service_area_pincode = request.POST.get(
+                'service_area_pincode'
+            ) or ''
 
             electrician.save()
 
@@ -530,6 +826,7 @@ def tasks(request):
     if is_admin(request):
 
         tasks_list = Task.objects.all().order_by('-id')
+        assigned_requests = ClientRequest.objects.none()
 
     elif is_electrician(request):
 
@@ -539,9 +836,21 @@ def tasks(request):
 
         ).order_by('-id')
 
+        electrician = Electrician.objects.filter(
+            phone=request.session['phone']
+        ).first()
+
+        assigned_requests = ClientRequest.objects.filter(
+            electrician=electrician.name
+        ).exclude(
+            status="Completed"
+        ).order_by('-id') if electrician else ClientRequest.objects.none()
+        attach_request_workflow(assigned_requests)
+
     else:
 
         tasks_list = Task.objects.none()
+        assigned_requests = ClientRequest.objects.none()
 
     # ================= SEARCH =================
 
@@ -628,6 +937,7 @@ def tasks(request):
             ) or "Pending"
 
             task.save()
+            sync_job_completion(task.job)
 
         # ================= ELECTRICIAN STATUS UPDATE =================
 
@@ -650,6 +960,7 @@ def tasks(request):
             ) or "Pending"
 
             task.save()
+            sync_job_completion(task.job)
 
         return redirect('/tasks/')
 
@@ -659,7 +970,9 @@ def tasks(request):
 
         'electricians': Electrician.objects.all(),
 
-        'jobs': Job.objects.all()
+        'jobs': Job.objects.all(),
+
+        'assigned_requests': assigned_requests
 
     })
 
@@ -702,13 +1015,9 @@ def materials(request):
 
     elif is_electrician(request):
 
-        # ELECTRICIANS CAN VIEW ONLY
-
-        materials_list = Material.objects.all().order_by('-id')
+        return redirect('/tasks/')
 
     else:
-
-        # CLIENTS NO ACCESS
 
         return redirect('/client-dashboard/')
 
@@ -750,7 +1059,9 @@ def materials(request):
 
                 cost=request.POST.get(
                     'cost'
-                )
+                ),
+                
+                job_id=request.POST.get('job'),
 
             )
 
@@ -775,16 +1086,15 @@ def materials(request):
             material.cost = request.POST.get(
                 'cost'
             )
-
+            material.job_id = request.POST.get('job')
             material.save()
 
         return redirect('/materials/')
 
     return render(request, 'materials.html', {
-
-        'materials': materials_list
-
-    })
+        'materials': materials_list,
+        'jobs': Job.objects.all()
+ })
 
 
 # ================= DELETE MATERIAL =================
@@ -855,6 +1165,11 @@ def reports(request):
     # ================= ELECTRICIANS =================
 
     electricians = Electrician.objects.all()
+    top_electricians = Electrician.objects.all().order_by(
+        '-rating',
+        '-total_reviews',
+        'name'
+    )[:5]
 
     # ================= TOTAL TASKS =================
 
@@ -896,23 +1211,31 @@ def reports(request):
 
         'electricians': electricians,
 
+        'top_electricians': top_electricians,
+
         'total_tasks': total_tasks,
 
         'total_jobs': total_jobs,
 
-        'total_payments': Payment.objects.count(),
+        'total_payments': Payment.objects.filter(
+            status='Paid'
+        ).count(),
+
+        'total_revenue': sum(
+            payment.amount
+            for payment in Payment.objects.filter(
+                status='Paid'
+            )
+        ),
 
         'successful_payments': Payment.objects.filter(
-            status='Success'
+            status='Paid'
         ).count()
 
     })
 
 # ================= PROFILE =================
-
-
 def profile(request):
-
     if check_login(request):
 
         return check_login(request)
@@ -923,11 +1246,59 @@ def profile(request):
 
     )
 
-    return render(request, 'profile.html', {
+    if request.method == "POST":
 
-        'user': user
+        if user.role != "Client":
 
-    })
+            image = request.FILES.get(
+                'profile_image'
+            )
+
+            if image:
+
+                user.profile_image = image
+
+            user.save()
+
+            if user.role == "Electrician":
+
+                electrician = Electrician.objects.filter(
+                    phone=user.phone
+                ).first()
+
+                if electrician:
+
+                    electrician.availability = request.POST.get(
+                        'availability'
+                    )
+
+                    electrician.save()
+
+            return redirect('/profile/')
+
+    electrician = None
+
+    if user.role == "Electrician":
+
+        electrician = Electrician.objects.filter(
+            phone=user.phone
+        ).first()
+
+    return render(
+
+        request,
+
+        'profile.html',
+
+        {
+
+            'user': user,
+
+            'electrician': electrician
+
+        }
+
+    )
 
 
 # ================= UPLOAD REPORT =================
@@ -1219,18 +1590,61 @@ def client_requests(request):
         client_request = ClientRequest.objects.get(
             id=request_id
         )
-
         client_request.electrician = request.POST.get(
             'electrician'
         )
 
-        client_request.status = request.POST.get(
-            'status'
+        client_request.quoted_amount = request.POST.get(
+            'quoted_amount'
+        ) or 0
+
+        client_request.advance_amount = request.POST.get(
+            'advance_amount'
+        ) or 0
+
+        client_request.is_quote_approved = (
+            request.POST.get(
+                'is_quote_approved'
+            ) == 'on'
         )
+
+        if request.POST.get('electrician') != "Not Assigned":
+
+            electrician_user = User.objects.filter(
+
+                phone=Electrician.objects.get(
+
+                    name=request.POST.get(
+                        'electrician'
+                    )
+
+                ).phone
+
+            ).first()
+
+            if electrician_user:
+
+                Notification.objects.create(
+                    user=electrician_user,
+                    notification_type="Request",
+                    title="New Service Request",
+                    message=f"New service assigned for {client_request.service_title}"
+                )
 
         client_request.save()
 
         return redirect('/client-requests/')
+
+    attach_request_workflow(requests_data)
+
+    for item in requests_data:
+        request_pincode = item.pincode or pincode_from_text(item.location)
+        item.suggested_electricians = [
+            electrician
+            for electrician in Electrician.objects.all()
+            if request_pincode
+            and electrician.service_area_pincode == request_pincode
+        ]
 
     return render(request, 'client_requests.html', {
 
@@ -1243,13 +1657,15 @@ def client_requests(request):
 
 # ================= PAYMENTS =================
 
-# ================= PAYMENTS =================
-
 def payments(request):
 
     if check_login(request):
 
         return check_login(request)
+
+    if is_electrician(request):
+
+        return redirect('/tasks/')
 
     current_user = User.objects.get(
 
@@ -1257,21 +1673,21 @@ def payments(request):
 
     )
 
-    # ================= RAZORPAY CLIENT =================
-
-    client = razorpay.Client(auth=(
-
-        settings.RAZORPAY_KEY_ID,
-
-        settings.RAZORPAY_KEY_SECRET
-
-    ))
-
     # ================= CREATE PAYMENT =================
 
     if request.method == 'POST':
 
-        amount = int(request.POST.get('amount'))
+        import razorpay
+
+        client = razorpay.Client(auth=(
+
+            settings.RAZORPAY_KEY_ID,
+
+            settings.RAZORPAY_KEY_SECRET
+
+        ))
+
+        amount = Decimal(request.POST.get('amount'))
 
         payment_type = request.POST.get(
             'payment_type'
@@ -1310,7 +1726,7 @@ def payments(request):
 
         razorpay_order = client.order.create({
 
-            "amount": amount * 100,
+            "amount": int(amount * 100),
 
             "currency": "INR",
 
@@ -1344,7 +1760,7 @@ def payments(request):
 
             'razorpay_key': settings.RAZORPAY_KEY_ID,
 
-            'amount': amount * 100
+            'amount': int(amount * 100)
 
         })
 
@@ -1378,13 +1794,28 @@ def payments(request):
 
     electricians = Electrician.objects.all()
 
+    paid_total = sum(
+        payment.amount
+        for payment in payments
+        if payment.status == "Paid"
+    )
+    pending_total = sum(
+        payment.amount
+        for payment in payments
+        if payment.status == "Pending"
+    )
+
     return render(request, 'payments.html', {
 
         'admin': admin,
 
         'electricians': electricians,
 
-        'payments': payments
+        'payments': payments,
+
+        'paid_total': paid_total,
+
+        'pending_total': pending_total
 
     })
 
@@ -1398,6 +1829,8 @@ def payment_success(request):
         return check_login(request)
 
     if request.method == "POST":
+
+        import razorpay
 
         payment_id = request.POST.get(
             'payment_id'
@@ -1452,13 +1885,19 @@ def payment_success(request):
 
             # ================= UPDATE PAYMENT =================
 
-            payment.status = "Success"
+            payment.status = "Paid"
 
             payment.transaction_id = (
                 razorpay_payment_id
             )
 
             payment.save()
+            Notification.objects.create(
+                user=payment.receiver,
+                notification_type="Payment",
+                title="Payment Received",
+                message=f"Payment of ₹{payment.amount} received."
+            )
 
             return JsonResponse({
 
@@ -1469,6 +1908,7 @@ def payment_success(request):
         except Exception as e:
 
             payment.status = "Failed"
+
 
             payment.save()
 
@@ -1484,4 +1924,297 @@ def payment_success(request):
 
         'status': 'invalid request'
 
+    })
+# ================= FAQ =================
+
+def faq(request):
+
+    if check_login(request):
+
+        return check_login(request)
+
+    faqs = FAQ.objects.all().order_by('-id')
+
+    if request.method == "POST":
+
+        if is_admin(request):
+
+            FAQ.objects.create(
+
+                question=request.POST.get(
+                    'question'
+                ),
+
+                answer=request.POST.get(
+                    'answer'
+                )
+
+            )
+
+            return redirect('/faq/')
+
+    return render(
+
+        request,
+
+        'faq.html',
+
+        {
+
+            'faqs': faqs
+
+        }
+
+    )
+
+
+# ================= NOTIFICATIONS =================
+
+def notifications(request):
+
+    if check_login(request):
+
+        return check_login(request)
+
+    notifications = Notification.objects.filter(
+
+        user_id=request.session['user_id']
+
+    ).order_by('-id')
+
+    return render(
+
+        request,
+
+        'notifications.html',
+
+        {
+
+            'notifications': notifications
+
+        }
+
+    )
+
+
+# ================= REVIEWS =================
+
+def reviews(request):
+
+    if check_login(request):
+        return check_login(request)
+
+    if request.method == "POST":
+
+        if not is_client(request):
+
+            return redirect('/reviews/')
+
+        electrician_id = request.POST.get(
+            'electrician'
+        )
+
+        rating = request.POST.get(
+            'rating'
+        )
+
+        review_text = request.POST.get(
+            'review'
+        )
+
+        client = User.objects.get(
+            id=request.session['user_id']
+        )
+
+        Review.objects.update_or_create(
+
+            electrician_id=electrician_id,
+
+            client=client,
+
+            defaults={
+
+                'rating': rating,
+
+                'review': review_text
+
+            }
+
+        )
+
+        electrician = Electrician.objects.get(
+            id=electrician_id
+        )
+
+        reviews_list = Review.objects.filter(
+            electrician=electrician
+        )
+
+        electrician.total_reviews = (
+            reviews_list.count()
+        )
+
+        electrician.rating = round(
+
+            sum(
+                r.rating
+                for r in reviews_list
+            ) / reviews_list.count(),
+
+            1
+
+        )
+
+        electrician.save()
+
+        Notification.objects.create(
+
+            user=User.objects.filter(
+                phone=electrician.phone
+            ).first(),
+
+            notification_type='Review',
+
+            title='New Review',
+
+            message='A client submitted a review.'
+
+        )
+
+        return redirect('/reviews/')
+
+    if is_electrician(request):
+
+        electrician = Electrician.objects.filter(
+            phone=request.session['phone']
+        ).first()
+
+        reviews_data = Review.objects.filter(
+            electrician=electrician
+        ).order_by('-id')
+
+    else:
+
+        reviews_data = Review.objects.all().order_by('-id')
+
+    total_reviews = reviews_data.count()
+    average_rating = round(
+        sum(review.rating for review in reviews_data) / total_reviews,
+        1
+    ) if total_reviews else 0
+
+    return render(
+
+        request,
+
+        'reviews.html',
+
+        {
+
+            'reviews': reviews_data,
+
+            'electricians':
+            Electrician.objects.all(),
+
+            'total_reviews': total_reviews,
+
+            'average_rating': average_rating
+
+        }
+
+    )
+
+
+def mark_notification_read(request, id):
+
+    if check_login(request):
+        return check_login(request)
+
+    notification = Notification.objects.filter(
+        id=id,
+        user_id=request.session['user_id']
+    ).first()
+
+    if notification:
+        notification.is_read = True
+        notification.save()
+
+    return redirect('/notifications/')
+def generate_service_otp(request, id):
+
+    if check_login(request):
+        return check_login(request)
+
+    if not is_electrician(request):
+        return redirect('/tasks/')
+
+    client_request = ClientRequest.objects.get(
+        id=id
+    )
+
+    electrician = Electrician.objects.get(
+        phone=request.session['phone']
+    )
+
+    if client_request.electrician != electrician.name:
+        return JsonResponse({
+            'error': 'Access Denied'
+        })
+
+    otp = str(
+        random.randint(
+            100000,
+            999999
+        )
+    )
+
+    ServiceOTP.objects.create(
+        client_request=client_request,
+        generated_by=electrician,
+        otp=otp
+    )
+
+    return JsonResponse({
+        'otp': otp
+    })
+def verify_service_otp(request, id):
+
+    if check_login(request):
+        return check_login(request)
+
+    if request.method == "POST":
+
+        otp = request.POST.get('otp')
+
+        otp_record = ServiceOTP.objects.filter(
+            client_request_id=id,
+            otp=otp,
+            is_verified=False
+        ).first()
+
+        if otp_record:
+
+            if (
+                is_client(request)
+                and
+                otp_record.client_request.client_id != request.session['user_id']
+            ):
+                return JsonResponse({
+                    'status': 'failed'
+                })
+
+            otp_record.is_verified = True
+            otp_record.save()
+
+            client_request = otp_record.client_request
+
+            client_request.status = "In Progress"
+            client_request.save()
+
+            return JsonResponse({
+                'status': 'success'
+            })
+
+    return JsonResponse({
+        'status': 'failed'
     })

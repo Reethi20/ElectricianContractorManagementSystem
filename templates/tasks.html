@@ -10,7 +10,7 @@
 }
 
 .card{
-    border:none;
+    border:1px solid #e2e8f0;
     border-radius:18px;
 }
 
@@ -41,12 +41,13 @@
 
 .form-control,
 .form-select{
-    border-radius:10px;
-    min-height:48px;
+    border-radius:12px;
+    min-height:46px;
 }
 
 .btn{
-    border-radius:10px;
+    border-radius:12px;
+    font-weight:600;
 }
 
 .status-badge{
@@ -169,7 +170,7 @@
 
             </div>
 
-            <div class="col-md-2">
+            <div class="col-md-2 col-sm-6">
 
                 <button class="btn btn-primary w-100 fw-semibold">
 
@@ -217,7 +218,7 @@
 
             <!-- TASK NAME -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -235,7 +236,7 @@
 
             <!-- ELECTRICIAN -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -262,7 +263,7 @@
 
             <!-- JOB -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -289,7 +290,7 @@
 
             <!-- STATUS -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -343,6 +344,72 @@
 
 </div>
 
+{% endif %}
+
+{% if request.session.role == "Electrician" %}
+<div class="card shadow-sm p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+        <div>
+            <h5 class="fw-bold mb-1">
+                <i class="fa-solid fa-key text-primary me-2"></i>
+                Service OTP Completion
+            </h5>
+            <p class="text-muted mb-0">Generate an OTP when the assigned client service is ready for completion.</p>
+        </div>
+        <span class="badge bg-primary">{{ assigned_requests|length }} Active Requests</span>
+    </div>
+
+    <div class="row g-3">
+        {% for service in assigned_requests %}
+        <div class="col-lg-6">
+            <div class="border rounded-4 p-3 h-100">
+                <div class="d-flex justify-content-between gap-3 mb-2">
+                    <div>
+                        <h6 class="fw-bold mb-1">{{ service.service_title }}</h6>
+                        <small class="text-muted">
+                            <i class="fa-solid fa-location-dot me-1"></i>
+                            {{ service.location }}
+                        </small>
+                    </div>
+                    {% if service.status == "In Progress" %}
+                    <span class="badge bg-primary">In Progress</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">{{ service.status }}</span>
+                    {% endif %}
+                </div>
+                <p class="text-muted small mb-3">{{ service.description }}</p>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <button type="button"
+                            class="btn btn-outline-primary generate-otp-btn"
+                            data-request-id="{{ service.id }}">
+                        Generate OTP
+                    </button>
+                    <div class="otp-display fw-bold text-primary" id="otp-display-{{ service.id }}"></div>
+                </div>
+                {% if service.latest_otp %}
+                <div class="small text-muted mt-3">
+                    Latest OTP:
+                    <span class="fw-semibold">{{ service.latest_otp.otp }}</span>
+                    |
+                    {% if service.latest_otp.is_verified %}
+                    <span class="text-success">Verified</span>
+                    {% else %}
+                    <span class="text-warning">Pending verification</span>
+                    {% endif %}
+                    {% if service.latest_otp.verified_at %}
+                    | {{ service.latest_otp.verified_at|date:"d M Y, h:i A" }}
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="text-center text-muted py-4">No assigned client service requests are waiting for OTP completion.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
 {% endif %}
 
 <!-- TASK LIST -->
@@ -583,7 +650,7 @@
 
             <!-- BUTTONS -->
 
-            <div class="d-flex gap-2 mt-4">
+            <div class="d-flex flex-wrap gap-2 mt-4">
 
                 <button type="submit"
                         class="btn btn-success flex-fill fw-semibold">
@@ -655,5 +722,19 @@
 {% endfor %}
 
 </div>
+
+<script>
+document.querySelectorAll('.generate-otp-btn').forEach(function(button){
+    button.addEventListener('click', function(){
+        const requestId = button.dataset.requestId;
+        const display = document.getElementById('otp-display-' + requestId);
+        fetch('/generate-service-otp/' + requestId + '/')
+            .then(function(response){ return response.json(); })
+            .then(function(data){
+                display.textContent = 'OTP: ' + data.otp;
+            });
+    });
+});
+</script>
 
 {% endblock %}

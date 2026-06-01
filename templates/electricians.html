@@ -3,317 +3,170 @@
 {% block content %}
 
 <style>
-
-.table td,
-.table th{
-    vertical-align:middle;
-    white-space:nowrap;
-}
-
-.form-control{
-    min-width:140px;
-    border-radius:10px;
-}
-
-.electrician-avatar{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#dbeafe;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    color:#2563eb;
-    font-size:16px;
-}
-
-.card{
-    border:none;
-    border-radius:18px;
-}
-
-@media(max-width:768px){
-
-    .table-responsive{
-        overflow-x:auto;
-    }
-
-}
-
+.soft-card{border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 12px 30px rgba(15,23,42,.06);}
+.electrician-card{transition:transform .2s ease, box-shadow .2s ease;}
+.electrician-card:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(15,23,42,.08);}
+.electrician-avatar{width:64px;height:64px;border-radius:18px;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:24px;object-fit:cover;}
+.form-control,.form-select{border-radius:12px;min-height:46px;}
+.btn{border-radius:12px;font-weight:600;}
+@media(max-width:575px){.card-actions .btn{width:100%;}}
 </style>
 
-<!-- HEADER -->
-
-<div class="d-flex justify-content-between
-            align-items-center
-            flex-wrap gap-3 mb-4">
-
+<div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
     <div>
-
-        <h2 class="fw-bold mb-1">
-
-            Electricians Management
-
-        </h2>
-
-        <p class="text-muted mb-0">
-
-            Manage electrician workforce
-            and contact information
-
-        </p>
-
+        <h2 class="fw-bold mb-1">Electricians Management</h2>
+        <p class="text-muted mb-0">Manage workforce details, availability, ratings, and contact information.</p>
     </div>
-
-    <div class="badge bg-primary px-3 py-2 fs-6">
-
-        Total:
-        {{ electricians|length }}
-
-    </div>
-
+    <span class="badge bg-primary px-3 py-2">{{ electricians|length }} Electricians</span>
 </div>
-
-<!-- VIEW MODE -->
-
-{% if request.session.role != "Admin" %}
-
-<div class="alert alert-info border-0 shadow-sm">
-
-    <i class="fa-solid fa-eye me-2"></i>
-
-    View Only Mode Enabled
-
-</div>
-
-{% endif %}
-
-<!-- ADD FORM -->
 
 {% if request.session.role == "Admin" %}
-
-<div class="card shadow-sm p-4 mb-4">
-
-    <div class="d-flex align-items-center gap-2 mb-4">
-
-        <i class="fa-solid fa-user-plus text-primary"></i>
-
-        <h5 class="fw-bold mb-0">
-
-            Add Electrician
-
-        </h5>
-
-    </div>
-
-    <form method="POST"
-          class="row g-3">
-
+<div class="card soft-card p-4 mb-4">
+    <h5 class="fw-bold mb-3"><i class="fa-solid fa-user-plus text-primary me-2"></i>Add Electrician</h5>
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-
-        <input type="hidden"
-               name="action"
-               value="add">
-
-        <!-- NAME -->
-
-        <div class="col-md-5">
-
-            <label class="form-label fw-semibold">
-
-                Electrician Name
-
-            </label>
-
-            <input type="text"
-                   name="name"
-                   class="form-control"
-                   placeholder="Enter electrician name"
-                   required>
-
+        <input type="hidden" name="action" value="add">
+        <div class="row g-3 align-items-end">
+            <div class="col-lg-4 col-md-6">
+                <label class="form-label fw-semibold">Electrician Name</label>
+                <input type="text" name="name" class="form-control" placeholder="Enter electrician name" required>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-semibold">Phone Number</label>
+                <input type="text" name="phone" class="form-control" placeholder="Enter phone number" required>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label fw-semibold">Photo</label>
+                <input type="file" name="image" class="form-control">
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label fw-semibold">Service Pincode</label>
+                <input type="text" name="service_area_pincode" class="form-control" maxlength="6" placeholder="6 digits">
+            </div>
+            <div class="col-lg-12 col-md-6">
+                <button class="btn btn-primary w-100">
+                    <i class="fa-solid fa-plus me-1"></i>
+                    Add
+                </button>
+            </div>
         </div>
-
-        <!-- PHONE -->
-
-        <div class="col-md-5">
-
-            <label class="form-label fw-semibold">
-
-                Phone Number
-
-            </label>
-
-            <input type="text"
-                   name="phone"
-                   class="form-control"
-                   placeholder="Enter phone number"
-                   required>
-
-        </div>
-
-        <!-- BUTTON -->
-
-        <div class="col-md-2 d-flex align-items-end">
-
-            <button type="submit"
-                    class="btn btn-primary w-100 fw-semibold">
-
-                <i class="fa-solid fa-plus me-1"></i>
-
-                Add
-
-            </button>
-
-        </div>
-
     </form>
-
 </div>
-
 {% endif %}
 
-<!-- TABLE -->
-
-<div class="card shadow-sm p-4">
-
-    <div class="table-responsive">
-
-        <table class="table table-hover align-middle">
-
-            <thead class="table-light">
-
-                <tr>
-
-                    <th>Electrician</th>
-
-                    <th>Phone Number</th>
-
-                    {% if request.session.role == "Admin" %}
-
-                    <th width="220">
-
-                        Actions
-
-                    </th>
-
+<div class="row g-4">
+    {% for e in electricians %}
+    <div class="col-xl-4 col-md-6">
+        <div class="card soft-card electrician-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    {% if e.image %}
+                    <img src="{{ e.image.url }}" class="electrician-avatar" alt="{{ e.name }}">
+                    {% else %}
+                    <div class="electrician-avatar"><i class="fa-solid fa-user-gear"></i></div>
                     {% endif %}
-
-                </tr>
-
-            </thead>
-
-            <tbody>
-
-                {% for e in electricians %}
-
-                <tr>
-
-                    <form method="POST">
-
-                        {% csrf_token %}
-
-                        <input type="hidden"
-                               name="action"
-                               value="update">
-
-                        <input type="hidden"
-                               name="id"
-                               value="{{ e.id }}">
-
-                        <!-- NAME -->
-
-                        <td>
-
-                            <div class="d-flex align-items-center gap-3">
-
-                                <div class="electrician-avatar">
-
-                                    <i class="fa-solid fa-user-gear"></i>
-
-                                </div>
-
-                                <input type="text"
-                                       name="name"
-                                       value="{{ e.name }}"
-                                       class="form-control">
-
-                            </div>
-
-                        </td>
-
-                        <!-- PHONE -->
-
-                        <td>
-
-                            <input type="text"
-                                   name="phone"
-                                   value="{{ e.phone }}"
-                                   class="form-control">
-
-                        </td>
-
-                        <!-- ACTIONS -->
-
-                        {% if request.session.role == "Admin" %}
-
-                        <td>
-
-                            <div class="d-flex gap-2">
-
-                                <!-- UPDATE -->
-
-                                <button type="submit"
-                                        class="btn btn-success btn-sm">
-
-                                    <i class="fa-solid fa-check me-1"></i>
-
-                                    Update
-
-                                </button>
-
-                                <!-- DELETE -->
-
-                                <a href="/delete-electrician/{{ e.id }}/"
-                                   class="btn btn-danger btn-sm"
-                                   onclick="return confirm('Delete electrician?')">
-
-                                    <i class="fa-solid fa-trash me-1"></i>
-
-                                    Delete
-
-                                </a>
-
-                            </div>
-
-                        </td>
-
+                    <div class="flex-grow-1">
+                        <h5 class="fw-bold mb-1">{{ e.name }}</h5>
+                        <p class="text-muted mb-2"><i class="fa-solid fa-phone me-2"></i>{{ e.phone }}</p>
+                        {% if e.service_area_pincode %}
+                        <p class="text-muted small mb-2"><i class="fa-solid fa-map-pin me-2"></i>Service Area {{ e.service_area_pincode }}</p>
                         {% endif %}
+                        <div class="text-warning small mb-2">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star-half-stroke"></i>
+                            <span class="text-muted ms-1">{{ e.rating }} ({{ e.total_reviews }} Reviews)</span>
+                        </div>
+                        {% if e.availability == "Available" %}
+                        <span class="badge bg-success">Available</span>
+                        {% elif e.availability == "Working" %}
+                        <span class="badge bg-warning text-dark">Busy</span>
+                        {% else %}
+                        <span class="badge bg-danger">Offline</span>
+                        {% endif %}
+                    </div>
+                </div>
 
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted d-block">Rating</small>
+                            <strong>{{ e.rating }} / 5</strong>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="bg-light rounded-3 p-3">
+                            <small class="text-muted d-block">Reviews</small>
+                            <strong>{{ e.total_reviews }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                {% if request.session.role == "Admin" %}
+                <div class="card-actions d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-primary flex-fill" type="button" data-bs-toggle="collapse" data-bs-target="#edit-electrician-{{ e.id }}">
+                        <i class="fa-solid fa-pen me-1"></i>
+                        Edit
+                    </button>
+                    <a href="/delete-electrician/{{ e.id }}/" class="btn btn-outline-danger flex-fill" onclick="return confirm('Delete electrician?')">
+                        <i class="fa-solid fa-trash me-1"></i>
+                        Delete
+                    </a>
+                </div>
+
+                <div class="collapse mt-3" id="edit-electrician-{{ e.id }}">
+                    <form method="POST" enctype="multipart/form-data" class="border rounded-4 p-3">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="update">
+                        <input type="hidden" name="id" value="{{ e.id }}">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Name</label>
+                                <input type="text" name="name" value="{{ e.name }}" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Phone</label>
+                                <input type="text" name="phone" value="{{ e.phone }}" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Availability</label>
+                                <select name="availability" class="form-select">
+                                    <option value="Available" {% if e.availability == "Available" %}selected{% endif %}>Available</option>
+                                    <option value="Working" {% if e.availability == "Working" %}selected{% endif %}>Busy</option>
+                                    <option value="Leave" {% if e.availability == "Leave" %}selected{% endif %}>Offline</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Service Area Pincode</label>
+                                <input type="text" name="service_area_pincode" value="{{ e.service_area_pincode }}" class="form-control" maxlength="6">
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-semibold">Photo</label>
+                                <input type="file" name="image" class="form-control">
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-success w-100">
+                                    <i class="fa-solid fa-check me-1"></i>
+                                    Save Changes
+                                </button>
+                            </div>
+                        </div>
                     </form>
-
-                </tr>
-
-                {% empty %}
-
-                <tr>
-
-                    <td colspan="4"
-                        class="text-center text-muted py-4">
-
-                        No electrician records found
-
-                    </td>
-
-                </tr>
-
-                {% endfor %}
-
-            </tbody>
-
-        </table>
-
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-
+    {% empty %}
+    <div class="col-12">
+        <div class="card soft-card p-5 text-center text-muted">
+            <i class="fa-solid fa-user-gear fs-1 text-primary mb-3"></i>
+            <h5 class="fw-bold">No electrician records found</h5>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 
 {% endblock %}

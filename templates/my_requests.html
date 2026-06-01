@@ -3,399 +3,238 @@
 {% block content %}
 
 <style>
-
-.page-title{
-    font-weight:700;
-    color:#111827;
-}
-
-.request-card,
-.summary-card{
-    border:none;
-    border-radius:15px;
-}
-
-.summary-card{
-    transition:0.3s;
-}
-
-.summary-card:hover{
-    transform:translateY(-3px);
-}
-
-.form-control,
-.form-select{
-    border-radius:10px;
-}
-
-.btn{
-    border-radius:10px;
-}
-
-.badge{
-    padding:8px 12px;
-    border-radius:20px;
-}
-
-.table th{
-    font-weight:600;
-}
-
-.table td{
-    vertical-align:middle;
-}
-
-.request-icon{
-    font-size:28px;
-}
-
-@media(max-width:768px){
-
-    .table-responsive{
-        overflow-x:auto;
-    }
-
-}
-
+.page-heading h2{font-weight:800;color:#0f172a;}
+.soft-card{border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 12px 30px rgba(15,23,42,.06);}
+.metric-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#dbeafe;color:#2563eb;font-size:20px;}
+.form-control,.form-select{border-radius:12px;min-height:48px;}
+.btn{border-radius:12px;font-weight:600;}
+.request-card{transition:transform .2s ease, box-shadow .2s ease;}
+.request-card:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(15,23,42,.08);}
+.otp-feedback{display:none;}
+@media(max-width:575px){.request-actions .btn{width:100%;}}
 </style>
 
-<!-- TITLE -->
-
-<div class="mb-4">
-
-<h2 class="page-title mb-1">
-
-My Requests
-
-</h2>
-
-<p class="text-muted">
-
-Track electrician service requests
-and work progress details
-
-</p>
-
+<div class="page-heading d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+        <h2 class="mb-1">My Requests</h2>
+        <p class="text-muted mb-0">Create service requests, review quotations, approve quotes, and verify service completion.</p>
+    </div>
+    <span class="badge bg-primary px-3 py-2">{{ total_requests }} Requests</span>
 </div>
-
-<!-- CREATE REQUEST -->
-
-<div class="card request-card shadow-sm p-4 mb-4">
-
-<h5 class="fw-bold mb-4">
-
-<i class="fa-solid fa-plus text-primary"></i>
-
-Create Service Request
-
-</h5>
-
-<form method="POST">
-
-{% csrf_token %}
-
-<div class="row g-3">
-
-<!-- SERVICE -->
-
-<div class="col-md-4">
-
-<label class="form-label">
-
-Service Title
-
-</label>
-
-<input type="text"
-       name="service_title"
-       class="form-control"
-       placeholder="Enter Service"
-       required>
-
-</div>
-
-<!-- LOCATION -->
-
-<div class="col-md-4">
-
-<label class="form-label">
-
-Location
-
-</label>
-
-<input type="text"
-       name="location"
-       class="form-control"
-       placeholder="Enter Location"
-       required>
-
-</div>
-
-<!-- DESCRIPTION -->
-
-<div class="col-md-4">
-
-<label class="form-label">
-
-Description
-
-</label>
-
-<input type="text"
-       name="description"
-       class="form-control"
-       placeholder="Enter Description"
-       required>
-
-</div>
-
-</div>
-
-<button class="btn btn-primary mt-3">
-
-<i class="fa-solid fa-paper-plane"></i>
-
-Submit Request
-
-</button>
-
-</form>
-
-</div>
-
-<!-- ALERT -->
-
-<div class="alert alert-light border shadow-sm mb-4">
-
-You have
-<strong>{{ pending_requests }}</strong>
-pending request(s)
-and
-<strong>{{ completed_requests }}</strong>
-completed request(s).
-
-</div>
-
-<!-- SUMMARY -->
 
 <div class="row g-4 mb-4">
-
-<!-- TOTAL -->
-
-<div class="col-md-4">
-
-<div class="card summary-card shadow-sm p-4 text-center">
-
-<div class="request-icon text-primary mb-2">
-
-<i class="fa-solid fa-file-lines"></i>
-
+    <div class="col-md-4">
+        <div class="card soft-card p-4 h-100">
+            <div class="d-flex align-items-center gap-3">
+                <div class="metric-icon"><i class="fa-solid fa-file-lines"></i></div>
+                <div><p class="text-muted mb-1">Total Requests</p><h3 class="fw-bold mb-0">{{ total_requests }}</h3></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card soft-card p-4 h-100">
+            <div class="d-flex align-items-center gap-3">
+                <div class="metric-icon bg-success bg-opacity-10 text-success"><i class="fa-solid fa-circle-check"></i></div>
+                <div><p class="text-muted mb-1">Completed</p><h3 class="fw-bold mb-0">{{ completed_requests }}</h3></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card soft-card p-4 h-100">
+            <div class="d-flex align-items-center gap-3">
+                <div class="metric-icon bg-warning bg-opacity-10 text-warning"><i class="fa-solid fa-clock"></i></div>
+                <div><p class="text-muted mb-1">Pending</p><h3 class="fw-bold mb-0">{{ pending_requests }}</h3></div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<h6 class="text-muted">
-
-Total Requests
-
-</h6>
-
-<h2 class="fw-bold">
-
-{{ total_requests }}
-
-</h2>
-
+<div class="card soft-card p-4 mb-4">
+    <h5 class="fw-bold mb-3"><i class="fa-solid fa-plus text-primary me-2"></i>Create Service Request</h5>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-lg-4">
+                <label class="form-label fw-semibold">Service Title</label>
+                <input type="text" name="service_title" class="form-control" placeholder="Example: Wiring repair" required>
+            </div>
+            <div class="col-lg-4">
+                <label class="form-label fw-semibold">Address</label>
+                <input type="text" id="requestAddress" name="address" class="form-control" placeholder="House, street, city" required>
+                <!-- Location matching can be extended using Google Maps API in future versions. -->
+            </div>
+            <div class="col-lg-2">
+                <label class="form-label fw-semibold">Pincode</label>
+                <input type="text" id="requestPincode" name="pincode" class="form-control" placeholder="6 digits" maxlength="6" required>
+            </div>
+            <div class="col-lg-2">
+                <label class="form-label fw-semibold">Description</label>
+                <input type="text" name="description" class="form-control" placeholder="Describe the issue" required>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary px-4"><i class="fa-solid fa-paper-plane me-2"></i>Submit Request</button>
+            </div>
+        </div>
+    </form>
 </div>
 
+<div class="row g-4">
+    {% for request in requests_data %}
+    <div class="col-xl-6">
+        <div class="card soft-card request-card h-100">
+            <div class="card-body p-4">
+                <div class="d-flex justify-content-between align-items-start gap-3 mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-1">{{ request.service_title }}</h5>
+                        <p class="text-muted mb-0"><i class="fa-solid fa-location-dot me-2 text-primary"></i>{{ request.display_address }}</p>
+                    </div>
+                    {% if request.workflow_status == "Completed" %}
+                    <span class="badge bg-success">Completed</span>
+                    {% elif request.workflow_status == "Work In Progress" %}
+                    <span class="badge bg-primary">In Progress</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark">{{ request.workflow_status }}</span>
+                    {% endif %}
+                </div>
+
+                <p class="text-muted">{{ request.description }}</p>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-4">
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <small class="text-muted d-block">Electrician</small>
+                            <strong>{{ request.electrician }}</strong>
+                            {% if request.display_pincode %}
+                            <small class="text-muted d-block">Pincode {{ request.display_pincode }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <small class="text-muted d-block">Quotation</small>
+                            <strong>Rs. {{ request.quoted_amount }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <small class="text-muted d-block">Advance</small>
+                            <strong>Rs. {{ request.advance_amount }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-6">
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <small class="text-muted d-block">Remaining Balance</small>
+                            <strong>Rs. {{ request.remaining_balance }}</strong>
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="bg-light rounded-3 p-3 h-100">
+                            <small class="text-muted d-block">Workflow Status</small>
+                            <strong>{{ request.workflow_status }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                    {% if request.is_quote_approved %}
+                    <span class="badge bg-success"><i class="fa-solid fa-check me-1"></i>Quote Approved</span>
+                    {% else %}
+                    <span class="badge bg-secondary">Quote Pending Approval</span>
+                    {% if request.quoted_amount > 0 %}
+                    <form method="POST" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="approve_quote">
+                        <input type="hidden" name="id" value="{{ request.id }}">
+                        <button class="btn btn-outline-primary btn-sm">Approve Quotation</button>
+                    </form>
+                    <a href="/payments/" class="btn btn-outline-success btn-sm">Pay Advance</a>
+                    {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="border rounded-3 p-3">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-2">
+                        <strong><i class="fa-solid fa-key text-primary me-2"></i>Service OTP Verification</strong>
+                        <small class="text-muted">Use the OTP provided by your electrician.</small>
+                    </div>
+                    {% if request.latest_otp %}
+                    <div class="small text-muted mb-2">
+                        Verification Status:
+                        {% if request.latest_otp.is_verified %}
+                        <span class="text-success fw-semibold">Verified</span>
+                        {% else %}
+                        <span class="text-warning fw-semibold">Pending</span>
+                        {% endif %}
+                        {% if request.latest_otp.verified_at %}
+                        | Verified at {{ request.latest_otp.verified_at|date:"d M Y, h:i A" }}
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                    {% if request.workflow_status == "Completed" %}
+                    <div class="alert alert-success mb-0 py-2">Service completed and verified.</div>
+                    {% else %}
+                    <div class="row g-2 align-items-center request-actions">
+                        <div class="col-sm">
+                            <input type="text" class="form-control otp-input" placeholder="Enter OTP" maxlength="6" data-request-id="{{ request.id }}">
+                        </div>
+                        <div class="col-sm-auto">
+                            <button type="button" class="btn btn-success verify-otp-btn" data-request-id="{{ request.id }}">
+                                Verify OTP
+                            </button>
+                        </div>
+                    </div>
+                    <div class="alert mt-3 mb-0 py-2 otp-feedback" id="otp-feedback-{{ request.id }}"></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="card soft-card p-5 text-center text-muted">
+            <i class="fa-solid fa-file-lines fs-1 mb-3 text-primary"></i>
+            <h5 class="fw-bold">No requests found</h5>
+            <p class="mb-0">Submit a service request to get started.</p>
+        </div>
+    </div>
+    {% endfor %}
 </div>
 
-<!-- COMPLETED -->
-
-<div class="col-md-4">
-
-<div class="card summary-card shadow-sm p-4 text-center">
-
-<div class="request-icon text-success mb-2">
-
-<i class="fa-solid fa-circle-check"></i>
-
-</div>
-
-<h6 class="text-muted">
-
-Completed
-
-</h6>
-
-<h2 class="fw-bold text-success">
-
-{{ completed_requests }}
-
-</h2>
-
-</div>
-
-</div>
-
-<!-- PENDING -->
-
-<div class="col-md-4">
-
-<div class="card summary-card shadow-sm p-4 text-center">
-
-<div class="request-icon text-warning mb-2">
-
-<i class="fa-solid fa-clock"></i>
-
-</div>
-
-<h6 class="text-muted">
-
-Pending
-
-</h6>
-
-<h2 class="fw-bold text-warning">
-
-{{ pending_requests }}
-
-</h2>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- REQUEST HISTORY -->
-
-<div class="card request-card shadow-sm p-4">
-
-<div class="d-flex justify-content-between
-            align-items-center
-            flex-wrap gap-2 mb-4">
-
-<h5 class="fw-bold mb-0">
-
-<i class="fa-solid fa-table text-primary"></i>
-
-Request History
-
-</h5>
-
-<span class="badge bg-primary">
-
-{{ total_requests }} Requests
-
-</span>
-
-</div>
-
-<div class="table-responsive">
-
-<table class="table table-hover align-middle">
-
-<thead class="table-light">
-
-<tr>
-
-<th>Service</th>
-
-<th>Location</th>
-
-<th>Status</th>
-
-<th>Electrician</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{% for request in requests_data %}
-
-<tr>
-
-<!-- SERVICE -->
-
-<td>
-
-{{ request.service_title }}
-
-</td>
-
-<!-- LOCATION -->
-
-<td>
-
-{{ request.location }}
-
-</td>
-
-<!-- STATUS -->
-
-<td>
-
-{% if request.status == "Pending" %}
-
-<span class="badge bg-warning text-dark">
-
-Pending
-
-</span>
-
-{% elif request.status == "In Progress" %}
-
-<span class="badge bg-primary">
-
-In Progress
-
-</span>
-
-{% else %}
-
-<span class="badge bg-success">
-
-Completed
-
-</span>
-
-{% endif %}
-
-</td>
-
-<!-- ELECTRICIAN -->
-
-<td>
-
-{{ request.electrician }}
-
-</td>
-
-</tr>
-
-{% empty %}
-
-<tr>
-
-<td colspan="5"
-    class="text-center text-muted py-4">
-
-No Requests Found
-
-</td>
-
-</tr>
-
-{% endfor %}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
+<script>
+document.querySelectorAll('.verify-otp-btn').forEach(function(button){
+    button.addEventListener('click', function(){
+        const requestId = button.dataset.requestId;
+        const input = document.querySelector('.otp-input[data-request-id="' + requestId + '"]');
+        const feedback = document.getElementById('otp-feedback-' + requestId);
+        const body = new URLSearchParams();
+        body.append('otp', input.value);
+
+        fetch('/verify-service-otp/' + requestId + '/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: body.toString()
+        })
+        .then(function(response){ return response.json(); })
+        .then(function(data){
+            feedback.style.display = 'block';
+            if (data.status === 'success') {
+                feedback.className = 'alert alert-success mt-3 mb-0 py-2 otp-feedback';
+                feedback.textContent = 'OTP verified successfully. Service marked completed.';
+                setTimeout(function(){ window.location.reload(); }, 900);
+            } else {
+                feedback.className = 'alert alert-danger mt-3 mb-0 py-2 otp-feedback';
+                feedback.textContent = 'Invalid OTP. Please check with your electrician.';
+            }
+        });
+    });
+});
+
+</script>
 
 {% endblock %}

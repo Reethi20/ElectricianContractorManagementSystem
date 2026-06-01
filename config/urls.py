@@ -20,6 +20,8 @@ urlpatterns = [
     path('login/', views.login_view),
 
     path('register/', views.register),
+    
+    path('forgot-password/',views.forgot_password,name='forgot_password'),
 
     path('logout/', views.logout),
 
@@ -80,13 +82,6 @@ urlpatterns = [
 
     path('reports/', views.reports),
 
-    path(
-        'upload-report/',
-        views.upload_report,
-        name='upload_report'
-    ),
-
-
     # ================= PROFILE =================
 
     path('profile/', views.profile),
@@ -135,6 +130,43 @@ urlpatterns = [
     views.payment_success,
     name='payment_success'
     ),
+    # ================= NOTIFICATIONS =================
+
+    path(
+        'notifications/',
+        views.notifications,
+        name='notifications'
+    ),
+
+    path(
+        'mark-notification-read/<int:id>/',
+        views.mark_notification_read,
+        name='mark_notification_read'
+    ),
+
+    # ================= REVIEWS =================
+
+    path(
+        'reviews/',
+        views.reviews,
+        name='reviews'
+    ),
+
+    # ================= SERVICE OTP =================
+
+    path(
+        'generate-service-otp/<int:id>/',
+        views.generate_service_otp,
+        name='generate_service_otp'
+    ),
+
+    path(
+        'verify-service-otp/<int:id>/',
+        views.verify_service_otp,
+        name='verify_service_otp'
+    ),
+
+        
 
 ]
 

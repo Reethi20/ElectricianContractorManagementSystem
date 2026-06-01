@@ -11,12 +11,12 @@
 
 .welcome-card{
     border:none;
-    border-radius:15px;
+    border-radius:18px;
 }
 
 .overview-card{
     border:none;
-    border-radius:15px;
+    border-radius:18px;
     transition:0.3s;
 }
 
@@ -31,7 +31,7 @@
 
 .request-card{
     border:none;
-    border-radius:15px;
+    border-radius:18px;
 }
 
 .table th{
@@ -41,6 +41,7 @@
 .badge{
     padding:8px 12px;
     border-radius:20px;
+    font-weight:700;
 }
 
 @media(max-width:768px){
@@ -182,7 +183,7 @@
 
 <!-- REQUESTS -->
 
-<div class="card request-card shadow-sm mt-4 p-4">
+    <div class="card request-card shadow-sm mt-4 p-3 p-md-4">
 
     <div class="d-flex justify-content-between
                 align-items-center
@@ -252,7 +253,10 @@
 
                     <td>
 
-                        {{ request.location }}
+                        {{ request.display_address }}
+                        {% if request.display_pincode %}
+                        <small class="text-muted d-block">Pincode {{ request.display_pincode }}</small>
+                        {% endif %}
 
                     </td>
 

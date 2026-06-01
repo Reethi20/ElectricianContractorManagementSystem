@@ -1,3 +1,16 @@
+:root{
+    --ecms-primary:#2563eb;
+    --ecms-sidebar:#0f172a;
+    --ecms-bg:#f8fafc;
+    --ecms-card:#ffffff;
+    --ecms-border:#e2e8f0;
+    --ecms-text:#0f172a;
+    --ecms-muted:#64748b;
+    --ecms-success:#16a34a;
+    --ecms-danger:#ef4444;
+    --ecms-shadow:0 12px 30px rgba(15,23,42,0.06);
+}
+
 *{
     margin:0;
     padding:0;
@@ -6,9 +19,18 @@
 
 body{
     font-family:'Inter',sans-serif;
-    background:#f4f7fb;
-    color:#1e293b;
+    background:var(--ecms-bg);
+    color:var(--ecms-text);
     overflow-x:hidden;
+    line-height:1.55;
+}
+
+a{
+    text-decoration:none;
+}
+
+img{
+    max-width:100%;
 }
 
 /* WRAPPER */
@@ -22,7 +44,7 @@ body{
 
 .sidebar{
     width:230px;
-    background:#0b1120;
+    background:var(--ecms-sidebar);
     position:fixed;
     top:0;
     left:0;
@@ -98,19 +120,19 @@ body{
 
 .main-content{
     margin-left:230px;
-    width:100%;
+    width:calc(100% - 230px);
     min-height:100vh;
 }
 
 /* TOPBAR */
 
 .topbar{
-    background:white;
+    background:var(--ecms-card);
     padding:18px 25px;
     display:flex;
     justify-content:space-between;
     align-items:center;
-    box-shadow:0 2px 8px rgba(0,0,0,0.04);
+    box-shadow:0 4px 16px rgba(15,23,42,0.05);
     position:sticky;
     top:0;
     z-index:999;
@@ -118,7 +140,7 @@ body{
 
 .topbar h4{
     margin:0;
-    font-size:26px;
+    font-size:22px;
     font-weight:700;
     color:#0f172a;
 }
@@ -152,23 +174,34 @@ body{
 /* CONTENT */
 
 .content-area{
-    padding:22px;
+    padding:28px;
 }
 
 /* CARDS */
 
 .card{
-    border:none !important;
-    border-radius:14px !important;
-    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+    border:1px solid var(--ecms-border) !important;
+    border-radius:18px !important;
+    box-shadow:var(--ecms-shadow);
+    background:var(--ecms-card);
 }
 
 /* BUTTONS */
 
 .btn{
-    border-radius:8px;
-    font-weight:500;
-    padding:8px 16px;
+    border-radius:12px;
+    font-weight:600;
+    padding:10px 16px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    line-height:1.2;
+    white-space:normal;
+}
+
+.btn-sm{
+    padding:7px 12px;
 }
 
 /* TABLE */
@@ -183,9 +216,10 @@ body{
 
 .table th{
     font-size:14px;
-    font-weight:600;
+    font-weight:700;
     color:#1e293b;
     border:none;
+    white-space:nowrap;
 }
 
 .table td{
@@ -194,35 +228,58 @@ body{
     border-color:#e5e7eb;
 }
 
+.table-responsive{
+    border-radius:16px;
+}
+
 /* FORMS */
 
 .form-control,
 .form-select{
-    border-radius:8px;
-    border:1px solid #d1d5db;
-    padding:10px 12px;
+    border-radius:12px;
+    border:1px solid #dbe3ef;
+    padding:11px 13px;
     font-size:14px;
+    min-height:46px;
 }
 
 .form-control:focus,
 .form-select:focus{
-    border-color:#2563eb;
-    box-shadow:none;
+    border-color:var(--ecms-primary);
+    box-shadow:0 0 0 .2rem rgba(37,99,235,0.12);
 }
 
 /* BADGES */
 
 .badge{
-    padding:7px 12px;
+    padding:7px 11px;
     border-radius:20px;
     font-size:12px;
-    font-weight:500;
+    font-weight:700;
+    line-height:1.1;
 }
 
 /* ALERT */
 
 .alert{
     border-radius:12px;
+}
+
+.page-title,
+.section-title,
+.card-title,
+h1,h2,h3,h4,h5,h6{
+    letter-spacing:0;
+}
+
+.page-title{
+    line-height:1.25;
+}
+
+.soft-card,
+.analytics-card,
+.profile-card{
+    border-radius:18px;
 }
 
 /* MOBILE */
@@ -253,20 +310,20 @@ body{
 
     .main-content{
         margin-left:0;
+        width:100%;
     }
 
     .topbar{
         padding:15px;
-        flex-wrap:wrap;
-        gap:15px;
+        gap:12px;
     }
 
     .topbar h4{
-        font-size:22px;
+        font-size:18px;
     }
 
     .content-area{
-        padding:15px;
+        padding:18px;
     }
 
     .mobile-toggle{
@@ -282,7 +339,7 @@ body{
     }
 
     .table{
-        min-width:700px;
+        min-width:640px;
     }
 
 }
@@ -370,6 +427,37 @@ body{
 
     .section-card{
         padding:15px;
+    }
+
+}
+
+@media(max-width:576px){
+
+    .content-area{
+        padding:14px;
+    }
+
+    .card{
+        border-radius:16px !important;
+    }
+
+    .card.p-4,
+    .soft-card.p-4,
+    .analytics-card.p-4{
+        padding:18px !important;
+    }
+
+    .btn{
+        width:100%;
+    }
+
+    .d-flex.flex-wrap.gap-2 .btn,
+    .d-flex.flex-wrap.gap-3 .btn{
+        flex:1 1 auto;
+    }
+
+    .table{
+        min-width:560px;
     }
 
 }

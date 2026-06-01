@@ -10,7 +10,7 @@
 }
 
 .card{
-    border:none;
+    border:1px solid #e2e8f0;
     border-radius:18px;
 }
 
@@ -37,6 +37,7 @@
 
 .btn{
     border-radius:12px;
+    font-weight:600;
 }
 
 .status-badge{
@@ -103,7 +104,7 @@
 
         <div class="row g-3 align-items-end">
 
-            <div class="col-md-10">
+            <div class="col-lg-10 col-md-8">
 
                 <label class="form-label fw-semibold">
 
@@ -118,7 +119,7 @@
 
             </div>
 
-            <div class="col-md-2">
+            <div class="col-lg-2 col-md-4">
 
                 <button class="btn btn-primary w-100 fw-semibold">
 
@@ -167,7 +168,7 @@
 
             <!-- TITLE -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -185,13 +186,15 @@
 
             <!-- LOCATION -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
                     Location
 
                 </label>
+
+                <!-- Location matching can be extended using Google Maps API in future versions. -->
 
                 <input type="text"
                        name="location"
@@ -203,7 +206,7 @@
 
             <!-- ELECTRICIAN -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -230,7 +233,7 @@
 
             <!-- DEADLINE -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -247,7 +250,7 @@
 
             <!-- STATUS -->
 
-            <div class="col-md-3">
+            <div class="col-lg-3 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -264,12 +267,6 @@
 
                     </option>
 
-                    <option value="In Progress">
-
-                        In Progress
-
-                    </option>
-
                     <option value="Completed">
 
                         Completed
@@ -282,7 +279,7 @@
 
             <!-- IMAGE -->
 
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-6">
 
                 <label class="form-label fw-semibold">
 
@@ -298,7 +295,7 @@
 
             <!-- BUTTON -->
 
-            <div class="col-md-3 d-flex align-items-end">
+            <div class="col-lg-3 col-md-12 d-flex align-items-end">
 
                 <button type="submit"
                         class="btn btn-primary
@@ -372,14 +369,6 @@
                 <span class="badge bg-warning text-dark status-badge">
 
                     Pending
-
-                </span>
-
-                {% elif j.status == "In Progress" %}
-
-                <span class="badge bg-info text-dark status-badge">
-
-                    In Progress
 
                 </span>
 
@@ -535,15 +524,6 @@
 
                         </option>
 
-                        <option value="In Progress"
-                        {% if j.status == "In Progress" %}
-                        selected
-                        {% endif %}>
-
-                            In Progress
-
-                        </option>
-
                         <option value="Completed"
                         {% if j.status == "Completed" %}
                         selected
@@ -577,7 +557,7 @@
 
             <!-- BUTTONS -->
 
-            <div class="d-flex gap-2 mt-4">
+            <div class="d-flex flex-wrap gap-2 mt-4">
 
                 {% if j.image %}
 

@@ -255,6 +255,40 @@
 
 <!-- RECENT TASKS -->
 
+<div class="card border-0 shadow-sm p-4 mb-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h4 class="fw-bold mb-1">Recent Requests</h4>
+            <p class="text-muted mb-0">Workflow view from request submission through completion</p>
+        </div>
+        <a href="/client-requests/" class="btn btn-outline-primary fw-semibold">Manage Requests</a>
+    </div>
+
+    <div class="row g-3">
+        {% for r in requests_data %}
+        <div class="col-lg-6">
+            <div class="border rounded-4 p-3 h-100">
+                <div class="d-flex justify-content-between gap-3 mb-2">
+                    <div>
+                        <h6 class="fw-bold mb-1">{{ r.service_title }}</h6>
+                        <small class="text-muted">{{ r.location }}</small>
+                    </div>
+                    <span class="badge bg-primary">{{ r.workflow_status }}</span>
+                </div>
+                <div class="d-flex flex-wrap gap-2 small text-muted">
+                    <span>Quote: Rs. {{ r.quoted_amount }}</span>
+                    <span>Advance: Rs. {{ r.advance_amount }}</span>
+                    <span>Electrician: {{ r.electrician }}</span>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center text-muted py-4">No recent service requests.</div>
+        {% endfor %}
+    </div>
+</div>
+
 <div class="card border-0 shadow-sm p-4">
 
     <div class="d-flex justify-content-between
@@ -488,11 +522,11 @@
 
                     <td>
 
-                        {% if p.status == "Success" %}
+                        {% if p.status == "Paid" %}
 
                         <span class="badge bg-success px-3 py-2">
 
-                            Success
+                            Paid
 
                         </span>
 

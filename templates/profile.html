@@ -3,263 +3,172 @@
 {% block content %}
 
 <style>
-
-.profile-card{
-    border:none;
-    border-radius:22px;
-    overflow:hidden;
-    background:white;
-}
-
-.profile-header{
-    background:linear-gradient(135deg,#2563eb,#1e40af);
-    padding:50px 30px;
-    color:white;
-}
-
-.profile-avatar{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    background:white;
-    color:#2563eb;
+.profile-shell{max-width:980px;margin:0 auto;}
+.profile-card{border:1px solid #e2e8f0;border-radius:18px;box-shadow:0 16px 42px rgba(15,23,42,.08);overflow:hidden;}
+.profile-cover{background:#0f172a;color:#fff;padding:34px;}
+.avatar-wrap{position:relative;width:132px;height:132px;flex:0 0 132px;}
+.profile-avatar-img,.profile-avatar-fallback{width:132px;height:132px;border-radius:50%;border:5px solid #fff;box-shadow:0 14px 32px rgba(15,23,42,.22);object-fit:cover;}
+.profile-avatar-fallback{background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:42px;}
+.avatar-edit{position:absolute;right:8px;bottom:8px;width:38px;height:38px;border-radius:50%;background:#2563eb;color:#fff;border:3px solid #fff;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 18px rgba(15,23,42,.2);}
+.info-box{border:1px solid #e2e8f0;border-radius:16px;background:#f8fafc;padding:20px;height:100%;}
+.info-label{font-size:13px;color:#64748b;margin-bottom:6px;font-weight:600;}
+.info-value{font-weight:800;color:#0f172a;margin:0;}
+.btn{border-radius:12px;font-weight:700;}
+.form-select{border-radius:12px;min-height:48px;}
+@media(max-width:767px){
+    .profile-cover{padding:26px;text-align:center;}
+    .profile-cover-content{justify-content:center;}
+    .avatar-wrap{margin:0 auto;}
+}.profile-actions .btn{
+    min-width:180px;
+    height:50px;
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:42px;
-    margin:auto;
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
-
-.profile-name{
-    font-weight:700;
-    margin-top:18px;
-    margin-bottom:8px;
-}
-
-.profile-email{
-    opacity:0.9;
-    margin-bottom:0;
-}
-
-.info-box{
-    background:#f8fafc;
-    border-radius:16px;
-    padding:22px;
-    border:1px solid #e5e7eb;
-    height:100%;
-}
-
-.info-label{
-    font-size:14px;
-    color:#64748b;
-    margin-bottom:8px;
-    font-weight:500;
-}
-
-.info-value{
-    font-weight:700;
-    color:#111827;
-    font-size:20px;
-    margin:0;
-}
-
-.role-badge{
-    padding:10px 18px;
-    border-radius:30px;
-    font-size:14px;
-    font-weight:600;
-}
-
-.profile-btn{
-    padding:14px;
-    border-radius:14px;
-    font-weight:600;
-}
-
 </style>
 
-<div class="container-fluid">
+<div class="profile-shell">
+    {% if user.role != "Client" %}
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+    {% endif %}
 
-    <div class="row justify-content-center">
-
-        <div class="col-lg-7">
-
-            <div class="card profile-card shadow-sm">
-
-                <!-- HEADER -->
-
-                <div class="profile-header text-center">
-
-                    <div class="profile-avatar">
-
+    <div class="card profile-card">
+        <div class="profile-cover">
+            <div class="d-flex align-items-center gap-4 flex-wrap profile-cover-content">
+                <div class="avatar-wrap">
+                    {% if user.profile_image %}
+                    <img src="{{ user.profile_image.url }}" class="profile-avatar-img" id="profilePreview" alt="Profile image">
+                    {% else %}
+                    <div class="profile-avatar-fallback" id="profilePreviewFallback">
                         {% if user.role == "Admin" %}
-
                         <i class="fa-solid fa-user-shield"></i>
-
                         {% elif user.role == "Electrician" %}
-
                         <i class="fa-solid fa-bolt"></i>
-
                         {% else %}
-
                         <i class="fa-solid fa-user"></i>
-
                         {% endif %}
-
                     </div>
+                    {% endif %}
 
-                    <h2 class="profile-name">
-
-                        {{ user.name }}
-
-                    </h2>
-
-                    <p class="profile-email">
-
-                        {{ user.email }}
-
-                    </p>
-
+                    {% if user.role != "Client" %}
+                    <label for="profileImageInput" class="avatar-edit" title="Change profile photo">
+                        <i class="fa-solid fa-pen"></i>
+                    </label>
+                    <input type="file" id="profileImageInput" name="profile_image" class="d-none" accept="image/*">
+                    {% endif %}
                 </div>
 
-                <!-- BODY -->
-
-                <div class="card-body p-4">
-
-                    <div class="row g-4">
-
-                        <!-- PHONE -->
-
-                        <div class="col-md-6">
-
-                            <div class="info-box">
-
-                                <p class="info-label">
-
-                                    Phone Number
-
-                                </p>
-
-                                <h5 class="info-value">
-
-                                    {{ user.phone }}
-
-                                </h5>
-
-                            </div>
-
-                        </div>
-
-                        <!-- ROLE -->
-
-                        <div class="col-md-6">
-
-                            <div class="info-box">
-
-                                <p class="info-label">
-
-                                    Account Role
-
-                                </p>
-
-                                {% if user.role == "Admin" %}
-
-                                <span class="badge bg-primary role-badge">
-
-                                    <i class="fa-solid fa-user-shield me-2"></i>
-
-                                    Admin
-
-                                </span>
-
-                                {% elif user.role == "Electrician" %}
-
-                                <span class="badge bg-success role-badge">
-
-                                    <i class="fa-solid fa-bolt me-2"></i>
-
-                                    Electrician
-
-                                </span>
-
-                                {% else %}
-
-                                <span class="badge bg-warning text-dark role-badge">
-
-                                    <i class="fa-solid fa-user me-2"></i>
-
-                                    Client
-
-                                </span>
-
-                                {% endif %}
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- BUTTONS -->
-
-                    <div class="row g-3 mt-4">
-
-                        <!-- DASHBOARD -->
-
-                        <div class="col-md-6">
-
-                            {% if request.session.role == "Client" %}
-
-                            <a href="/client-dashboard/"
-                               class="btn btn-primary profile-btn w-100">
-
-                                <i class="fa-solid fa-table-columns me-2"></i>
-
-                                Dashboard
-
-                            </a>
-
-                            {% else %}
-
-                            <a href="/dashboard/"
-                               class="btn btn-primary profile-btn w-100">
-
-                                <i class="fa-solid fa-table-columns me-2"></i>
-
-                                Dashboard
-
-                            </a>
-
-                            {% endif %}
-
-                        </div>
-
-                        <!-- LOGOUT -->
-
-                        <div class="col-md-6">
-
-                            <a href="/logout/"
-                               class="btn btn-outline-danger profile-btn w-100">
-
-                                <i class="fa-solid fa-right-from-bracket me-2"></i>
-
-                                Logout
-
-                            </a>
-
-                        </div>
-
-                    </div>
-
+                <div>
+                    <span class="badge bg-primary mb-3">{{ user.role }}</span>
+                    <h2 class="fw-bold mb-2">{{ user.name }}</h2>
+                    <p class="text-white-50 mb-0">{{ user.email }}</p>
                 </div>
-
             </div>
-
         </div>
 
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <p class="info-label">Phone Number</p>
+                        <h5 class="info-value">{{ user.phone }}</h5>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <p class="info-label">Account Role</p>
+                        {% if user.role == "Admin" %}
+                        <span class="badge bg-primary px-3 py-2">Admin</span>
+                        {% elif user.role == "Electrician" %}
+                        <span class="badge bg-success px-3 py-2">Electrician</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark px-3 py-2">Client</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if user.role == "Electrician" and electrician %}
+            <div class="row g-4 mt-1">
+                <div class="col-md-4">
+                    <div class="info-box text-center">
+                        <p class="info-label">Rating</p>
+                        <h5 class="info-value">{{ electrician.rating }} / 5</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box text-center">
+                        <p class="info-label">Total Reviews</p>
+                        <h5 class="info-value">{{ electrician.total_reviews }}</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="info-box text-center">
+                        <p class="info-label">Availability</p>
+                        {% if electrician.availability == "Available" %}
+                        <span class="badge bg-success px-3 py-2">Available</span>
+                        {% elif electrician.availability == "Working" %}
+                        <span class="badge bg-warning text-dark px-3 py-2">Busy</span>
+                        {% else %}
+                        <span class="badge bg-danger px-3 py-2">Offline</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="border rounded-4 p-4 mt-4">
+                <label class="form-label fw-semibold">Availability Status</label>
+                <select name="availability" class="form-select">
+                    <option value="Available" {% if electrician.availability == "Available" %}selected{% endif %}>Available</option>
+                    <option value="Working" {% if electrician.availability == "Working" %}selected{% endif %}>Busy</option>
+                    <option value="Leave" {% if electrician.availability == "Leave" %}selected{% endif %}>Offline</option>
+                </select>
+            </div>
+            {% endif %}
+
+            <div class="profile-actions d-flex flex-wrap justify-content-center gap-3 mt-4">
+                {% if user.role != "Client" %}
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="fa-solid fa-floppy-disk me-2"></i>
+                    Save Changes
+                </button>
+                {% endif %}
+
+                {% if request.session.role == "Client" %}
+                <a href="/client-dashboard/" class="btn btn-primary px-4">Dashboard</a>
+                {% elif request.session.role == "Admin" %}
+                <a href="/dashboard/" class="btn btn-primary px-4">Dashboard</a>
+                {% else %}
+                <a href="/tasks/" class="btn btn-primary px-4">My Tasks</a>
+                {% endif %}
+                <a href="/logout/" class="btn btn-outline-danger px-4">Logout</a>
+            </div>
+        </div>
     </div>
 
+    {% if user.role != "Client" %}
+    </form>
+    {% endif %}
 </div>
+
+<script>
+const imageInput = document.getElementById('profileImageInput');
+if (imageInput) {
+    imageInput.addEventListener('change', function(){
+        const file = imageInput.files && imageInput.files[0];
+        if (!file) return;
+        const url = URL.createObjectURL(file);
+        const img = document.getElementById('profilePreview');
+        const fallback = document.getElementById('profilePreviewFallback');
+        if (img) {
+            img.src = url;
+        } else if (fallback) {
+            fallback.outerHTML = '<img src="' + url + '" class="profile-avatar-img" id="profilePreview" alt="Profile preview">';
+        }
+    });
+}
+</script>
 
 {% endblock %}

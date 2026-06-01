@@ -2,6 +2,30 @@
 
 {% block content %}
 
+<style>
+.payment-card{
+    border:1px solid #e2e8f0;
+    border-radius:18px;
+    box-shadow:0 12px 30px rgba(15,23,42,.06);
+}
+.form-control,
+.form-select,
+.input-group-text{
+    border-radius:12px;
+    min-height:46px;
+}
+.btn{
+    border-radius:12px;
+    font-weight:600;
+}
+@media(max-width:576px){
+    .container-fluid{
+        padding-left:0;
+        padding-right:0;
+    }
+}
+</style>
+
 <div class="container-fluid">
 
     <!-- PAGE HEADER -->
@@ -32,11 +56,32 @@
 
     </div>
 
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card payment-card p-4 h-100">
+                <p class="text-muted fw-semibold mb-1">Quoted Amount</p>
+                <h3 class="fw-bold mb-0">Rs. {{ paid_total|add:pending_total }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card payment-card p-4 h-100">
+                <p class="text-muted fw-semibold mb-1">Advance / Paid</p>
+                <h3 class="fw-bold text-success mb-0">Rs. {{ paid_total }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card payment-card p-4 h-100">
+                <p class="text-muted fw-semibold mb-1">Remaining / Pending</p>
+                <h3 class="fw-bold text-warning mb-0">Rs. {{ pending_total }}</h3>
+            </div>
+        </div>
+    </div>
+
     <!-- PAYMENT FORM -->
 
     {% if request.session.role != "Electrician" %}
 
-    <div class="card border-0 shadow-sm rounded-4 p-4 mb-4">
+    <div class="card payment-card p-3 p-md-4 mb-4">
 
         <h5 class="fw-bold mb-4">
 
@@ -205,7 +250,7 @@
 
     <!-- TRANSACTION HISTORY -->
 
-    <div class="card border-0 shadow-sm rounded-4 p-4">
+    <div class="card payment-card p-3 p-md-4">
 
         <div class="d-flex justify-content-between
                     align-items-center
@@ -333,11 +378,11 @@
 
                         <td>
 
-                            {% if p.status == "Success" %}
+                            {% if p.status == "Paid" %}
 
                             <span class="badge bg-success">
 
-                                Success
+                                Paid
 
                             </span>
 

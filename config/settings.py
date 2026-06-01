@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'fallback-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-ALLOWED_HOSTS = ['electriciancontractormanagementsystem.onrender.com']
+ALLOWED_HOSTS = ['electriciancontractormanagementsystem.onrender.com', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = [
 
     'https://electriciancontractormanagementsystem.onrender.com'
@@ -128,7 +128,6 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
@@ -146,3 +145,17 @@ RAZORPAY_KEY_ID = os.environ.get(
 RAZORPAY_KEY_SECRET = os.environ.get(
     'RAZORPAY_KEY_SECRET'
 )
+# ================= EMAIL =================
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = 587
+
+EMAIL_USE_TLS = True
+
+from decouple import config
+
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
